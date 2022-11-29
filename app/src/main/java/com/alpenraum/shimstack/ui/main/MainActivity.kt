@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -20,12 +19,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alpenraum.shimstack.common.moveLastEntryToStart
 import com.alpenraum.shimstack.ui.main.navigation.bottomNavigation.BottomNavigationDestinations
+import com.alpenraum.shimstack.ui.main.screens.HomeScreen
+import com.alpenraum.shimstack.ui.main.screens.HomeScreenViewModel
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.example.opensky.ui.base.BaseActivity
-import com.alpenraum.shimstack.ui.main.screens.HomeScreen
 import dagger.hilt.android.AndroidEntryPoint
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavController
+import dev.olshevski.navigation.reimagined.hilt.hiltViewModel
 import dev.olshevski.navigation.reimagined.moveToTop
 import dev.olshevski.navigation.reimagined.navigate
 import dev.olshevski.navigation.reimagined.pop
@@ -93,9 +94,13 @@ private fun Content(
 ) {
     AnimatedNavHost(controller = navController) { destination ->
         when (destination) {
-            BottomNavigationDestinations.HomeScreen -> HomeScreen(
-                modifier = Modifier.padding(paddingValues)
-            )
+            BottomNavigationDestinations.HomeScreen -> {
+                val viewModel = hiltViewModel<HomeScreenViewModel>()
+                HomeScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    viewModel = viewModel
+                )
+            }
             BottomNavigationDestinations.Test -> {
                 Text("Test screen")
             }

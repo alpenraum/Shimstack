@@ -9,5 +9,5 @@ sealed class BottomNavigationItem(
     @DrawableRes var icon: Int
 ) {
     object Home : BottomNavigationItem(R.string.title_home, R.drawable.home_24px)
-    object Test : BottomNavigationItem(R.string.app_name,R.drawable.home_24px)
+    object Test : BottomNavigationItem(R.string.app_name, R.drawable.home_24px)
 }
