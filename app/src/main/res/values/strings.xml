@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name" translatable="false">Shimstack</string>
+    <string name="title_home">Home</string>
+</resources>

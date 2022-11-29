@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Open Sky</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_map">Maps</string>
+    <string name="title_allergies">Allergies</string>
+</resources>
