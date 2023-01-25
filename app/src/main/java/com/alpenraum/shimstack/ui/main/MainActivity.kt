@@ -3,8 +3,6 @@ package com.alpenraum.shimstack.ui.main
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.biometric.BiometricPrompt
-import androidx.biometric.BiometricPrompt.AuthenticationCallback
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -19,14 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.alpenraum.shimstack.common.moveLastEntryToStart
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.main.navigation.bottomNavigation.BottomNavigationDestinations
 import com.alpenraum.shimstack.ui.main.screens.HomeScreen
 import com.alpenraum.shimstack.ui.main.screens.HomeScreenViewModel
 import com.alpenraum.shimstack.ui.theme.AppTheme
-import com.alpenraum.shimstack.usecases.biometrics.IsBiometricAuthenticationAvailableUseCase
-import com.alpenraum.shimstack.usecases.biometrics.TriggerBiometricsPromptUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavController
@@ -41,14 +38,17 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     override val viewModelClass: Class<MainViewModel> = MainViewModel::class.java
 
-    private val isBiometricAuthenticationAvailableUseCase = IsBiometricAuthenticationAvailableUseCase()
-    private val triggerBiometricsPromptUseCase = TriggerBiometricsPromptUseCase()
+//    private val isBiometricAuthenticationAvailableUseCase = IsBiometricAuthenticationAvailableUseCase()
+//    private val triggerBiometricsPromptUseCase = TriggerBiometricsPromptUseCase()
 
     override fun onViewModelBound() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        installSplashScreen()
+
         initializeContent()
 
 //        when (isBiometricAuthenticationAvailableUseCase(this)) {
