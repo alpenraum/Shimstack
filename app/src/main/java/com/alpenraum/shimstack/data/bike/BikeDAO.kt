@@ -11,5 +11,5 @@ interface BikeDAO {
     fun getAllBikes(): List<Bike>
 
     @Insert
-    fun insertBike(bike: Bike): Bike
+    fun insertBike(bike: Bike)
 }

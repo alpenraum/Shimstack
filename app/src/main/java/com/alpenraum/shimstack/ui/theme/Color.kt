@@ -1,4 +1,5 @@
 package com.alpenraum.shimstack.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF3A6A1E)
@@ -64,12 +65,12 @@ val md_theme_dark_outlineVariant = Color(0xFF43483E)
 val md_theme_dark_scrim = Color(0xFF000000)
 
 val seed = Color(0xFF9DA693)
-val CustomColor1 = Color(0xFFFFCC00)
-val light_CustomColor1 = Color(0xFF745B00)
-val light_onCustomColor1 = Color(0xFFFFFFFF)
-val light_CustomColor1Container = Color(0xFFFFE08B)
-val light_onCustomColor1Container = Color(0xFF241A00)
-val dark_CustomColor1 = Color(0xFFF1C100)
-val dark_onCustomColor1 = Color(0xFF3D2F00)
-val dark_CustomColor1Container = Color(0xFF584400)
-val dark_onCustomColor1Container = Color(0xFFFFE08B)
+val CanaryYellow = Color(0xFFFFCC00)
+val light_CanaryYellow = Color(0xFF745B00)
+val light_onCanaryYellow = Color(0xFFFFFFFF)
+val light_CanaryYellowContainer = Color(0xFFFFE08B)
+val light_onCanaryYellowContainer = Color(0xFF241A00)
+val dark_CanaryYellow = Color(0xFFF1C100)
+val dark_onCanaryYellow = Color(0xFF3D2F00)
+val dark_CanaryYellowContainer = Color(0xFF584400)
+val dark_onCanaryYellowContainer = Color(0xFFFFE08B)

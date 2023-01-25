@@ -3,6 +3,8 @@ package com.alpenraum.shimstack.ui.main
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.biometric.BiometricPrompt
+import androidx.biometric.BiometricPrompt.AuthenticationCallback
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -18,11 +20,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.alpenraum.shimstack.common.moveLastEntryToStart
+import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.main.navigation.bottomNavigation.BottomNavigationDestinations
 import com.alpenraum.shimstack.ui.main.screens.HomeScreen
 import com.alpenraum.shimstack.ui.main.screens.HomeScreenViewModel
 import com.alpenraum.shimstack.ui.theme.AppTheme
-import com.example.opensky.ui.base.BaseActivity
+import com.alpenraum.shimstack.usecases.biometrics.IsBiometricAuthenticationAvailableUseCase
+import com.alpenraum.shimstack.usecases.biometrics.TriggerBiometricsPromptUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavController
@@ -37,50 +41,70 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     override val viewModelClass: Class<MainViewModel> = MainViewModel::class.java
 
+    private val isBiometricAuthenticationAvailableUseCase = IsBiometricAuthenticationAvailableUseCase()
+    private val triggerBiometricsPromptUseCase = TriggerBiometricsPromptUseCase()
+
     override fun onViewModelBound() {
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializeContent()
+
+//        when (isBiometricAuthenticationAvailableUseCase(this)) {
+//            IsBiometricAuthenticationAvailableUseCase.Result.Failure -> TODO()
+//            IsBiometricAuthenticationAvailableUseCase.Result.NoneEnrolled -> TODO()
+//            IsBiometricAuthenticationAvailableUseCase.Result.Success -> {
+//                triggerBiometricsPromptUseCase(
+//                    this,
+//                    object : AuthenticationCallback() {
+//                        override fun onAuthenticationSucceeded(
+//                            result: BiometricPrompt.AuthenticationResult
+//                        ) {
+//                            super.onAuthenticationSucceeded(result)
+//                            viewModel.x()
+//                        }
+//                    }
+//                )
+//            }
+//        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun initializeContent() {
         setContent {
             AppTheme {
-                val navController =
-                    rememberNavController<BottomNavigationDestinations>(
-                        startDestination = BottomNavigationDestinations.HomeScreen
-                    )
+                val navController = rememberNavController<BottomNavigationDestinations>(
+                    startDestination = BottomNavigationDestinations.HomeScreen
+                )
 
                 BottomNavigationBackHandler(navController)
 
-                Scaffold(
-                    bottomBar = {
-                        val lastDestination = navController.backstack.entries.last().destination
-                        NavigationBar {
-                            BottomNavigationDestinations.values().forEach { destination ->
-                                NavigationBarItem(
-                                    label = { Text(stringResource(id = destination.item.title)) },
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(destination.item.icon),
-                                            contentDescription = null
-                                        )
-                                    },
-                                    selected = destination == lastDestination,
-                                    onClick = {
-                                        // keep only one instance of a destination in the backstack
-                                        if (!navController.moveToTop { it == destination }) {
-                                            // if there is no existing instance, add it
-                                            navController.navigate(destination)
-                                        }
-                                    }
+                Scaffold(bottomBar = {
+                    val lastDestination = navController.backstack.entries.last().destination
+                    NavigationBar {
+                        BottomNavigationDestinations.values().forEach { destination ->
+                            NavigationBarItem(label = {
+                                Text(
+                                    stringResource(id = destination.item.title)
                                 )
-                            }
+                            }, icon = {
+                                    Icon(
+                                        painter = painterResource(destination.item.icon),
+                                        contentDescription = null
+                                    )
+                                }, selected = destination == lastDestination, onClick = {
+                                    // keep only one instance of a destination in the backstack
+                                    if (!navController.moveToTop { it == destination }) {
+                                        // if there is no existing instance, add it
+                                        navController.navigate(destination)
+                                    }
+                                })
                         }
-                    },
-                    content = { paddingValues ->
-                        Content(navController, paddingValues)
                     }
-                )
+                }, content = { paddingValues ->
+                        Content(navController, paddingValues)
+                    })
             }
         }
     }
@@ -127,6 +151,5 @@ private fun BottomNavigationBackHandler(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    AppTheme {
-    }
+    AppTheme {}
 }
