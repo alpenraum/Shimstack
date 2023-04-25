@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
-abstract class BaseViewModel : ViewModel(), DefaultLifecycleObserver {
+abstract class BaseViewModel :ViewModel(), DefaultLifecycleObserver {
 
     var arguments: Bundle? = null
 
