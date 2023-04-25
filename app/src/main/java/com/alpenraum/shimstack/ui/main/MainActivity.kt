@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -121,7 +122,7 @@ private fun Content(
             BottomNavigationDestinations.HomeScreen -> {
                 val viewModel = hiltViewModel<HomeScreenViewModel>()
                 HomeScreen(
-                    modifier = Modifier.padding(paddingValues),
+                    modifier = Modifier.padding(paddingValues).fillMaxSize(),
                     viewModel = viewModel
                 )
             }

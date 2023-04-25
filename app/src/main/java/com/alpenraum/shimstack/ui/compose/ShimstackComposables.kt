@@ -31,3 +31,5 @@ fun CardWithPlaceholder(
         content = content
     )
 }
+
+fun shimstackRoundedCornerShape() = RoundedCornerShape(20.dp)

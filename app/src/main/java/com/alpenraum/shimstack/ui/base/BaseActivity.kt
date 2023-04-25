@@ -3,7 +3,6 @@ package com.alpenraum.shimstack.ui.base
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.opensky.ui.base.BaseViewModel
 import com.example.opensky.ui.base.BoundView
 
 abstract class BaseActivity<VIEW_MODEL : BaseViewModel> :

@@ -1,4 +1,4 @@
-package com.example.opensky.ui.base
+package com.alpenraum.shimstack.ui.base
 
 import android.os.Bundle
 import androidx.lifecycle.DefaultLifecycleObserver
