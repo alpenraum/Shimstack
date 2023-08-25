@@ -44,7 +44,6 @@ import com.google.accompanist.placeholder.material.placeholder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlin.math.absoluteValue
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -248,10 +247,10 @@ class HomeScreenViewModel @Inject constructor() :
         viewModelScope.launch {
             // todo: find out why this doesn't do anything
             eventFlow.emit(HomeScreenContract.Event.Loading)
-            delay(3000)
-            mutableState.emit(HomeScreenContract.State(testBikes))
-
-            eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
+            // delay(3000)
+            // mutableState.emit(HomeScreenContract.State(testBikes))
+            //
+            // eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
         }
     }
 
