@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeDAO
 
-@Database(entities = [Bike::class], version = 1)
+@Database(entities = [Bike::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bikeDao(): BikeDAO
 }
