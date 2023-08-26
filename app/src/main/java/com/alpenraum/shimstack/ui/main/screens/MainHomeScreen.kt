@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
@@ -37,12 +38,15 @@ import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -52,15 +56,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomeScreen(modifier: Modifier, viewModel: HomeScreenViewModel = hiltViewModel()) {
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel)
     val isLoading = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(0)
 
     val snackState = remember { SnackbarHostState() }
 
@@ -82,16 +86,28 @@ fun HomeScreen(modifier: Modifier, viewModel: HomeScreenViewModel = hiltViewMode
         }
     }
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.SpaceBetween) {
+    Column(
+        modifier = modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         BikePager(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp, bottom = 16.dp),
             showPlaceholder = isLoading.value,
             state = state,
-            intents = intents
+            intents = intents,
+            pagerState = pagerState
         )
+        state.getBike(pagerState.currentPage)?.let { BikeDetails(bike = it, intents) }
         SnackbarHost(hostState = snackState)
+    }
+}
+
+@Composable
+fun BikeDetails(bike: Bike, intents: (HomeScreenContract.Intent) -> Unit) {
+    Surface(modifier = Modifier.size(200.dp)) {
+        Text(text = bike.name)
     }
 }
 
@@ -127,10 +143,9 @@ private fun BikePager(
     modifier: Modifier,
     state: HomeScreenContract.State,
     intents: (HomeScreenContract.Intent) -> Unit,
-    showPlaceholder: Boolean
+    showPlaceholder: Boolean,
+    pagerState: PagerState
 ) {
-    val pagerState = rememberPagerState(0)
-
     val itemWidth = 200.dp
 
     LaunchedEffect(pagerState) {
@@ -258,7 +273,10 @@ class HomeScreenViewModel @Inject constructor() :
 interface HomeScreenContract :
     UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
 
-    data class State(val bikes: List<Bike>)
+    data class State(val bikes: List<Bike>) {
+        fun getBike(page: Int) = bikes.getOrNull(page)
+    }
+
     sealed class Event {
         object Loading : Event()
         object FinishedLoading : Event()
