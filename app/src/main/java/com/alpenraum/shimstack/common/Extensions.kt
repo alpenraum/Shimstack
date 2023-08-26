@@ -1,5 +1,8 @@
 package com.alpenraum.shimstack.common
 
+import android.content.Context
+import android.content.ContextWrapper
+import androidx.appcompat.app.AppCompatActivity
 import dev.olshevski.navigation.reimagined.NavAction
 import dev.olshevski.navigation.reimagined.NavController
 
@@ -11,4 +14,10 @@ fun <T> NavController<T>.moveLastEntryToStart() {
         },
         action = NavAction.Pop
     )
+}
+
+fun Context.getActivity(): AppCompatActivity? = when (this) {
+    is AppCompatActivity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }

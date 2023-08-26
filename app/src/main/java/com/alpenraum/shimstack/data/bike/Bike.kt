@@ -16,6 +16,17 @@ data class Bike(
     val isEBike: Boolean
 ) {
 
+    companion object {
+        fun empty() =
+            Bike(
+                name = "",
+                type = Type.UNKNOWN,
+                isEBike = false,
+                frontTire = Tire(0.0, 0.0, 0.0),
+                rearTire = Tire(0.0, 0.0, 0.0)
+            )
+    }
+
     enum class Type {
         ROAD,
         GRAVEL,
@@ -23,6 +34,7 @@ data class Bike(
         TRAIL,
         ALL_MTN,
         ENDURO,
-        DH
+        DH,
+        UNKNOWN
     }
 }

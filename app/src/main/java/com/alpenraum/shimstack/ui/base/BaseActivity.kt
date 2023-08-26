@@ -22,8 +22,6 @@ abstract class BaseActivity<VIEW_MODEL : BaseViewModel> :
             defaultViewModelProviderFactory
         )[viewModelClass as Class<VIEW_MODEL>]
 
-        lifecycle.addObserver(_viewModel)
-
         intent.extras?.let {
             _viewModel.arguments = it
         }

@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack.ui.main.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,12 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleOwner
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import com.alpenraum.shimstack.ui.base.use
+import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -42,8 +43,6 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -53,9 +52,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.math.absoluteValue
 
 @Composable
 fun HomeScreen(modifier: Modifier, viewModel: HomeScreenViewModel = hiltViewModel()) {
+    AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel)
     val isLoading = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -67,25 +69,20 @@ fun HomeScreen(modifier: Modifier, viewModel: HomeScreenViewModel = hiltViewMode
             when (it) {
                 HomeScreenContract.Event.Error -> scope.launch { snackState.showSnackbar("ERROR") }
                 HomeScreenContract.Event.FinishedLoading -> scope.launch {
-                    snackState.showSnackbar(
-                        "FINISHED LOADING"
-                    )
+                    isLoading.value = false
                 }
+
                 HomeScreenContract.Event.Loading -> scope.launch {
-                    snackState.showSnackbar(
-                        "LOADING"
-                    )
+                    isLoading.value = true
                 }
+
                 HomeScreenContract.Event.NewPageSelected -> scope.launch {
-                    snackState.showSnackbar(
-                        "New Bike selected!"
-                    )
                 }
             }
         }
     }
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.SpaceBetween) {
         BikePager(
             modifier = Modifier
                 .fillMaxWidth()
@@ -147,7 +144,8 @@ private fun BikePager(
             modifier = Modifier,
             pagerState,
             contentPadding = PaddingValues(horizontal = itemWidth / 2 + 20.dp / 2),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
+            userScrollEnabled = !showPlaceholder
         ) { page ->
             BikeCard(
                 modifier = Modifier
@@ -202,7 +200,9 @@ private fun BikeCard(modifier: Modifier, bike: Bike, showPlaceholder: Boolean) {
 class HomeScreenViewModel @Inject constructor() :
     BaseViewModel(), HomeScreenContract {
 
-    private val mutableState = MutableStateFlow(HomeScreenContract.State(emptyList()))
+    private val mutableState = MutableStateFlow(
+        HomeScreenContract.State(listOf(Bike.empty(), Bike.empty(), Bike.empty()))
+    )
     override val state: StateFlow<HomeScreenContract.State> =
         mutableState.asStateFlow()
 
@@ -241,16 +241,12 @@ class HomeScreenViewModel @Inject constructor() :
         )
     )
 
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
-
+    override fun onStart() {
+        super.onStart()
         viewModelScope.launch {
-            // todo: find out why this doesn't do anything
             eventFlow.emit(HomeScreenContract.Event.Loading)
-            // delay(3000)
-            // mutableState.emit(HomeScreenContract.State(testBikes))
-            //
-            // eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
+            mutableState.emit(HomeScreenContract.State(testBikes))
+            eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
         }
     }
 
