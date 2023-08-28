@@ -1,27 +1,25 @@
 package com.alpenraum.shimstack.ui.main.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,7 +43,6 @@ import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.CARD_DIMENSION
-import com.alpenraum.shimstack.ui.compose.CardWithPlaceholder
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -57,8 +55,6 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -68,18 +64,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
-fun HomeScreen(modifier: Modifier, viewModel: HomeScreenViewModel = hiltViewModel()) {
+fun HomeScreen(
+    modifier: Modifier,
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    windowSizeClass: WindowSizeClass
+) {
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel)
     val isLoading = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(0)
-
+    val gridState = rememberLazyGridState()
     val snackState = remember { SnackbarHostState() }
-
     LaunchedEffect(event.collectAsState(HomeScreenContract.Event.Loading)) {
         event.collectLatest {
             when (it) {
@@ -99,12 +100,11 @@ fun HomeScreen(modifier: Modifier, viewModel: HomeScreenViewModel = hiltViewMode
     }
 
     Column(
-        modifier = modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+        modifier = modifier,
+        verticalArrangement = Arrangement.Top
     ) {
         BikePager(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(top = 32.dp, bottom = 16.dp),
             showPlaceholder = isLoading.value,
             state = state,
@@ -112,7 +112,7 @@ fun HomeScreen(modifier: Modifier, viewModel: HomeScreenViewModel = hiltViewMode
             pagerState = pagerState
         )
         state.getBike(pagerState.currentPage)?.let {
-            BikeDetails(bike = it, cardSetup = state.detailCardsSetup, intents)
+            BikeDetails(bike = it, cardSetup = state.detailCardsSetup, intents, gridState)
         }
         SnackbarHost(hostState = snackState)
     }
@@ -122,35 +122,37 @@ fun HomeScreen(modifier: Modifier, viewModel: HomeScreenViewModel = hiltViewMode
 fun BikeDetails(
     bike: Bike,
     cardSetup: List<CardSetup>,
-    intents: (HomeScreenContract.Intent) -> Unit
+    intents: (HomeScreenContract.Intent) -> Unit,
+    state: LazyGridState
 ) {
-    // TODO: add Gridpad
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Adaptive(CARD_DIMENSION),
-        verticalItemSpacing = 16.dp,
+    LazyVerticalGrid(
+        state = state,
+        columns = GridCells.Adaptive(CARD_DIMENSION),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
     ) {
-        items(cardSetup){
-
-                Box(modifier = Modifier.height(160.dp).fillMaxWidth().background(MaterialTheme.colorScheme.primary)){}
-
-//            CardWithPlaceholder(
-//                showPlaceholder = false,
-//                placeholderColor = MaterialTheme.colorScheme.secondaryContainer,
-//                modifier = if(it.bigCard) Modifier.fillMaxWidth().height(CARD_DIMENSION) else Modifier.size(CARD_DIMENSION)
-//            ) {
-//                Text(text = it.type.name)
-//            }
+        cardSetup.forEach {
+            val gridSpan = if (it.bigCard) 2 else 1
+            item(span = { GridItemSpan(gridSpan) }) {
+                Card(modifier = Modifier.height(CARD_DIMENSION)) {
+                    Text(text = it.type.name)
+                }
+            }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showSystemUi = true)
 @Composable
 fun Preview() {
     AppTheme {
-        HomeScreen(modifier = Modifier, viewModel = HomeScreenViewModel())
+        HomeScreen(
+            modifier = Modifier,
+            viewModel = HomeScreenViewModel(),
+            WindowSizeClass.calculateFromSize(DpSize(400.dp, 400.dp))
+        )
     }
 }
 
@@ -198,7 +200,7 @@ private fun BikePager(
             userScrollEnabled = !showPlaceholder
         ) { page ->
             BikeCard(
-                modifier = Modifier
+                modifier = Modifier.width(itemWidth)
                     .graphicsLayer {
                         val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
                         lerp(

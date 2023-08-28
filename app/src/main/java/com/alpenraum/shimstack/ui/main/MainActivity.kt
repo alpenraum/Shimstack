@@ -3,7 +3,6 @@ package com.alpenraum.shimstack.ui.main
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,6 +12,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -109,48 +110,51 @@ class MainActivity : BaseActivity<MainViewModel>() {
             }
         }
     }
-}
 
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-private fun Content(
-    navController: NavController<BottomNavigationDestinations>,
-    paddingValues: PaddingValues
-) {
-    AnimatedNavHost(controller = navController) { destination ->
-        when (destination) {
-            BottomNavigationDestinations.HomeScreen -> {
-                val viewModel = hiltViewModel<HomeScreenViewModel>()
-                HomeScreen(
-                    modifier = Modifier.padding(paddingValues).fillMaxSize(),
-                    viewModel = viewModel
-                )
-            }
-            BottomNavigationDestinations.Test -> {
-                Text("Test screen")
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Composable
+    private fun Content(
+        navController: NavController<BottomNavigationDestinations>,
+        paddingValues: PaddingValues
+    ) {
+        val windowSizeClass = calculateWindowSizeClass(activity = this)
+        AnimatedNavHost(controller = navController) { destination ->
+            when (destination) {
+                BottomNavigationDestinations.HomeScreen -> {
+                    val viewModel = hiltViewModel<HomeScreenViewModel>()
+                    HomeScreen(
+                        modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                        viewModel = viewModel,
+                        windowSizeClass
+                    )
+                }
+
+                BottomNavigationDestinations.Test -> {
+                    Text("Test screen")
+                }
             }
         }
     }
-}
 
-@Composable
-private fun BottomNavigationBackHandler(
-    navController: NavController<BottomNavigationDestinations>
-) {
-    BackHandler(enabled = navController.backstack.entries.size > 1) {
-        val lastEntry = navController.backstack.entries.last()
-        if (lastEntry.destination == BottomNavigationDestinations.HomeScreen) {
-            // The start destination should always be the last to pop. We move it to the start
-            // to preserve its saved state and view models.
-            navController.moveLastEntryToStart()
-        } else {
-            navController.pop()
+    @Composable
+    private fun BottomNavigationBackHandler(
+        navController: NavController<BottomNavigationDestinations>
+    ) {
+        BackHandler(enabled = navController.backstack.entries.size > 1) {
+            val lastEntry = navController.backstack.entries.last()
+            if (lastEntry.destination == BottomNavigationDestinations.HomeScreen) {
+                // The start destination should always be the last to pop. We move it to the start
+                // to preserve its saved state and view models.
+                navController.moveLastEntryToStart()
+            } else {
+                navController.pop()
+            }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    AppTheme {}
+    @Preview(showBackground = true)
+    @Composable
+    fun DefaultPreview() {
+        AppTheme {}
+    }
 }
