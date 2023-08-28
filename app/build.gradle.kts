@@ -123,6 +123,8 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-pager:0.29.1-alpha")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.22.0-rc")
+    
+    implementation("com.touchlane:gridpad:1.1.2")
 }
 kapt {
     correctErrorTypes = true

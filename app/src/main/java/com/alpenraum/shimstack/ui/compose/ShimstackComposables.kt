@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
@@ -13,6 +14,8 @@ import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
+
+val CARD_DIMENSION = 130.dp
 
 @Composable
 fun AttachToLifeCycle(viewModel: BaseViewModel) {
@@ -26,7 +29,6 @@ fun AttachToLifeCycle(viewModel: BaseViewModel) {
 fun CardWithPlaceholder(
     showPlaceholder: Boolean,
     modifier: Modifier = Modifier,
-    colors: CardColors,
     placeholderColor: Color,
     content: @Composable() ColumnScope.() -> Unit
 ) {
@@ -37,7 +39,6 @@ fun CardWithPlaceholder(
             color = placeholderColor,
             shape = RoundedCornerShape(8.dp)
         ),
-        colors = colors,
         content = content
     )
 }
