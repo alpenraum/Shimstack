@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_home">Home</string>
+
+    <string name="tire">Reifen</string>
+    <string name="rear">Hinten</string>
+    <string name="front">Vorne</string>
 </resources>

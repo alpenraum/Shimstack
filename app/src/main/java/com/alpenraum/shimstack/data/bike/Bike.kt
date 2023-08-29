@@ -3,6 +3,7 @@ package com.alpenraum.shimstack.data.bike
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.math.BigDecimal
 
 @Entity
 data class Bike(
@@ -22,8 +23,8 @@ data class Bike(
                 name = "",
                 type = Type.UNKNOWN,
                 isEBike = false,
-                frontTire = Tire(0.0, 0.0, 0.0),
-                rearTire = Tire(0.0, 0.0, 0.0)
+                frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
+                rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0)
             )
     }
 
