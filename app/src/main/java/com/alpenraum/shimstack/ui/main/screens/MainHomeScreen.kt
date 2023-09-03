@@ -49,6 +49,7 @@ import com.alpenraum.shimstack.data.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.CARD_DIMENSION
+import com.alpenraum.shimstack.ui.compose.TireDetails
 import com.alpenraum.shimstack.ui.compose.VerticalDivider
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.theme.AppTheme
@@ -164,64 +165,7 @@ private fun BikeDetails(
     // }
 }
 
-@Composable
-private fun TireDetails(bigCard: Boolean, bike: Bike) {
-    DetailsCard(title = R.string.tire, bigCard) {
-        Row(
-            modifier = Modifier.padding(horizontal = 8.dp).padding(top = 16.dp).weight(1.0f),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            TireDetailsTextPair(heading = R.string.front, data = bike.frontTire, bigCard = bigCard)
-            VerticalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-            TireDetailsTextPair(heading = R.string.rear, data = bike.rearTire, bigCard = bigCard)
-        }
-    }
-}
 
-@Composable
-private fun TireDetailsTextPair(@StringRes heading: Int, data: Tire, bigCard: Boolean) =
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = stringResource(id = heading),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.outline
-            ),
-            modifier = Modifier.padding(bottom = 8.dp),
-            textAlign = TextAlign.Center
-        )
-        if (bigCard) {
-            // TODO
-        } else {
-            Text(
-                text = data.getFormattedPressure(LocalContext.current),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-
-@Composable
-private fun DetailsCard(
-    @StringRes title: Int,
-    bigCard: Boolean,
-    modifier: Modifier = Modifier,
-    content: @Composable() (ColumnScope.() -> Unit)
-) {
-    Card(modifier = modifier.height(CARD_DIMENSION).aspectRatio(if (bigCard) 2.0f else 1.0f)) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            content()
-            Text(
-                text = stringResource(id = title),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp, top = 4.dp)
-            )
-        }
-    }
-}
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -325,21 +269,5 @@ fun Preview2() {
             ),
             showPlaceholder = false
         )
-    }
-}
-
-@Preview()
-@Composable
-fun PreviewTireData() {
-    AppTheme {
-        TireDetails(bigCard = false, Bike.empty())
-    }
-}
-
-@Preview()
-@Composable
-fun PreviewTireDataBig() {
-    AppTheme {
-        TireDetails(bigCard = true, Bike.empty())
     }
 }

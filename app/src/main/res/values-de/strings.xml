@@ -5,4 +5,7 @@
     <string name="tire">Reifen</string>
     <string name="rear">Hinten</string>
     <string name="front">Vorne</string>
+
+    <string name="fork">Gabel</string>
+    <string name="shock">Dämpfer</string>
 </resources>
