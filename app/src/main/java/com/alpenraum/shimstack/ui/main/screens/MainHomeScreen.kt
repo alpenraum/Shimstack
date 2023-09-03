@@ -1,21 +1,16 @@
 package com.alpenraum.shimstack.ui.main.screens
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -33,24 +28,19 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
+import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.data.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
-import com.alpenraum.shimstack.ui.compose.CARD_DIMENSION
 import com.alpenraum.shimstack.ui.compose.TireDetails
-import com.alpenraum.shimstack.ui.compose.VerticalDivider
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -62,10 +52,10 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -121,7 +111,7 @@ fun HomeScreen(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun BikeDetails(
-    bike: Bike,
+    bike: BikeDTO,
     cardSetup: List<CardSetup>,
     intents: (HomeScreenContract.Intent) -> Unit,
     state: LazyGridState
@@ -142,30 +132,7 @@ private fun BikeDetails(
             }
         }
     }
-    // LazyVerticalGrid(
-    //     state = state,
-    //     columns = GridCells.Fixed(2),
-    //     verticalArrangement = Arrangement.spacedBy(16.dp),
-    //     horizontalArrangement = Arrangement.spacedBy(16.dp),
-    //     modifier = Modifier.padding(horizontal = 16.dp)
-    // ) {
-    //     cardSetup.forEach {
-    //         val gridSpan = if (it.bigCard) 2 else 1
-    //         item(span = { GridItemSpan(gridSpan) }) {
-    //             when (it.type) {
-    //                 CardType.TIRES -> TireDetails(bigCard = it.bigCard, bike = bike)
-    //                 else -> TireDetails(bigCard = false, bike = bike)
-    //                 // CardType.FORK ->{} // TODO
-    //                 // CardType.FORK_DETAILED ->{} // TODO
-    //                 // CardType.SHOCK ->{} // TODO
-    //                 // CardType.SHOCK_DETAILED ->{} // TODO
-    //             }
-    //         }
-    //     }
-    // }
 }
-
-
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -220,7 +187,7 @@ private fun BikePager(
 }
 
 @Composable
-private fun BikeCard(modifier: Modifier, bike: Bike?, showPlaceholder: Boolean) {
+private fun BikeCard(modifier: Modifier, bike: BikeDTO?, showPlaceholder: Boolean) {
     Surface(
         modifier = modifier
             .height(240.dp)
@@ -260,7 +227,7 @@ fun Preview2() {
     AppTheme {
         BikeCard(
             modifier = Modifier.width(200.dp),
-            Bike(
+            BikeDTO(
                 name = "5010",
                 type = Bike.Type.TRAIL,
                 frontTire = Tire(),

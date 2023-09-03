@@ -8,4 +8,12 @@
 
     <string name="fork">Gabel</string>
     <string name="shock">Dämpfer</string>
+
+    <string name="pressure">Druck</string>
+    <string name="comp">Comp</string>
+    <string name="rebound">Rebound</string>
+    <string name="tokens">Tokens</string>
+
+
+    <string name="copy_no_fork">Die Gabel hat keine Einstellungenmöglichkeiten.</string>
 </resources>
