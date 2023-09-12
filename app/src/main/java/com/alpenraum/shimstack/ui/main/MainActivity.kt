@@ -15,10 +15,10 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.alpenraum.shimstack.common.moveLastEntryToStart
 import com.alpenraum.shimstack.ui.base.BaseActivity
+import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.main.navigation.bottomNavigation.BottomNavigationDestinations
 import com.alpenraum.shimstack.ui.main.screens.HomeScreen
 import com.alpenraum.shimstack.ui.main.screens.HomeScreenViewModel
@@ -81,51 +82,21 @@ class MainActivity : BaseActivity<MainViewModel>() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(activity = this)
             val useNavRail = windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium
-            AppTheme {
-                val navController = rememberNavController<BottomNavigationDestinations>(
-                    startDestination = BottomNavigationDestinations.HomeScreen
-                )
+            CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
+                AppTheme {
+                    val navController = rememberNavController<BottomNavigationDestinations>(
+                        startDestination = BottomNavigationDestinations.HomeScreen
+                    )
 
-                BottomNavigationBackHandler(navController)
-                val lastDestination = navController.backstack.entries.last().destination
-                Row(modifier = Modifier.fillMaxSize()) {
-                    AnimatedVisibility(visible = useNavRail) {
-                        NavigationRail(
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            BottomNavigationDestinations.values().forEach { destination ->
-                                NavigationRailItem(label = {
-                                    Text(
-                                        stringResource(id = destination.item.title)
-                                    )
-                                }, icon = {
-                                        Icon(
-                                            painter = painterResource(destination.item.icon),
-                                            contentDescription = null
-                                        )
-                                    }, selected = destination == lastDestination, onClick = {
-                                        // keep only one instance of a destination in the backstack
-                                        if (!navController.moveToTop { it == destination }) {
-                                            // if there is no existing instance, add it
-                                            navController.navigate(destination)
-                                        }
-                                    })
-                            }
-                        }
-                    }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Content(
-                            navController = navController,
-                            windowSizeClass,
-                            modifier = Modifier.weight(1f)
-                        )
-                        AnimatedVisibility(visible = !useNavRail) {
-                            NavigationBar {
+                    BottomNavigationBackHandler(navController)
+                    val lastDestination = navController.backstack.entries.last().destination
+                    Row(modifier = Modifier.fillMaxSize()) {
+                        AnimatedVisibility(visible = useNavRail) {
+                            NavigationRail(
+                                modifier = Modifier.fillMaxHeight()
+                            ) {
                                 BottomNavigationDestinations.values().forEach { destination ->
-                                    NavigationBarItem(label = {
+                                    NavigationRailItem(label = {
                                         Text(
                                             stringResource(id = destination.item.title)
                                         )
@@ -144,6 +115,37 @@ class MainActivity : BaseActivity<MainViewModel>() {
                                 }
                             }
                         }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            Content(
+                                navController = navController,
+                                modifier = Modifier.weight(1f)
+                            )
+                            AnimatedVisibility(visible = !useNavRail) {
+                                NavigationBar {
+                                    BottomNavigationDestinations.values().forEach { destination ->
+                                        NavigationBarItem(label = {
+                                            Text(
+                                                stringResource(id = destination.item.title)
+                                            )
+                                        }, icon = {
+                                                Icon(
+                                                    painter = painterResource(destination.item.icon),
+                                                    contentDescription = null
+                                                )
+                                            }, selected = destination == lastDestination, onClick = {
+                                                // keep only one instance of a destination in the backstack
+                                                if (!navController.moveToTop { it == destination }) {
+                                                    // if there is no existing instance, add it
+                                                    navController.navigate(destination)
+                                                }
+                                            })
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -153,7 +155,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
     @Composable
     private fun Content(
         navController: NavController<BottomNavigationDestinations>,
-        windowSizeClass: WindowSizeClass,
         modifier: Modifier = Modifier
     ) {
         AnimatedNavHost(controller = navController, modifier) { destination ->
@@ -162,8 +163,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                     val viewModel = hiltViewModel<HomeScreenViewModel>()
                     HomeScreen(
                         modifier = Modifier,
-                        viewModel = viewModel,
-                        windowSizeClass
+                        viewModel = viewModel
                     )
                 }
 

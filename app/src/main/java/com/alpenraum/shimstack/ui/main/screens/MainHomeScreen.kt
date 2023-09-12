@@ -17,8 +17,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,7 +30,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,6 +40,7 @@ import com.alpenraum.shimstack.data.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.TireDetails
+import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -54,17 +52,16 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier,
-    viewModel: HomeScreenViewModel = hiltViewModel(),
-    windowSizeClass: WindowSizeClass
+    viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel)
@@ -90,6 +87,7 @@ fun HomeScreen(
             }
         }
     }
+    val windowSizeClass = LocalWindowSizeClass.current
 
     Column(
         modifier = modifier,
@@ -234,15 +232,13 @@ private fun BikeCard(modifier: Modifier, bike: Bike?, showPlaceholder: Boolean) 
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showSystemUi = true)
 @Composable
 fun Preview() {
     AppTheme {
         HomeScreen(
             modifier = Modifier,
-            viewModel = HomeScreenViewModel(),
-            WindowSizeClass.calculateFromSize(DpSize(400.dp, 400.dp))
+            viewModel = HomeScreenViewModel()
         )
     }
 }
