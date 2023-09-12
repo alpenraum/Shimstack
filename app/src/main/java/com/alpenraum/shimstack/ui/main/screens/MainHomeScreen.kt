@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.data.bike.Bike
+import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.data.cardsetup.CardType
@@ -111,7 +112,7 @@ fun HomeScreen(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun BikeDetails(
-    bike: Bike,
+    bike: BikeDTO,
     cardSetup: List<CardSetup>,
     intents: (HomeScreenContract.Intent) -> Unit,
     state: LazyGridState
@@ -132,27 +133,6 @@ private fun BikeDetails(
             }
         }
     }
-    // LazyVerticalGrid(
-    //     state = state,
-    //     columns = GridCells.Fixed(2),
-    //     verticalArrangement = Arrangement.spacedBy(16.dp),
-    //     horizontalArrangement = Arrangement.spacedBy(16.dp),
-    //     modifier = Modifier.padding(horizontal = 16.dp)
-    // ) {
-    //     cardSetup.forEach {
-    //         val gridSpan = if (it.bigCard) 2 else 1
-    //         item(span = { GridItemSpan(gridSpan) }) {
-    //             when (it.type) {
-    //                 CardType.TIRES -> TireDetails(bigCard = it.bigCard, bike = bike)
-    //                 else -> TireDetails(bigCard = false, bike = bike)
-    //                 // CardType.FORK ->{} // TODO
-    //                 // CardType.FORK_DETAILED ->{} // TODO
-    //                 // CardType.SHOCK ->{} // TODO
-    //                 // CardType.SHOCK_DETAILED ->{} // TODO
-    //             }
-    //         }
-    //     }
-    // }
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -212,7 +192,7 @@ private fun BikePager(
 private fun calculatePagerItemPadding(itemWidth: Dp) = itemWidth / 2 + 20.dp / 2
 
 @Composable
-private fun BikeCard(modifier: Modifier, bike: Bike?, showPlaceholder: Boolean) {
+private fun BikeCard(modifier: Modifier, bike: BikeDTO?, showPlaceholder: Boolean) {
     Surface(
         modifier = modifier
             .placeholder(
@@ -249,7 +229,7 @@ fun Preview2() {
     AppTheme {
         BikeCard(
             modifier = Modifier.width(200.dp),
-            Bike(
+            BikeDTO(
                 name = "5010",
                 type = Bike.Type.TRAIL,
                 frontTire = Tire(),

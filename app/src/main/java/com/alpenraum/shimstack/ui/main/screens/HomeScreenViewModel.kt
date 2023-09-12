@@ -1,6 +1,7 @@
 package com.alpenraum.shimstack.ui.main.screens
 
 import com.alpenraum.shimstack.data.bike.Bike
+import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.data.bike.Pressure
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
@@ -41,21 +42,21 @@ class HomeScreenViewModel @Inject constructor() :
     }
 
     private val testBikes = listOf(
-        Bike(
+        BikeDTO(
             name = "Bike1",
             frontTire = Tire(Pressure(23.0), 23.0, 23.0),
             rearTire = Tire(Pressure(23.0), 23.0, 23.0),
             type = Bike.Type.TRAIL,
             isEBike = false
         ),
-        Bike(
+        BikeDTO(
             name = "Bike2",
             frontTire = Tire(Pressure(23.0), 23.0, 23.0),
             rearTire = Tire(Pressure(23.0), 23.0, 23.0),
             type = Bike.Type.TRAIL,
             isEBike = false
         ),
-        Bike(
+        BikeDTO(
             name = "Bike3",
             frontTire = Tire(Pressure(23.0), 23.0, 23.0),
             rearTire = Tire(Pressure(23.0), 23.0, 23.0),
@@ -81,7 +82,7 @@ class HomeScreenViewModel @Inject constructor() :
 interface HomeScreenContract :
     UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
 
-    data class State(val bikes: List<Bike?>, val detailCardsSetup: List<CardSetup>) {
+    data class State(val bikes: List<BikeDTO?>, val detailCardsSetup: List<CardSetup>) {
         fun getBike(page: Int) = bikes.getOrNull(page)
     }
 
@@ -96,4 +97,9 @@ interface HomeScreenContract :
         object OnRefresh : Intent()
         class OnViewPagerSelectionChanged(val page: Int) : Intent()
     }
+}
+
+sealed class UIDataLabel {
+    class Simple(val heading: String, val content: String) : UIDataLabel()
+    class Complex(val data: Map<String, String>) : UIDataLabel()
 }
