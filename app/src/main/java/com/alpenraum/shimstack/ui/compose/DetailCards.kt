@@ -86,7 +86,7 @@ private sealed class SuspensionDataLabel {
 private fun SuspensionQuarter(data: SuspensionDataLabel, bigCard: Boolean) {
     when (data) {
         is SuspensionDataLabel.Simple -> {
-            SimpleTextPair(heading = a, data = a, bigCard = a)
+            // SimpleTextPair(heading = a, data = a, bigCard = a)
         }
         is SuspensionDataLabel.Complex -> {}
     }

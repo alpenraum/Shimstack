@@ -3,16 +3,20 @@ package com.alpenraum.shimstack.ui.main
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -72,58 +76,92 @@ class MainActivity : BaseActivity<MainViewModel>() {
 //        }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     private fun initializeContent() {
         setContent {
+            val windowSizeClass = calculateWindowSizeClass(activity = this)
+            val useNavRail = windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium
             AppTheme {
                 val navController = rememberNavController<BottomNavigationDestinations>(
                     startDestination = BottomNavigationDestinations.HomeScreen
                 )
 
                 BottomNavigationBackHandler(navController)
-
-                Scaffold(bottomBar = {
-                    val lastDestination = navController.backstack.entries.last().destination
-                    NavigationBar {
-                        BottomNavigationDestinations.values().forEach { destination ->
-                            NavigationBarItem(label = {
-                                Text(
-                                    stringResource(id = destination.item.title)
-                                )
-                            }, icon = {
-                                    Icon(
-                                        painter = painterResource(destination.item.icon),
-                                        contentDescription = null
+                val lastDestination = navController.backstack.entries.last().destination
+                Row(modifier = Modifier.fillMaxSize()) {
+                    AnimatedVisibility(visible = useNavRail) {
+                        NavigationRail(
+                            modifier = Modifier.fillMaxHeight()
+                        ) {
+                            BottomNavigationDestinations.values().forEach { destination ->
+                                NavigationRailItem(label = {
+                                    Text(
+                                        stringResource(id = destination.item.title)
                                     )
-                                }, selected = destination == lastDestination, onClick = {
-                                    // keep only one instance of a destination in the backstack
-                                    if (!navController.moveToTop { it == destination }) {
-                                        // if there is no existing instance, add it
-                                        navController.navigate(destination)
-                                    }
-                                })
+                                }, icon = {
+                                        Icon(
+                                            painter = painterResource(destination.item.icon),
+                                            contentDescription = null
+                                        )
+                                    }, selected = destination == lastDestination, onClick = {
+                                        // keep only one instance of a destination in the backstack
+                                        if (!navController.moveToTop { it == destination }) {
+                                            // if there is no existing instance, add it
+                                            navController.navigate(destination)
+                                        }
+                                    })
+                            }
                         }
                     }
-                }, content = { paddingValues ->
-                        Content(navController, paddingValues)
-                    })
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        Content(
+                            navController = navController,
+                            windowSizeClass,
+                            modifier = Modifier.weight(1f)
+                        )
+                        AnimatedVisibility(visible = !useNavRail) {
+                            NavigationBar {
+                                BottomNavigationDestinations.values().forEach { destination ->
+                                    NavigationBarItem(label = {
+                                        Text(
+                                            stringResource(id = destination.item.title)
+                                        )
+                                    }, icon = {
+                                            Icon(
+                                                painter = painterResource(destination.item.icon),
+                                                contentDescription = null
+                                            )
+                                        }, selected = destination == lastDestination, onClick = {
+                                            // keep only one instance of a destination in the backstack
+                                            if (!navController.moveToTop { it == destination }) {
+                                                // if there is no existing instance, add it
+                                                navController.navigate(destination)
+                                            }
+                                        })
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Composable
     private fun Content(
         navController: NavController<BottomNavigationDestinations>,
-        paddingValues: PaddingValues
+        windowSizeClass: WindowSizeClass,
+        modifier: Modifier = Modifier
     ) {
-        val windowSizeClass = calculateWindowSizeClass(activity = this)
-        AnimatedNavHost(controller = navController) { destination ->
+        AnimatedNavHost(controller = navController, modifier) { destination ->
             when (destination) {
                 BottomNavigationDestinations.HomeScreen -> {
                     val viewModel = hiltViewModel<HomeScreenViewModel>()
                     HomeScreen(
-                        modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                        modifier = Modifier,
                         viewModel = viewModel,
                         windowSizeClass
                     )

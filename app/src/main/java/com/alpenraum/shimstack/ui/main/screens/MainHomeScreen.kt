@@ -1,21 +1,17 @@
 package com.alpenraum.shimstack.ui.main.screens
 
-import androidx.annotation.StringRes
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -33,24 +29,20 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.data.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
-import com.alpenraum.shimstack.ui.compose.CARD_DIMENSION
 import com.alpenraum.shimstack.ui.compose.TireDetails
-import com.alpenraum.shimstack.ui.compose.VerticalDivider
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -165,8 +157,6 @@ private fun BikeDetails(
     // }
 }
 
-
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun BikePager(
@@ -176,24 +166,27 @@ private fun BikePager(
     showPlaceholder: Boolean,
     pagerState: PagerState
 ) {
-    val itemWidth = 200.dp
+    val itemSize = 200.dp
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { page ->
             intents(HomeScreenContract.Intent.OnViewPagerSelectionChanged(page))
         }
     }
+    val isLandscapeScreen = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Column(modifier = modifier) {
         HorizontalPager(
             state.bikes.size,
             modifier = Modifier,
             pagerState,
-            contentPadding = PaddingValues(horizontal = itemWidth / 2 + 20.dp / 2),
+            contentPadding = PaddingValues(horizontal = calculatePagerItemPadding(itemSize)),
             verticalAlignment = Alignment.Top,
             userScrollEnabled = !showPlaceholder
         ) { page ->
             BikeCard(
-                modifier = Modifier.width(itemWidth)
+                modifier = if (isLandscapeScreen) Modifier.width(itemSize) else Modifier.height(
+                    itemSize
+                )
                     .graphicsLayer {
                         val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
                         lerp(
@@ -204,8 +197,7 @@ private fun BikePager(
                             this.scaleX = scale
                             this.scaleY = scale
                         }
-                    }
-                    .width(itemWidth),
+                    },
                 bike = state.bikes[page],
                 showPlaceholder = showPlaceholder
             )
@@ -219,11 +211,12 @@ private fun BikePager(
     }
 }
 
+private fun calculatePagerItemPadding(itemWidth: Dp) = itemWidth / 2 + 20.dp / 2
+
 @Composable
 private fun BikeCard(modifier: Modifier, bike: Bike?, showPlaceholder: Boolean) {
     Surface(
         modifier = modifier
-            .height(240.dp)
             .placeholder(
                 visible = showPlaceholder,
                 highlight = PlaceholderHighlight.fade(),
