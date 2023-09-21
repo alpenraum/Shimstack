@@ -21,6 +21,7 @@ import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 
 val CARD_DIMENSION = 160.dp
+val CARD_MARGIN = 16.dp
 
 @Composable
 fun AttachToLifeCycle(viewModel: BaseViewModel) {

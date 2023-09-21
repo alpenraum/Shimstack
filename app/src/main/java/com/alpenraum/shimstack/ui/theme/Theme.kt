@@ -1,15 +1,21 @@
 package com.alpenraum.shimstack.ui.theme
 
 import android.app.Activity
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.alpenraum.shimstack.common.ConfigConstants
+import com.alpenraum.shimstack.common.getConfigSharedPreferences
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -75,15 +81,22 @@ private val DarkColors = darkColorScheme(
     scrim = md_theme_dark_scrim
 )
 
+fun supportsDynamic(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
 @Composable
 fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
+    val useDynamicTheme =
+        LocalContext.current.getConfigSharedPreferences().getBoolean(
+            ConfigConstants.PREF_USE_DYNAMIC_THEME,
+            false
+        )
     val colors = if (!useDarkTheme) {
-        LightColors
+        if (supportsDynamic() && useDynamicTheme) dynamicLightColorScheme(LocalContext.current) else LightColors
     } else {
-        DarkColors
+        if (supportsDynamic() && useDynamicTheme) dynamicDarkColorScheme(LocalContext.current) else DarkColors
     }
 
     val view = LocalView.current

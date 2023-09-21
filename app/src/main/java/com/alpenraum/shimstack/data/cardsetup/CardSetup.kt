@@ -5,8 +5,8 @@ data class CardSetup(val type: CardType, val bigCard: Boolean) {
         fun defaultConfig() = listOf(
             CardSetup(CardType.TIRES, false),
             CardSetup(CardType.FORK, false),
-            CardSetup(CardType.SHOCK_DETAILED, true),
-            CardSetup(CardType.FORK_DETAILED, true)
+            CardSetup(CardType.SHOCK, false),
+            CardSetup(CardType.SHOCK, true)
         )
     }
 }
@@ -14,7 +14,5 @@ data class CardSetup(val type: CardType, val bigCard: Boolean) {
 enum class CardType {
     TIRES,
     FORK,
-    FORK_DETAILED,
     SHOCK,
-    SHOCK_DETAILED
 }

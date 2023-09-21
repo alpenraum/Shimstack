@@ -24,4 +24,7 @@
 
 
     <string name="copy_no_fork">This fork has no adjustable settings.</string>
+    <string name="copy_no_shock">This shock has no adjustable settings.</string>
+
+    <string name="settings">Settings</string>
 </resources>

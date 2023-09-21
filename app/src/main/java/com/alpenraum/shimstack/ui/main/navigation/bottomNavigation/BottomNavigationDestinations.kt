@@ -11,7 +11,10 @@ sealed class BottomNavigationDestinations(val item: BottomNavigationItem) : Parc
     @Parcelize
     object Test : BottomNavigationDestinations(BottomNavigationItem.Test)
 
+    @Parcelize
+    object Settings : BottomNavigationDestinations(BottomNavigationItem.Settings)
+
     companion object {
-        fun values() = listOf<BottomNavigationDestinations>(HomeScreen, Test)
+        fun values() = listOf<BottomNavigationDestinations>(HomeScreen, Test, Settings)
     }
 }

@@ -16,4 +16,7 @@
 
 
     <string name="copy_no_fork">Die Gabel hat keine Einstellungenmöglichkeiten.</string>
+    <string name="copy_no_shock">Der Dämpfer hat keine Einstellungenmöglichkeiten.</string>
+
+    <string name="settings">Einstellungen</string>
 </resources>

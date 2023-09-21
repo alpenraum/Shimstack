@@ -21,3 +21,6 @@ fun Context.getActivity(): AppCompatActivity? = when (this) {
     is ContextWrapper -> baseContext.getActivity()
     else -> null
 }
+
+fun Context.getConfigSharedPreferences() =
+    this.getSharedPreferences(ConfigConstants.SETTINGS_PREFERENCES_NAME, Context.MODE_PRIVATE)

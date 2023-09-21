@@ -84,6 +84,10 @@ data class BikeDTO(
         return getSuspensionUIData(it, context)
     }
 
+    fun getRearSuspensionUIData(context: Context): List<UIDataLabel>? = rearSuspension?.let {
+        return getSuspensionUIData(it, context)
+    }
+
     private fun getSuspensionUIData(suspension: Suspension, context: Context): List<UIDataLabel> {
         with(suspension) {
             val uiData = ArrayList<UIDataLabel>()

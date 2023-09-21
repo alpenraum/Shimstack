@@ -9,21 +9,30 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.alpenraum.shimstack.common.ConfigConstants
+import com.alpenraum.shimstack.common.getConfigSharedPreferences
 import com.alpenraum.shimstack.common.moveLastEntryToStart
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
@@ -93,7 +102,8 @@ class MainActivity : BaseActivity<MainViewModel>() {
                     Row(modifier = Modifier.fillMaxSize()) {
                         AnimatedVisibility(visible = useNavRail) {
                             NavigationRail(
-                                modifier = Modifier.fillMaxHeight()
+                                modifier = Modifier.fillMaxHeight(),
+                                containerColor = MaterialTheme.colorScheme.inverseOnSurface
                             ) {
                                 BottomNavigationDestinations.values().forEach { destination ->
                                     NavigationRailItem(label = {
@@ -169,6 +179,33 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
                 BottomNavigationDestinations.Test -> {
                     Text("Test screen")
+                }
+
+                BottomNavigationDestinations.Settings -> {
+                    // TODO: Own page with vm and so
+                    // TODO: look into implementation "androidx.datastore:datastore-preferences:1.0.0"
+                    val prefs = LocalContext.current.getConfigSharedPreferences()
+                    val useDynamicTheme = prefs.getBoolean(
+                        ConfigConstants.PREF_USE_DYNAMIC_THEME,
+                        false
+                    )
+                    var checked by remember { mutableStateOf(useDynamicTheme) }
+
+                    Column {
+                        Row {
+                            Text(text = "Dynamic Theme")
+                            Switch(
+                                checked = checked,
+                                onCheckedChange = {
+                                    checked = it
+                                    prefs.edit().putBoolean(
+                                        ConfigConstants.PREF_USE_DYNAMIC_THEME,
+                                        it
+                                    ).apply()
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }

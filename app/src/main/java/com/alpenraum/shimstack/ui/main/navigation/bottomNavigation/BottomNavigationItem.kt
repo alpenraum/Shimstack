@@ -10,4 +10,5 @@ sealed class BottomNavigationItem(
 ) {
     object Home : BottomNavigationItem(R.string.title_home, R.drawable.home_24px)
     object Test : BottomNavigationItem(R.string.app_name, R.drawable.home_24px)
+    object Settings : BottomNavigationItem(R.string.settings, R.drawable.home_24px)
 }

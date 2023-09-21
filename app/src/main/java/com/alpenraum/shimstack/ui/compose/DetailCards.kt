@@ -2,14 +2,15 @@ package com.alpenraum.shimstack.ui.compose
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -42,15 +43,16 @@ fun TireDetails(bigCard: Boolean, bike: BikeDTO) {
                 .weight(1.0f),
             horizontalArrangement = Arrangement.Center
         ) {
+            val data = bike.getTireUIData(LocalContext.current)
             SimpleTextPair(
                 heading = stringResource(R.string.front),
-                content = bike.frontTire.getFormattedPressure(LocalContext.current),
+                content = data.first.content,
                 bigCard = bigCard
             )
             VerticalDivider(modifier = Modifier.padding(horizontal = 16.dp))
             SimpleTextPair(
                 heading = stringResource(R.string.rear),
-                content = bike.rearTire.getFormattedPressure(LocalContext.current),
+                content = data.second.content,
                 bigCard = bigCard
             )
         }
@@ -65,7 +67,6 @@ private fun SimpleTextPair(
     modifier: Modifier = Modifier
 ) =
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
-        // TODO: Test, otherwise delete vertical dividers for more space
         AdaptiveSizeText(
             text = heading,
             style = MaterialTheme.typography.bodyMedium.copy(
@@ -75,7 +76,11 @@ private fun SimpleTextPair(
             textAlign = TextAlign.Center
         )
         if (bigCard) {
-            // TODO
+            Text(
+                text = content,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
         } else {
             Text(
                 text = content,
@@ -87,8 +92,33 @@ private fun SimpleTextPair(
 
 @Composable
 fun ForkDetails(bigCard: Boolean, bike: BikeDTO) {
-    DetailsCard(title = R.string.fork, bigCard = bigCard) {
-        bike.getFrontSuspensionUIData(LocalContext.current)?.let {
+    SuspensionDetails(
+        bigCard = bigCard,
+        suspensionData = bike.getFrontSuspensionUIData(LocalContext.current),
+        titleRes = R.string.fork,
+        errorTextRes = R.string.copy_no_fork
+    )
+}
+
+@Composable
+fun ShockDetails(bigCard: Boolean, bike: BikeDTO) {
+    SuspensionDetails(
+        bigCard = bigCard,
+        suspensionData = bike.getRearSuspensionUIData(LocalContext.current),
+        titleRes = R.string.shock,
+        errorTextRes = R.string.copy_no_shock
+    )
+}
+
+@Composable
+private fun SuspensionDetails(
+    bigCard: Boolean,
+    suspensionData: List<UIDataLabel>?,
+    @StringRes titleRes: Int,
+    @StringRes errorTextRes: Int
+) {
+    DetailsCard(title = titleRes, bigCard = bigCard) {
+        suspensionData?.let {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -115,10 +145,16 @@ fun ForkDetails(bigCard: Boolean, bike: BikeDTO) {
                 }
             }
         } ?: run {
-            Text(
-                stringResource(R.string.copy_no_fork),
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Box(
+                modifier = Modifier.fillMaxSize().padding(8.dp).weight(1.0f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    stringResource(errorTextRes),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
@@ -169,7 +205,7 @@ private fun DetailsCard(
     Card(
         modifier = modifier
             .height(CARD_DIMENSION)
-            .aspectRatio(if (bigCard) 2.0f else 1.0f)
+            .width(if (bigCard) CARD_DIMENSION * 2.0f + CARD_MARGIN else CARD_DIMENSION * 1.0f)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -6,9 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -40,6 +39,9 @@ import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.data.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
+import com.alpenraum.shimstack.ui.compose.CARD_MARGIN
+import com.alpenraum.shimstack.ui.compose.ForkDetails
+import com.alpenraum.shimstack.ui.compose.ShockDetails
 import com.alpenraum.shimstack.ui.compose.TireDetails
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
@@ -53,10 +55,10 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
-import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -92,7 +94,8 @@ fun HomeScreen(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BikePager(
             modifier = Modifier
@@ -118,18 +121,15 @@ private fun BikeDetails(
     state: LazyGridState
 ) {
     FlowRow(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        modifier = Modifier.padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(CARD_MARGIN),
+        horizontalArrangement = Arrangement.spacedBy(CARD_MARGIN, alignment = Alignment.Start)
     ) {
         cardSetup.forEach {
             when (it.type) {
                 CardType.TIRES -> TireDetails(bigCard = it.bigCard, bike = bike)
-                else -> TireDetails(bigCard = false, bike = bike)
-                // CardType.FORK ->{} // TODO
-                // CardType.FORK_DETAILED ->{} // TODO
-                // CardType.SHOCK ->{} // TODO
-                // CardType.SHOCK_DETAILED ->{} // TODO
+                CardType.FORK -> ForkDetails(bigCard = it.bigCard, bike = bike)
+                CardType.SHOCK -> ShockDetails(bigCard = it.bigCard, bike = bike)
             }
         }
     }
@@ -157,14 +157,12 @@ private fun BikePager(
             state.bikes.size,
             modifier = Modifier,
             pagerState,
-            contentPadding = PaddingValues(horizontal = calculatePagerItemPadding(itemSize)),
+            contentPadding = PaddingValues(horizontal = itemSize),
             verticalAlignment = Alignment.Top,
             userScrollEnabled = !showPlaceholder
         ) { page ->
             BikeCard(
-                modifier = if (isLandscapeScreen) Modifier.width(itemSize) else Modifier.height(
-                    itemSize
-                )
+                modifier = Modifier.size(itemSize)
                     .graphicsLayer {
                         val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
                         lerp(
@@ -202,7 +200,8 @@ private fun BikeCard(modifier: Modifier, bike: BikeDTO?, showPlaceholder: Boolea
                 shape = shimstackRoundedCornerShape()
             ),
         shape = shimstackRoundedCornerShape(),
-        tonalElevation = 10.dp
+        tonalElevation = 10.dp,
+        color = MaterialTheme.colorScheme.secondaryContainer
     ) {
         Text(
             bike?.name ?: "",
