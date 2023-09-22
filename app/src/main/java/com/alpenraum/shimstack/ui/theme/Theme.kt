@@ -10,12 +10,12 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.alpenraum.shimstack.common.ConfigConstants
-import com.alpenraum.shimstack.common.getConfigSharedPreferences
+import com.alpenraum.shimstack.common.stores.ConfigDataStore
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -89,14 +89,13 @@ fun AppTheme(
     content: @Composable() () -> Unit
 ) {
     val useDynamicTheme =
-        LocalContext.current.getConfigSharedPreferences().getBoolean(
-            ConfigConstants.PREF_USE_DYNAMIC_THEME,
-            false
-        )
+        ConfigDataStore.useDynamicTheme.collectAsState(initial = false)
     val colors = if (!useDarkTheme) {
-        if (supportsDynamic() && useDynamicTheme) dynamicLightColorScheme(LocalContext.current) else LightColors
+        if (supportsDynamic() && useDynamicTheme.value) dynamicLightColorScheme(
+            LocalContext.current
+        ) else LightColors
     } else {
-        if (supportsDynamic() && useDynamicTheme) dynamicDarkColorScheme(LocalContext.current) else DarkColors
+        if (supportsDynamic() && useDynamicTheme.value) dynamicDarkColorScheme(LocalContext.current) else DarkColors
     }
 
     val view = LocalView.current

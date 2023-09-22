@@ -55,10 +55,11 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
+import kotlin.math.absoluteValue
+import kotlin.math.max
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -157,7 +158,9 @@ private fun BikePager(
             state.bikes.size,
             modifier = Modifier,
             pagerState,
-            contentPadding = PaddingValues(horizontal = itemSize),
+            contentPadding = PaddingValues(
+                horizontal = calculatePagerItemPadding(itemWidth = itemSize)
+            ),
             verticalAlignment = Alignment.Top,
             userScrollEnabled = !showPlaceholder
         ) { page ->
@@ -187,7 +190,11 @@ private fun BikePager(
     }
 }
 
-private fun calculatePagerItemPadding(itemWidth: Dp) = itemWidth / 2 + 20.dp / 2
+@Composable
+private fun calculatePagerItemPadding(itemWidth: Dp) = max(
+    ((LocalConfiguration.current.screenWidthDp - itemWidth.value) / 2.0f),
+    0.0f
+).dp
 
 @Composable
 private fun BikeCard(modifier: Modifier, bike: BikeDTO?, showPlaceholder: Boolean) {
