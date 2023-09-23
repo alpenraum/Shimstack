@@ -14,28 +14,24 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.viewModelScope
 import com.alpenraum.shimstack.common.moveLastEntryToStart
-import com.alpenraum.shimstack.common.stores.ConfigDataStore
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.main.navigation.bottomNavigation.BottomNavigationDestinations
-import com.alpenraum.shimstack.ui.main.screens.HomeScreen
-import com.alpenraum.shimstack.ui.main.screens.HomeScreenViewModel
+import com.alpenraum.shimstack.ui.main.screens.home.HomeScreen
+import com.alpenraum.shimstack.ui.main.screens.home.HomeScreenViewModel
+import com.alpenraum.shimstack.ui.main.screens.settings.SettingsScreen
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
@@ -45,7 +41,6 @@ import dev.olshevski.navigation.reimagined.moveToTop
 import dev.olshevski.navigation.reimagined.navigate
 import dev.olshevski.navigation.reimagined.pop
 import dev.olshevski.navigation.reimagined.rememberNavController
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<MainViewModel>() {
@@ -109,23 +104,22 @@ class MainActivity : BaseActivity<MainViewModel>() {
                                             stringResource(id = destination.item.title)
                                         )
                                     }, icon = {
-                                            Icon(
-                                                painter = painterResource(destination.item.icon),
-                                                contentDescription = null
-                                            )
-                                        }, selected = destination == lastDestination, onClick = {
-                                            // keep only one instance of a destination in the backstack
-                                            if (!navController.moveToTop { it == destination }) {
-                                                // if there is no existing instance, add it
-                                                navController.navigate(destination)
-                                            }
-                                        })
+                                        Icon(
+                                            painter = painterResource(destination.item.icon),
+                                            contentDescription = null
+                                        )
+                                    }, selected = destination == lastDestination, onClick = {
+                                        // keep only one instance of a destination in the backstack
+                                        if (!navController.moveToTop { it == destination }) {
+                                            // if there is no existing instance, add it
+                                            navController.navigate(destination)
+                                        }
+                                    })
                                 }
                             }
                         }
                         Column(
                             modifier = Modifier
-                                .fillMaxSize()
                         ) {
                             Content(
                                 navController = navController,
@@ -139,17 +133,20 @@ class MainActivity : BaseActivity<MainViewModel>() {
                                                 stringResource(id = destination.item.title)
                                             )
                                         }, icon = {
-                                                Icon(
-                                                    painter = painterResource(destination.item.icon),
-                                                    contentDescription = null
-                                                )
-                                            }, selected = destination == lastDestination, onClick = {
-                                                // keep only one instance of a destination in the backstack
-                                                if (!navController.moveToTop { it == destination }) {
-                                                    // if there is no existing instance, add it
-                                                    navController.navigate(destination)
+                                            Icon(
+                                                painter = painterResource(destination.item.icon),
+                                                contentDescription = null
+                                            )
+                                        }, selected = destination == lastDestination, onClick = {
+                                            // keep only one instance of a destination in the backstack
+                                            if (!navController.moveToTop {
+                                                    it == destination
                                                 }
-                                            })
+                                            ) {
+                                                // if there is no existing instance, add it
+                                                navController.navigate(destination)
+                                            }
+                                        })
                                     }
                                 }
                             }
@@ -165,7 +162,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
         navController: NavController<BottomNavigationDestinations>,
         modifier: Modifier = Modifier
     ) {
-        val context = LocalContext.current
         AnimatedNavHost(controller = navController, modifier) { destination ->
             when (destination) {
                 BottomNavigationDestinations.HomeScreen -> {
@@ -181,26 +177,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                 }
 
                 BottomNavigationDestinations.Settings -> {
-                    val useDynamicTheme = ConfigDataStore.useDynamicTheme.collectAsState(
-                        initial = false
-                    )
-
-                    Column {
-                        Row {
-                            Text(text = "Dynamic Theme")
-                            Switch(
-                                checked = useDynamicTheme.value,
-                                onCheckedChange = {
-                                    // todo: move to vm
-                                    viewModel.viewModelScope.launch {
-                                        ConfigDataStore.setUseDynamicTheme(
-                                            it
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    }
+                    SettingsScreen()
                 }
             }
         }

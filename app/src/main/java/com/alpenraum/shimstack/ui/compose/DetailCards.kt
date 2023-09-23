@@ -30,7 +30,7 @@ import com.alpenraum.shimstack.data.bike.Damping
 import com.alpenraum.shimstack.data.bike.Pressure
 import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
-import com.alpenraum.shimstack.ui.main.screens.UIDataLabel
+import com.alpenraum.shimstack.ui.main.screens.home.UIDataLabel
 import com.alpenraum.shimstack.ui.theme.AppTheme
 
 @Composable
@@ -129,7 +129,10 @@ private fun SuspensionDetails(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).weight(1.0f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                        .weight(1.0f)
                 ) {
                     SuspensionQuarter(data = it[0]) // ,modifier = Modifier.weight(1.0f)
                     // modifier = Modifier.weight(1.0f,fill = false)
@@ -138,7 +141,10 @@ private fun SuspensionDetails(
                 Divider()
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp).weight(1.0f)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                        .weight(1.0f)
                 ) {
                     SuspensionQuarter(data = it[2])
                     SuspensionQuarter(data = it[3])
@@ -146,7 +152,10 @@ private fun SuspensionDetails(
             }
         } ?: run {
             Box(
-                modifier = Modifier.fillMaxSize().padding(8.dp).weight(1.0f),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+                    .weight(1.0f),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -206,6 +215,7 @@ private fun DetailsCard(
         modifier = modifier
             .height(CARD_DIMENSION)
             .width(if (bigCard) CARD_DIMENSION * 2.0f + CARD_MARGIN else CARD_DIMENSION * 1.0f)
+            .padding(vertical = CARD_MARGIN / 2.0f)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

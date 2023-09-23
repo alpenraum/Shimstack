@@ -5,7 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.ui.main.screens.UIDataLabel
+import com.alpenraum.shimstack.ui.main.screens.home.UIDataLabel
 import java.math.BigDecimal
 
 @Entity

@@ -3,6 +3,7 @@
   <component name="KtlintProjectConfiguration">
     <androidMode>true</androidMode>
     <treatAsErrors>false</treatAsErrors>
+    <formatOnSave>true</formatOnSave>
     <disabledRules>
       <list>
         <option value="filename" />

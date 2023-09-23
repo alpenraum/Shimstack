@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.main.screens
+package com.alpenraum.shimstack.ui.main.screens.home
 
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeDTO

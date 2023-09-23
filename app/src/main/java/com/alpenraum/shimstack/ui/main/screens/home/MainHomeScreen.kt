@@ -1,6 +1,9 @@
-package com.alpenraum.shimstack.ui.main.screens
+package com.alpenraum.shimstack.ui.main.screens.home
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -11,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -106,8 +111,17 @@ fun HomeScreen(
             intents = intents,
             pagerState = pagerState
         )
-        state.getBike(pagerState.currentPage)?.let {
-            BikeDetails(bike = it, cardSetup = state.detailCardsSetup, intents, gridState)
+        AnimatedVisibility(
+            visible = state.getBike(pagerState.currentPage) != null,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            BikeDetails(
+                bike = state.getBike(pagerState.currentPage)!!,
+                cardSetup = state.detailCardsSetup,
+                intents,
+                gridState
+            )
         }
         SnackbarHost(hostState = snackState)
     }
@@ -122,8 +136,9 @@ private fun BikeDetails(
     state: LazyGridState
 ) {
     FlowRow(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(CARD_MARGIN),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(CARD_MARGIN, alignment = Alignment.Start)
     ) {
         cardSetup.forEach {
@@ -152,7 +167,8 @@ private fun BikePager(
             intents(HomeScreenContract.Intent.OnViewPagerSelectionChanged(page))
         }
     }
-    val isLandscapeScreen = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isLandscapeScreen =
+        LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Column(modifier = modifier) {
         HorizontalPager(
             state.bikes.size,
@@ -165,7 +181,8 @@ private fun BikePager(
             userScrollEnabled = !showPlaceholder
         ) { page ->
             BikeCard(
-                modifier = Modifier.size(itemSize)
+                modifier = Modifier
+                    .size(itemSize)
                     .graphicsLayer {
                         val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
                         lerp(

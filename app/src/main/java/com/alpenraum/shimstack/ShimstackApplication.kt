@@ -14,6 +14,6 @@ class ShimstackApplication : Application() {
 
     companion object {
 
-        lateinit var appContext: Context
+        var appContext: Context? = null
     }
 }

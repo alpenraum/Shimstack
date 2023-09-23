@@ -89,13 +89,17 @@ fun AppTheme(
     content: @Composable() () -> Unit
 ) {
     val useDynamicTheme =
-        ConfigDataStore.useDynamicTheme.collectAsState(initial = false)
+        ConfigDataStore.useDynamicTheme?.collectAsState(initial = false)?.value == true
     val colors = if (!useDarkTheme) {
-        if (supportsDynamic() && useDynamicTheme.value) dynamicLightColorScheme(
-            LocalContext.current
-        ) else LightColors
+        if (supportsDynamic() && useDynamicTheme) {
+            dynamicLightColorScheme(
+                LocalContext.current
+            )
+        } else {
+            LightColors
+        }
     } else {
-        if (supportsDynamic() && useDynamicTheme.value) dynamicDarkColorScheme(LocalContext.current) else DarkColors
+        if (supportsDynamic() && useDynamicTheme) dynamicDarkColorScheme(LocalContext.current) else DarkColors
     }
 
     val view = LocalView.current
