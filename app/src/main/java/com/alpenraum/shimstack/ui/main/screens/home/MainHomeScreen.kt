@@ -2,24 +2,28 @@ package com.alpenraum.shimstack.ui.main.screens.home
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -34,17 +38,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.alpenraum.shimstack.data.bike.Bike
+import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.BikeDTO
-import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.data.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
@@ -119,37 +126,34 @@ fun HomeScreen(
             intents = intents,
             pagerState = pagerState
         )
-        AnimatedVisibility(
-            visible = state.getBike(pagerState.currentPage) != null,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            AnimatedContent(
-                state.getBike(pagerState.currentPage)!!,
-                label = "BikeDetails",
-                transitionSpec = {
-                    if (lastPagerPosition.intValue > pagerState.currentPage) {
-                        // scroll to left
-                        (slideInHorizontally { x -> -x } + fadeIn()).togetherWith(
-                            slideOutHorizontally { x -> x } + fadeOut()
-                        )
-                    } else {
-                        (slideInHorizontally { height -> height } + fadeIn()).togetherWith(
-                            slideOutHorizontally { height -> -height } + fadeOut()
-                        )
-                    }
+
+        AnimatedContent(
+            state.getBike(pagerState.currentPage),
+            label = "BikeDetails",
+            transitionSpec = {
+                if (lastPagerPosition.intValue > pagerState.currentPage) {
+                    // scroll to left
+                    (slideInHorizontally { x -> -x } + fadeIn()).togetherWith(
+                        slideOutHorizontally { x -> x } + fadeOut()
+                    )
+                } else {
+                    (slideInHorizontally { height -> height } + fadeIn()).togetherWith(
+                        slideOutHorizontally { height -> -height } + fadeOut()
+                    )
                 }
-            ) {
+            }
+        ) { bike ->
+            bike?.let { bike1 ->
                 BikeDetails(
-                    bike = it,
+                    bike = bike1,
                     cardSetup = state.detailCardsSetup,
                     intents,
                     gridState
                 )
             }
         }
-        SnackbarHost(hostState = snackState)
     }
+    SnackbarHost(hostState = snackState)
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -196,7 +200,7 @@ private fun BikePager(
         LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Column(modifier = modifier) {
         HorizontalPager(
-            state.bikes.size,
+            state.bikes.size + 1,
             modifier = Modifier,
             pagerState,
             contentPadding = PaddingValues(
@@ -205,6 +209,14 @@ private fun BikePager(
             verticalAlignment = Alignment.Top,
             userScrollEnabled = !showPlaceholder
         ) { page ->
+            val bike = state.bikes.getOrNull(page)
+
+            val content: @Composable (modifier: Modifier) -> Unit = if (page == state.bikes.size) {
+                { addNewBikeCardContent(intents = intents) }
+            } else {
+                { BikeCardContent(bike = bike, it) }
+            }
+
             BikeCard(
                 modifier = Modifier
                     .size(itemSize)
@@ -219,8 +231,8 @@ private fun BikePager(
                             this.scaleY = scale
                         }
                     },
-                bike = state.bikes[page],
-                showPlaceholder = showPlaceholder
+                showPlaceholder = showPlaceholder,
+                content = content
             )
         }
         HorizontalPagerIndicator(
@@ -239,7 +251,11 @@ private fun calculatePagerItemPadding(itemWidth: Dp) = max(
 ).dp
 
 @Composable
-private fun BikeCard(modifier: Modifier, bike: BikeDTO?, showPlaceholder: Boolean) {
+private fun BikeCard(
+    modifier: Modifier,
+    showPlaceholder: Boolean,
+    content: @Composable (modifier: Modifier) -> Unit
+) {
     Surface(
         modifier = modifier
             .placeholder(
@@ -252,11 +268,48 @@ private fun BikeCard(modifier: Modifier, bike: BikeDTO?, showPlaceholder: Boolea
         tonalElevation = 10.dp,
         color = MaterialTheme.colorScheme.secondaryContainer
     ) {
-        Text(
-            bike?.name ?: "",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(8.dp)
-        )
+        content(Modifier.padding(8.dp))
+    }
+}
+
+@Composable
+private fun BikeCardContent(bike: BikeDTO?, modifier: Modifier = Modifier) {
+    Text(
+        bike?.name ?: "",
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun addNewBikeCardContent(
+    modifier: Modifier = Modifier,
+    intents: (HomeScreenContract.Intent) -> Unit
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable {
+                intents(HomeScreenContract.Intent.OnAddNewBike)
+            }
+            .semantics(mergeDescendants = true) {}
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                Icons.Rounded.Add,
+                contentDescription = "",
+                modifier = Modifier
+                    .size(100.dp)
+                    .semantics { invisibleToUser() },
+                tint = MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.8f)
+            )
+            Text(
+                text = stringResource(id = R.string.fab_add_bike),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 }
 
@@ -267,24 +320,6 @@ fun Preview() {
         HomeScreen(
             modifier = Modifier,
             viewModel = HomeScreenViewModel()
-        )
-    }
-}
-
-@Preview()
-@Composable
-fun Preview2() {
-    AppTheme {
-        BikeCard(
-            modifier = Modifier.width(200.dp),
-            BikeDTO(
-                name = "5010",
-                type = Bike.Type.TRAIL,
-                frontTire = Tire(),
-                rearTire = Tire(),
-                isEBike = false
-            ),
-            showPlaceholder = false
         )
     }
 }

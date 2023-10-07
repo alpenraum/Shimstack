@@ -36,10 +36,18 @@ class HomeScreenViewModel @Inject constructor() :
     override val event: SharedFlow<HomeScreenContract.Event> =
         eventFlow.asSharedFlow()
 
-    override fun intent(event: HomeScreenContract.Intent) = when (event) {
-        HomeScreenContract.Intent.OnRefresh -> {}
-        is HomeScreenContract.Intent.OnViewPagerSelectionChanged -> {
-            onViewPagerSelectionChanged(event.page)
+    override fun intent(event: HomeScreenContract.Intent) {
+        when (event) {
+            HomeScreenContract.Intent.OnRefresh -> {}
+            is HomeScreenContract.Intent.OnViewPagerSelectionChanged -> {
+                onViewPagerSelectionChanged(event.page)
+            }
+
+            HomeScreenContract.Intent.OnAddNewBike -> {
+                viewModelScope.launch {
+                    eventFlow.emit(HomeScreenContract.Event.Error)
+                }
+            }
         }
     }
 
@@ -100,6 +108,7 @@ interface HomeScreenContract :
     sealed class Intent {
         object OnRefresh : Intent()
         class OnViewPagerSelectionChanged(val page: Int) : Intent()
+        object OnAddNewBike : Intent()
     }
 }
 
