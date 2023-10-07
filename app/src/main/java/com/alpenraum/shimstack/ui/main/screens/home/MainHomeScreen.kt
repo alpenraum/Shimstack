@@ -1,9 +1,13 @@
 package com.alpenraum.shimstack.ui.main.screens.home
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -24,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -77,8 +82,10 @@ fun HomeScreen(
     val isLoading = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(0)
+    val lastPagerPosition = remember { mutableIntStateOf(0) }
     val gridState = rememberLazyGridState()
     val snackState = remember { SnackbarHostState() }
+
     LaunchedEffect(event.collectAsState(HomeScreenContract.Event.Loading)) {
         event.collectLatest {
             when (it) {
@@ -92,6 +99,7 @@ fun HomeScreen(
                 }
 
                 HomeScreenContract.Event.NewPageSelected -> scope.launch {
+                    lastPagerPosition.intValue = pagerState.currentPage
                 }
             }
         }
@@ -116,12 +124,29 @@ fun HomeScreen(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            BikeDetails(
-                bike = state.getBike(pagerState.currentPage)!!,
-                cardSetup = state.detailCardsSetup,
-                intents,
-                gridState
-            )
+            AnimatedContent(
+                state.getBike(pagerState.currentPage)!!,
+                label = "BikeDetails",
+                transitionSpec = {
+                    if (lastPagerPosition.intValue > pagerState.currentPage) {
+                        // scroll to left
+                        (slideInHorizontally { x -> -x } + fadeIn()).togetherWith(
+                            slideOutHorizontally { x -> x } + fadeOut()
+                        )
+                    } else {
+                        (slideInHorizontally { height -> height } + fadeIn()).togetherWith(
+                            slideOutHorizontally { height -> -height } + fadeOut()
+                        )
+                    }
+                }
+            ) {
+                BikeDetails(
+                    bike = it,
+                    cardSetup = state.detailCardsSetup,
+                    intents,
+                    gridState
+                )
+            }
         }
         SnackbarHost(hostState = snackState)
     }

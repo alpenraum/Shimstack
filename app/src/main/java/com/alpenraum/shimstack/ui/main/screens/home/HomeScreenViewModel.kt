@@ -2,7 +2,9 @@ package com.alpenraum.shimstack.ui.main.screens.home
 
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeDTO
+import com.alpenraum.shimstack.data.bike.Damping
 import com.alpenraum.shimstack.data.bike.Pressure
+import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -51,16 +53,18 @@ class HomeScreenViewModel @Inject constructor() :
         ),
         BikeDTO(
             name = "Bike2",
-            frontTire = Tire(Pressure(23.0), 23.0, 23.0),
-            rearTire = Tire(Pressure(23.0), 23.0, 23.0),
+            frontTire = Tire(Pressure(2.0), 132.0, 30.0),
+            rearTire = Tire(Pressure(1.8), 128.0, 23.0),
             type = Bike.Type.TRAIL,
             isEBike = false
         ),
         BikeDTO(
             name = "Bike3",
-            frontTire = Tire(Pressure(23.0), 23.0, 23.0),
-            rearTire = Tire(Pressure(23.0), 23.0, 23.0),
-            type = Bike.Type.TRAIL,
+            frontTire = Tire(Pressure(1.0), 140.0, 35.0),
+            rearTire = Tire(Pressure(1.0), 140.0, 35.0),
+            frontSuspension = Suspension(Pressure(60.0), Damping(3), Damping(4), 0),
+            rearSuspension = Suspension(Pressure(60.0), Damping(3, 5), Damping(4, 5), 0),
+            type = Bike.Type.DH,
             isEBike = false
         )
     )
