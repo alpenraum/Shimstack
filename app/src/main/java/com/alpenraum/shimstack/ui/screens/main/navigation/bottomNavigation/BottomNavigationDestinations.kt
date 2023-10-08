@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.main.navigation.bottomNavigation
+package com.alpenraum.shimstack.ui.screens.main.navigation.bottomNavigation
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

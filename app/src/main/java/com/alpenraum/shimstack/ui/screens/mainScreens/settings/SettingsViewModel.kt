@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.main.screens.settings
+package com.alpenraum.shimstack.ui.screens.mainScreens.settings
 
 import androidx.annotation.StringRes
 import com.alpenraum.shimstack.R
@@ -6,8 +6,8 @@ import com.alpenraum.shimstack.common.stores.ConfigDataStore
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -26,11 +26,11 @@ class SettingsViewModel @Inject constructor() : BaseViewModel(), SettingsContrac
     override val event: SharedFlow<SettingsContract.Event>
         get() = _event.asSharedFlow()
 
-    override fun intent(event: SettingsContract.Intent) {
-        when (event) {
+    override fun intent(intent: SettingsContract.Intent) {
+        when (intent) {
             is SettingsContract.Intent.OnSettingsChanged -> toggleSetting(
-                event.settings,
-                event.newSetting
+                intent.settings,
+                intent.newSetting
             )
         }
     }
@@ -40,7 +40,10 @@ class SettingsViewModel @Inject constructor() : BaseViewModel(), SettingsContrac
         viewModelScope.launch {
             val state = SettingsContract.State(
                 listOf(
-                    Pair(SettingsContract.Settings.USE_DYNAMIC_THEME, ConfigDataStore.useDynamicTheme)
+                    Pair(
+                        SettingsContract.Settings.USE_DYNAMIC_THEME,
+                        ConfigDataStore.useDynamicTheme
+                    )
                 )
             )
             _state.emit(state)

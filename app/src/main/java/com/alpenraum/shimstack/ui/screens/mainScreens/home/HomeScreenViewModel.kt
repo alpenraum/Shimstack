@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.main.screens.home
+package com.alpenraum.shimstack.ui.screens.mainScreens.home
 
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeDTO
@@ -36,16 +36,16 @@ class HomeScreenViewModel @Inject constructor() :
     override val event: SharedFlow<HomeScreenContract.Event> =
         eventFlow.asSharedFlow()
 
-    override fun intent(event: HomeScreenContract.Intent) {
-        when (event) {
+    override fun intent(intent: HomeScreenContract.Intent) {
+        when (intent) {
             HomeScreenContract.Intent.OnRefresh -> {}
             is HomeScreenContract.Intent.OnViewPagerSelectionChanged -> {
-                onViewPagerSelectionChanged(event.page)
+                onViewPagerSelectionChanged(intent.page)
             }
 
             HomeScreenContract.Intent.OnAddNewBike -> {
                 viewModelScope.launch {
-                    eventFlow.emit(HomeScreenContract.Event.Error)
+                    eventFlow.emit(HomeScreenContract.Event.NavigateToNewBikeFeature)
                 }
             }
         }
@@ -103,6 +103,7 @@ interface HomeScreenContract :
         object FinishedLoading : Event()
         object Error : Event()
         object NewPageSelected : Event()
+        object NavigateToNewBikeFeature : Event()
     }
 
     sealed class Intent {

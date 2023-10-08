@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.main
+package com.alpenraum.shimstack.ui.screens.main
 
 import com.alpenraum.shimstack.common.stores.KeyValueStore
 import com.alpenraum.shimstack.ui.base.BaseViewModel

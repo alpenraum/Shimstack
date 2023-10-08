@@ -19,7 +19,7 @@
         tools:targetApi="33">
 
         <activity
-            android:name="com.alpenraum.shimstack.ui.main.MainActivity"
+            android:name="com.alpenraum.shimstack.ui.screens.main.MainActivity"
             android:exported="true"
             android:screenOrientation="fullSensor">
             <intent-filter>

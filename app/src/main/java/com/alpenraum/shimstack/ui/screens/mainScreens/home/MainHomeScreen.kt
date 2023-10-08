@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.main.screens.home
+package com.alpenraum.shimstack.ui.screens.mainScreens.home
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
@@ -82,7 +82,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     modifier: Modifier,
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    onNewBikeClicked: () -> Unit
 ) {
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel)
@@ -107,6 +108,10 @@ fun HomeScreen(
 
                 HomeScreenContract.Event.NewPageSelected -> scope.launch {
                     lastPagerPosition.intValue = pagerState.currentPage
+                }
+
+                HomeScreenContract.Event.NavigateToNewBikeFeature -> {
+                    onNewBikeClicked()
                 }
             }
         }
@@ -320,6 +325,6 @@ fun Preview() {
         HomeScreen(
             modifier = Modifier,
             viewModel = HomeScreenViewModel()
-        )
+        ) {}
     }
 }

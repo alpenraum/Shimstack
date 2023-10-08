@@ -30,7 +30,7 @@ import com.alpenraum.shimstack.data.bike.Damping
 import com.alpenraum.shimstack.data.bike.Pressure
 import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
-import com.alpenraum.shimstack.ui.main.screens.home.UIDataLabel
+import com.alpenraum.shimstack.ui.screens.mainScreens.home.UIDataLabel
 import com.alpenraum.shimstack.ui.theme.AppTheme
 
 @Composable

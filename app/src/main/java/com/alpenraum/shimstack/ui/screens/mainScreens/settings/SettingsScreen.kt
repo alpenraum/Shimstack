@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.main.screens.settings
+package com.alpenraum.shimstack.ui.screens.mainScreens.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
