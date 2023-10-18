@@ -21,6 +21,7 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 script {
+                def flavorDimension = params.FLAVOR_DIMENSION
                     try {
                         sh "./gradlew test${flavorDimension.capitalize()}"
                     } catch (Exception e) {
