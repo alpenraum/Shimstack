@@ -53,7 +53,7 @@ class HomeScreenViewModel @Inject constructor() :
 
     private val testBikes = listOf(
         BikeDTO(
-            name = "Bike1",
+            name = "Bike1 ",
             frontTire = Tire(Pressure(23.0), 23.0, 23.0),
             rearTire = Tire(Pressure(23.0), 23.0, 23.0),
             type = Bike.Type.TRAIL,
