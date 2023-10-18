@@ -70,35 +70,35 @@ pipeline {
             }
         }
 
-        stage('Distribute to Appstores') {
-            when {
-                expression {
-                    currentBuild.resultIsBetterOrEqualTo('SUCCESS') &&
-                    params.FLAVOR_DIMENSION == 'release' &&
-                    isReleaseBranch(env.BRANCH_NAME)
-                }
-            }
-            steps {
-                // Upload the release APK to Google Play using the Google Play Android Publisher plugin
-                // You'll need to configure your Google Play credentials and track information in Jenkins
-               // sh 'gplay-publisher <your_upload_command_for_release_apk>'
-            }
-        }
+        // stage('Distribute to Appstores') {
+        //     when {
+        //         expression {
+        //             currentBuild.resultIsBetterOrEqualTo('SUCCESS') &&
+        //             params.FLAVOR_DIMENSION == 'release' &&
+        //             isReleaseBranch(env.BRANCH_NAME)
+        //         }
+        //     }
+        //     steps {
+        //         // Upload the release APK to Google Play using the Google Play Android Publisher plugin
+        //         // You'll need to configure your Google Play credentials and track information in Jenkins
+        //        // sh 'gplay-publisher <your_upload_command_for_release_apk>'
+        //     }
+        // }
 
-        stage('Distribute Debug APK to App Center') {
-            when {
-                expression {
-                    currentBuild.resultIsBetterOrEqualTo('SUCCESS') &&
-                   ( params.FLAVOR_DIMENSION == 'debug' ||
-                    (params.FLAVOR_DIMENSION == 'release' && !isReleaseBranch(env.BRANCH_NAME)) )
-                }
-            }
-            steps {
-                // Upload the debug APK to App Center using the App Center Plugin
-                // You'll need to configure your App Center credentials and app information in Jenkins
-               // appcenter distribute release-notes: '', groups: '', notify-testers: 'true', symbols: '**/*.pdb', filePath: '**/build/outputs/**/*.apk'
-            }
-        }
+        // stage('Distribute Debug APK to App Center') {
+        //     when {
+        //         expression {
+        //             currentBuild.resultIsBetterOrEqualTo('SUCCESS') &&
+        //            ( params.FLAVOR_DIMENSION == 'debug' ||
+        //             (params.FLAVOR_DIMENSION == 'release' && !isReleaseBranch(env.BRANCH_NAME)) )
+        //         }
+        //     }
+        //     steps {
+        //         // Upload the debug APK to App Center using the App Center Plugin
+        //         // You'll need to configure your App Center credentials and app information in Jenkins
+        //        // appcenter distribute release-notes: '', groups: '', notify-testers: 'true', symbols: '**/*.pdb', filePath: '**/build/outputs/**/*.apk'
+        //     }
+        // }
     }
 
     post {
