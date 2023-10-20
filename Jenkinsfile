@@ -30,8 +30,8 @@ pipeline {
         stage('Fastlane CI'){
             steps{
                 parallel(
-                    "bawag":{sh "bundle exec fastlane build_uat version="+bawag},
-                    "easybank":{sh "bundle exec fastlane build_uat version="+easybank}
+                    "bawag":{sh "bundle exec fastlane build_uat version:"+bawag},
+                    "easybank":{sh "bundle exec fastlane build_uat version:"+easybank}
                 )
             }
         }
