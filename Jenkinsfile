@@ -3,13 +3,19 @@ def isReleaseBranch(branchName){
     return branchName == 'release-deployment' || branchName == 'hotfix-deployment'
 }
 
+def uat = 'uat'
+def prod = 'prod'
+def bawag = 'bawag'
+def easybank = 'easybank'
+def google = 'google'
+def huawei = 'huawei'
+
+
 
 pipeline {
     agent any
 
-    parameters {
-        choice(name: 'FLAVOR_DIMENSION', choices: ['release', 'debug'], description: 'Select the flavor dimension')
-    }
+
 
     stages {
         stage('Checkout') {
@@ -18,58 +24,91 @@ pipeline {
             }
         }
 
-        stage('Unit Tests') {
-            steps {
-                script {
-                def flavorDimension = params.FLAVOR_DIMENSION
-                    try {
-                        sh "./gradlew test${flavorDimension.capitalize()}"
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error("Unit tests failed: ${e.message}")
+        stage('Fastlane CI'){
+               parallel{
+               stage("google") {
+                    steps {
+                        parallel (
+                            "bawag": {
+                                echo "aaa1"
+                            },
+                            "easybank": {
+                               echo "bbb"
+                            }
+                        )
                     }
                 }
-            }
-        }
+                stage("huawei") {
+                    steps {
+                        parallel (
+                            "bawag": {
+                                echo "huaweibawag"
+                            },
+                            "easybank": {
+                                echo "huaweieasybank"
+                            }
+                        )
+                    }
+                }
 
-        stage('Build APK') {
-            when {
-                expression {
-                    currentBuild.resultIsBetterOrEqualTo('SUCCESS') && !(isReleaseBranch(env.BRANCH_NAME))
-                }
-            }
-            steps {
-                script {
-                    def flavorDimension = params.FLAVOR_DIMENSION
-                    try {
-                        sh "./gradlew assemble${flavorDimension.capitalize()}"
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error("APK build failed: ${e.message}")
-                    }
-                }
-                archiveArtifacts artifacts: '**/build/outputs/**/*.apk', allowEmptyArchive: true
             }
         }
-         stage('Build AAB') {
-            when {
-                expression {
-                    currentBuild.resultIsBetterOrEqualTo('SUCCESS') && (isReleaseBranch(env.BRANCH_NAME))
-                }
-            }
-            steps {
-                script {
-                    def flavorDimension = params.FLAVOR_DIMENSION
-                    try {
-                        sh "./gradlew bundle${flavorDimension.capitalize()}"
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error("AAB build failed: ${e.message}")
-                    }
-                }
-                archiveArtifacts artifacts: '**/build/outputs/**/*.apk', allowEmptyArchive: true
-            }
-        }
+    }
+
+        // sh "bundle exec fastlane build flavor="+bawag+google+uat
+
+//         stage('Unit Tests') {
+//             steps {
+//                 script {
+//                 def flavorDimension = params.FLAVOR_DIMENSION
+//                     try {
+//                         sh "./gradlew test${flavorDimension.capitalize()}"
+//                     } catch (Exception e) {
+//                         currentBuild.result = 'FAILURE'
+//                         error("Unit tests failed: ${e.message}")
+//                     }
+//                 }
+//             }
+//         }
+//
+//         stage('Build APK') {
+//             when {
+//                 expression {
+//                     currentBuild.resultIsBetterOrEqualTo('SUCCESS') && !(isReleaseBranch(env.BRANCH_NAME))
+//                 }
+//             }
+//             steps {
+//                 script {
+//                     def flavorDimension = params.FLAVOR_DIMENSION
+//                     try {
+//                         sh "./gradlew assemble${flavorDimension.capitalize()}"
+//                     } catch (Exception e) {
+//                         currentBuild.result = 'FAILURE'
+//                         error("APK build failed: ${e.message}")
+//                     }
+//                 }
+//                 archiveArtifacts artifacts: '**/build/outputs/**/*.apk', allowEmptyArchive: true
+//             }
+//         }
+//          stage('Build AAB') {
+//             when {
+//                 expression {
+//                     currentBuild.resultIsBetterOrEqualTo('SUCCESS') && (isReleaseBranch(env.BRANCH_NAME))
+//                 }
+//             }
+//             steps {
+//                 script {
+//                     def flavorDimension = params.FLAVOR_DIMENSION
+//                     try {
+//                         sh "./gradlew bundle${flavorDimension.capitalize()}"
+//                     } catch (Exception e) {
+//                         currentBuild.result = 'FAILURE'
+//                         error("AAB build failed: ${e.message}")
+//                     }
+//                 }
+//                 archiveArtifacts artifacts: '**/build/outputs/**/*.apk', allowEmptyArchive: true
+//             }
+//         }
 
         // stage('Distribute to Appstores') {
         //     when {
@@ -100,7 +139,7 @@ pipeline {
         //        // appcenter distribute release-notes: '', groups: '', notify-testers: 'true', symbols: '**/*.pdb', filePath: '**/build/outputs/**/*.apk'
         //     }
         // }
-    }
+
 
     post {
         failure {

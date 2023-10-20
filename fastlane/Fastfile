@@ -1,0 +1,45 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+   lane :build_uat do |options|
+        test(flavor: options[:flavor])
+        build_apk(flavor: options[:flavor])
+   end
+
+
+  desc "Runs all the tests"
+  private lane :test do |options|
+    gradle(task: "test"+options[:flavor])
+  end
+
+  desc "Build apk"
+  private lane :build_apk do |options|
+    gradle(task: "clean assemble"+options[:flavor])
+    BINARY_LOCATION = "#{lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]}"
+  end
+
+
+  desc "Build AAB"
+  private lane :build_aab do |options|
+    gradle(task: "clean bundle"+options[:flavor])
+    BINARY_LOCATION = "#{lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]}"
+  end
+
+
+end
