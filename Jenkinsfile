@@ -12,6 +12,9 @@ def huawei = 'huawei'
 
 
 
+
+
+
 pipeline {
     agent any
 
@@ -25,32 +28,7 @@ pipeline {
         }
 
         stage('Fastlane CI'){
-               parallel{
-               stage("google") {
-                    steps {
-                        parallel (
-                            "bawag": {
-                                echo "aaa1"
-                            },
-                            "easybank": {
-                               echo "bbb"
-                            }
-                        )
-                    }
-                }
-                stage("huawei") {
-                    steps {
-                        parallel (
-                            "bawag": {
-                                echo "huaweibawag"
-                            },
-                            "easybank": {
-                                echo "huaweieasybank"
-                            }
-                        )
-                    }
-                }
-
+                parallel("bawag":{echo "aaa1"},"easybank":{echo "nlbj1"})
             }
         }
     }
