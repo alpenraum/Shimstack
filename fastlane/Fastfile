@@ -15,29 +15,42 @@
 
 default_platform(:android)
 
+bawagFlavors = ["bawaggoogle", "bawaghuawei"]
+easybankFlavors = ["easybankgoogle", "easybankhuawei"]
+
 platform :android do
 
    lane :build_uat do |options|
-        test(flavor: options[:flavor])
-        build_apk(flavor: options[:flavor])
+
+       flavors =  if options[:version]=="bawag"
+            bawagFlavors
+        else
+            easybankFlavors
+        end
+
+       flavors.each do |item|
+            flavor = "#{item}uat"
+               test(flavor: flavor)
+               build_apk(flavor: flavor)
+       end
    end
 
 
   desc "Runs all the tests"
   private lane :test do |options|
-    gradle(task: "test"+options[:flavor])
+    gradle(task: "test#{options[:flavor]}")
   end
 
   desc "Build apk"
   private lane :build_apk do |options|
-    gradle(task: "clean assemble"+options[:flavor])
+    gradle(task: "clean assemble#{options[:flavor]}")
     BINARY_LOCATION = "#{lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]}"
   end
 
 
   desc "Build AAB"
   private lane :build_aab do |options|
-    gradle(task: "clean bundle"+options[:flavor])
+    gradle(task: "clean bundle#{options[:flavor]}")
     BINARY_LOCATION = "#{lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]}"
   end
 
