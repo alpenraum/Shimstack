@@ -28,10 +28,15 @@ pipeline {
         }
 
         stage('Fastlane CI'){
-                parallel("bawag":{echo "aaa1"},"easybank":{echo "nlbj1"})
+            steps{
+                parallel(
+                    "bawag":{echo "aaa1"},
+                    "easybank":{echo "nlbj1"}
+                )
             }
         }
     }
+    
 
         // sh "bundle exec fastlane build flavor="+bawag+google+uat
 
