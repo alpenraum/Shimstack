@@ -29,4 +29,6 @@
     <string name="settings">Settings</string>
     <string name="settings_dynamic_theme">Use Android colors</string>
     <string name="fab_add_bike">Add new bike</string>
+
+    <string name="copy_add_new_bike">Add your first bike!</string>
 </resources>

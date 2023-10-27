@@ -1,6 +1,7 @@
 package com.alpenraum.shimstack.ui.screens.mainScreens.settings
 
 import androidx.annotation.StringRes
+import androidx.lifecycle.viewModelScope
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.common.stores.ConfigDataStore
 import com.alpenraum.shimstack.ui.base.BaseViewModel

@@ -1,11 +1,13 @@
 package com.alpenraum.shimstack.data.bike
 
 import android.content.Context
+import androidx.compose.runtime.Immutable
 import androidx.room.Ignore
 import com.alpenraum.shimstack.R
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+@Immutable
 data class Pressure(val pressureInBar: BigDecimal) {
 
     @Ignore

@@ -22,11 +22,9 @@ import com.alpenraum.shimstack.common.moveLastEntryToStart
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.screens.main.navigation.bottomNavigation.BottomNavigationDestinations
 import com.alpenraum.shimstack.ui.screens.mainScreens.home.HomeScreen
-import com.alpenraum.shimstack.ui.screens.mainScreens.home.HomeScreenViewModel
 import com.alpenraum.shimstack.ui.screens.mainScreens.settings.SettingsScreen
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavController
-import dev.olshevski.navigation.reimagined.hilt.hiltViewModel
 import dev.olshevski.navigation.reimagined.moveToTop
 import dev.olshevski.navigation.reimagined.navigate
 import dev.olshevski.navigation.reimagined.pop
@@ -114,10 +112,8 @@ private fun Content(
     AnimatedNavHost(controller = navController, modifier) { destination ->
         when (destination) {
             BottomNavigationDestinations.HomeScreen -> {
-                val viewModel = hiltViewModel<HomeScreenViewModel>()
                 HomeScreen(
                     modifier = Modifier,
-                    viewModel = viewModel,
                     onNewBikeClicked = onNewBikeClicked
                 )
             }

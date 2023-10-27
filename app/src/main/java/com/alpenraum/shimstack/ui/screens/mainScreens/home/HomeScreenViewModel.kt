@@ -1,16 +1,17 @@
 package com.alpenraum.shimstack.ui.screens.mainScreens.home
 
-import com.alpenraum.shimstack.data.bike.Bike
+import androidx.compose.runtime.Immutable
+import androidx.lifecycle.viewModelScope
 import com.alpenraum.shimstack.data.bike.BikeDTO
-import com.alpenraum.shimstack.data.bike.Damping
-import com.alpenraum.shimstack.data.bike.Pressure
-import com.alpenraum.shimstack.data.bike.Suspension
-import com.alpenraum.shimstack.data.bike.Tire
+import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,12 +21,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor() :
+class HomeScreenViewModel @Inject constructor(private val bikeRepository: LocalBikeRepository) :
     BaseViewModel(), HomeScreenContract {
 
     private val mutableState = MutableStateFlow(
         HomeScreenContract.State(
-            listOf(null),
+            persistentListOf(null),
             CardSetup.defaultConfig()
         )
     )
@@ -51,40 +52,17 @@ class HomeScreenViewModel @Inject constructor() :
         }
     }
 
-    private val testBikes = listOf(
-        BikeDTO(
-            name = "Bike1 ",
-            frontTire = Tire(Pressure(23.0), 23.0, 23.0),
-            rearTire = Tire(Pressure(23.0), 23.0, 23.0),
-            type = Bike.Type.TRAIL,
-            isEBike = false
-        ),
-        BikeDTO(
-            name = "Bike2",
-            frontTire = Tire(Pressure(2.0), 132.0, 30.0),
-            rearTire = Tire(Pressure(1.8), 128.0, 23.0),
-            type = Bike.Type.TRAIL,
-            isEBike = false
-        ),
-        BikeDTO(
-            name = "Bike3",
-            frontTire = Tire(Pressure(1.0), 140.0, 35.0),
-            rearTire = Tire(Pressure(1.0), 140.0, 35.0),
-            frontSuspension = Suspension(Pressure(60.0), Damping(3), Damping(4), 0),
-            rearSuspension = Suspension(Pressure(60.0), Damping(3, 5), Damping(4, 5), 0),
-            type = Bike.Type.DH,
-            isEBike = false
-        )
-    )
-
     override fun onStart() {
         super.onStart()
-        viewModelScope.launch {
+        iOScope.launch {
             eventFlow.emit(HomeScreenContract.Event.Loading)
-            mutableState.emit(state.value.copy(bikes = testBikes))
+
+            mutableState.emit(state.value.copy(bikes = fetchBikes().toImmutableList()))
             eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
         }
     }
+
+    private suspend fun fetchBikes() = bikeRepository.getAllBikes().map { it.toDTO() }
 
     private fun onViewPagerSelectionChanged(page: Int) {
         viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }
@@ -94,22 +72,26 @@ class HomeScreenViewModel @Inject constructor() :
 interface HomeScreenContract :
     UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
 
-    data class State(val bikes: List<BikeDTO?>, val detailCardsSetup: List<CardSetup>) {
+    @Immutable
+    data class State(
+        val bikes: ImmutableList<BikeDTO?>,
+        val detailCardsSetup: ImmutableList<CardSetup>
+    ) {
         fun getBike(page: Int) = bikes.getOrNull(page)
     }
 
     sealed class Event {
-        object Loading : Event()
-        object FinishedLoading : Event()
-        object Error : Event()
-        object NewPageSelected : Event()
-        object NavigateToNewBikeFeature : Event()
+        data object Loading : Event()
+        data object FinishedLoading : Event()
+        data object Error : Event()
+        data object NewPageSelected : Event()
+        data object NavigateToNewBikeFeature : Event()
     }
 
     sealed class Intent {
-        object OnRefresh : Intent()
+        data object OnRefresh : Intent()
         class OnViewPagerSelectionChanged(val page: Int) : Intent()
-        object OnAddNewBike : Intent()
+        data object OnAddNewBike : Intent()
     }
 }
 

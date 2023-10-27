@@ -1,8 +1,12 @@
 package com.alpenraum.shimstack.data.cardsetup
 
+import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.persistentListOf
+
+@Immutable
 data class CardSetup(val type: CardType, val bigCard: Boolean) {
     companion object {
-        fun defaultConfig() = listOf(
+        fun defaultConfig() = persistentListOf(
             CardSetup(CardType.TIRES, false),
             CardSetup(CardType.FORK, false),
             CardSetup(CardType.SHOCK, false),
@@ -14,5 +18,5 @@ data class CardSetup(val type: CardType, val bigCard: Boolean) {
 enum class CardType {
     TIRES,
     FORK,
-    SHOCK,
+    SHOCK
 }

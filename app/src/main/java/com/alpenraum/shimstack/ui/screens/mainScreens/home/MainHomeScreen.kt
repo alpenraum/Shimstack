@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,14 +44,16 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
@@ -72,21 +76,42 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
+import dev.olshevski.navigation.reimagined.hilt.hiltViewModel
 import kotlin.math.absoluteValue
 import kotlin.math.max
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier,
-    viewModel: HomeScreenViewModel = hiltViewModel(),
     onNewBikeClicked: () -> Unit
 ) {
+    val viewModel = hiltViewModel<HomeScreenViewModel>()
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel)
+    HomeScreenContent(
+        state = state,
+        event = event,
+        intents = intents,
+        modifier,
+        onNewBikeClicked
+    )
+}
+
+@Composable
+@OptIn(ExperimentalPagerApi::class)
+private fun HomeScreenContent(
+    state: HomeScreenContract.State,
+    event: SharedFlow<HomeScreenContract.Event>,
+    intents: (HomeScreenContract.Intent) -> Unit,
+    modifier: Modifier,
+    onNewBikeClicked: () -> Unit
+) {
     val isLoading = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(0)
@@ -134,6 +159,7 @@ fun HomeScreen(
 
         AnimatedContent(
             state.getBike(pagerState.currentPage),
+            modifier = Modifier.fillMaxHeight(),
             label = "BikeDetails",
             transitionSpec = {
                 if (lastPagerPosition.intValue > pagerState.currentPage) {
@@ -155,10 +181,34 @@ fun HomeScreen(
                     intents,
                     gridState
                 )
-            }
+            } ?: EmptyDetailsEyeCandy()
         }
     }
     SnackbarHost(hostState = snackState)
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun EmptyDetailsEyeCandy() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxHeight()
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.il_empty_mountain),
+            contentDescription = null,
+            modifier = Modifier.semantics {
+                invisibleToUser()
+            }.fillMaxSize(0.6f).padding(bottom = 8.dp)
+        )
+        Text(
+            text = stringResource(id = R.string.copy_add_new_bike),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            fontStyle = FontStyle.Italic
+        )
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -244,7 +294,8 @@ private fun BikePager(
             pagerState = pagerState,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(16.dp)
+                .padding(16.dp),
+            activeColor = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -294,7 +345,7 @@ private fun addNewBikeCardContent(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .clickable {
                 intents(HomeScreenContract.Intent.OnAddNewBike)
@@ -318,13 +369,15 @@ private fun addNewBikeCardContent(
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun Preview() {
     AppTheme {
-        HomeScreen(
-            modifier = Modifier,
-            viewModel = HomeScreenViewModel()
+        HomeScreenContent(
+            state = HomeScreenContract.State(persistentListOf(), persistentListOf()),
+            event = MutableSharedFlow(),
+            intents = {},
+            modifier = Modifier
         ) {}
     }
 }

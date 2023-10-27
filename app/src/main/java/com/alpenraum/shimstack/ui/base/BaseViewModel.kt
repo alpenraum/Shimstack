@@ -11,17 +11,12 @@ abstract class BaseViewModel : ViewModel() {
 
     var arguments: Bundle? = null
 
-    protected val viewModelScope: CoroutineScope by lazy {
-        CoroutineScope(Dispatchers.Main + SupervisorJob(null))
-    }
-
     protected val iOScope: CoroutineScope by lazy {
         CoroutineScope(Dispatchers.IO + SupervisorJob(null))
     }
 
     override fun onCleared() {
         super.onCleared()
-        viewModelScope.cancel()
         iOScope.cancel()
     }
 
