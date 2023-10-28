@@ -19,9 +19,12 @@ class DatabaseModule {
             appContext,
             AppDatabase::class.java,
             "Shimstack"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
     fun provideBikeDao(appDatabase: AppDatabase) = appDatabase.bikeDao()
+
+    @Provides
+    fun provideBikeTemplateDao(appDatabase: AppDatabase) = appDatabase.bikeTemplateDao()
 }

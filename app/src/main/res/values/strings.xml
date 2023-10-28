@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">Shimstack</string>
     <string name="title_home">Home</string>
+    <string name="label_continue">Continue</string>
+    <string name="label_next_step">Next Step</string>
 
 
     <string name="tire">Tire</string>
@@ -31,4 +33,8 @@
     <string name="fab_add_bike">Add new bike</string>
 
     <string name="copy_add_new_bike">Add your first bike!</string>
+
+    <string name="header_new_bike_entry">Add your Bike</string>
+    <string name="copy_new_bike_entry">Search for your bike by make and model. Don\'t worry if it isn\'t in the list, you will just have to enter some things manually.</string>
+    <string name="placeholder_new_bike_entry" translatable="false">Santa Cruz Session</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.screens.mainScreens
+package com.alpenraum.shimstack.ui.features.mainScreens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -20,9 +20,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.alpenraum.shimstack.common.moveLastEntryToStart
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
-import com.alpenraum.shimstack.ui.screens.main.navigation.bottomNavigation.BottomNavigationDestinations
-import com.alpenraum.shimstack.ui.screens.mainScreens.home.HomeScreen
-import com.alpenraum.shimstack.ui.screens.mainScreens.settings.SettingsScreen
+import com.alpenraum.shimstack.ui.features.main.navigation.bottomNavigation.BottomNavigationDestinations
+import com.alpenraum.shimstack.ui.features.mainScreens.home.HomeScreen
+import com.alpenraum.shimstack.ui.features.mainScreens.settings.SettingsScreen
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.moveToTop

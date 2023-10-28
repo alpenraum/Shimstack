@@ -3,6 +3,7 @@ package com.alpenraum.shimstack
 import android.app.Application
 import android.content.Context
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -21,5 +22,5 @@ abstract class AppModule {
 @Module
 class AppUtilsModule {
     @Provides
-    fun provideMoshi(): Moshi = Moshi.Builder().build()
+    fun provideMoshi(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 }

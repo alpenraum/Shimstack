@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.screens.mainScreens.home
+package com.alpenraum.shimstack.ui.features.mainScreens.home
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope

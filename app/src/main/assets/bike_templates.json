@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Santa Cruz 5010 V3",
+    "type": "TRAIL",
+    "isEBike": false,
+    "frontSuspensionTravelInMM": 140,
+    "rearSuspensionTravelInMM": 130
+  },
+  {
+    "name": "Evil Offering V2",
+    "type": "ALL_MTN",
+    "isEBike": true,
+    "frontSuspensionTravelInMM": 150,
+    "rearSuspensionTravelInMM": 140
+  },
+  {
+    "name": "Cannondale Topstone 2022",
+    "type": "GRAVEL",
+    "isEBike": false,
+    "frontSuspensionTravelInMM": 0,
+    "rearSuspensionTravelInMM": 0
+  }
+]

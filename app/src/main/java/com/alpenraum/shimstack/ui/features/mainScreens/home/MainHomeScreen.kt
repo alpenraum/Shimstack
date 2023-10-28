@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.screens.mainScreens.home
+package com.alpenraum.shimstack.ui.features.mainScreens.home
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
@@ -53,7 +53,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
@@ -65,7 +64,7 @@ import com.alpenraum.shimstack.ui.compose.ForkDetails
 import com.alpenraum.shimstack.ui.compose.ShockDetails
 import com.alpenraum.shimstack.ui.compose.TireDetails
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
-import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
+import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -318,9 +317,9 @@ private fun BikeCard(
                 visible = showPlaceholder,
                 highlight = PlaceholderHighlight.fade(),
                 color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = shimstackRoundedCornerShape()
+                shape = ShimstackRoundedCornerShape()
             ),
-        shape = shimstackRoundedCornerShape(),
+        shape = ShimstackRoundedCornerShape(),
         tonalElevation = 10.dp,
         color = MaterialTheme.colorScheme.secondaryContainer
     ) {

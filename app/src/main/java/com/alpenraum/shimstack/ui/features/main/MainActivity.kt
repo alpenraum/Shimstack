@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.screens.main
+package com.alpenraum.shimstack.ui.features.main
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -10,9 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
-import com.alpenraum.shimstack.ui.screens.main.navigation.mainNavigation.MainNavigationDestination
-import com.alpenraum.shimstack.ui.screens.mainScreens.MainScreenFeature
-import com.alpenraum.shimstack.ui.screens.newBike.NewBikeFeature
+import com.alpenraum.shimstack.ui.features.main.navigation.mainNavigation.MainNavigationDestination
+import com.alpenraum.shimstack.ui.features.mainScreens.MainScreenFeature
+import com.alpenraum.shimstack.ui.features.newBike.NewBikeFeature
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.olshevski.navigation.reimagined.AnimatedNavHost

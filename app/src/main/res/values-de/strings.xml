@@ -2,6 +2,9 @@
 <resources>
     <string name="title_home">Home</string>
 
+    <string name="label_continue">Weiter</string>
+    <string name="label_next_step">Nächster Schritt</string>
+
     <string name="tire">Reifen</string>
     <string name="rear">Hinten</string>
     <string name="front">Vorne</string>
@@ -22,5 +25,9 @@
     <string name="settings_dynamic_theme">Android Farben verwenden</string>
     <string name="fab_add_bike">Neues Fahrrad hinzufügen</string>
 
-    <string name="copy_add_new_bike">Füge dein erstes Bike hinzu!</string>
+    <string name="copy_add_new_bike">Füge dein erstes Fahrrrad hinzu!</string>
+
+    <string name="header_new_bike_entry">Fahrrad hinzufügen</string>
+    <string name="copy_new_bike_entry">Suche für dein Fahrrad mittels der Marke und Modell. Keine Sorge, falls es nicht in der Liste steht. Du wirst nur ein paar Dinge selber eingeben müssen.</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.screens.main.navigation.bottomNavigation
+package com.alpenraum.shimstack.ui.features.main.navigation.bottomNavigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

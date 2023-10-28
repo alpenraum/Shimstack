@@ -5,10 +5,11 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.ui.screens.mainScreens.home.UIDataLabel
+import com.alpenraum.shimstack.data.db.AppDatabase
+import com.alpenraum.shimstack.ui.features.mainScreens.home.UIDataLabel
 import java.math.BigDecimal
 
-@Entity
+@Entity(tableName = AppDatabase.table_bike)
 data class Bike(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     val name: String,

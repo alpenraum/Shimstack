@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.screens.mainScreens.settings
+package com.alpenraum.shimstack.ui.features.mainScreens.settings
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
