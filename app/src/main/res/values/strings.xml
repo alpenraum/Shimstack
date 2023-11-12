@@ -37,4 +37,16 @@
     <string name="header_new_bike_entry">Add your Bike</string>
     <string name="copy_new_bike_entry">Search for your bike by make and model. Don\'t worry if it isn\'t in the list, you will just have to enter some things manually.</string>
     <string name="placeholder_new_bike_entry" translatable="false">Santa Cruz Session</string>
+    <string name="label_new_bike_search">Search bike</string>
+    <string name="label_new_bike_travel" translatable="false">%1smm / %2smm</string>
+
+    <string name="label_road_type">Road bike</string>
+    <string name="label_gravel_type">Gravel</string>
+    <string name="label_dh_type">Downhill</string>
+    <string name="label_xc_type">Cross Country</string>
+    <string name="label_trail_type">Trail</string>
+    <string name="label_all_mtn_type">All Mountain</string>
+    <string name="label_enduro_type">Enduro</string>
+    <string name="label_unknown_type"></string>
+
 </resources>

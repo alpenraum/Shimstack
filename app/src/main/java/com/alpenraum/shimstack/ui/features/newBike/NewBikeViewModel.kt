@@ -55,23 +55,20 @@ class NewBikeViewModel @Inject constructor(
     override fun onStart() {
         super.onStart()
 
-        // filterJob = launchFilterBikeTemplates()
+        filterJob = launchFilterBikeTemplates()
     }
 
     override fun onStop() {
         super.onStop()
-        //   filterJob?.cancel()
+        filterJob?.cancel()
     }
 
     override fun intent(intent: NewBikeContract.Intent) {
         when (intent) {
             is NewBikeContract.Intent.Filter -> {
-                iOScope.launch {
-                    val filteredTemplates =
-                        bikeTemplateRepository.getBikeTemplatesFilteredByName(intent.filter)
-                    _state.emit(NewBikeContract.State.Entry(filteredTemplates.toImmutableList()))
-                }
-            } // filterFlow.value = intent.filter
+                filterFlow.value = intent.filter
+            }
+            NewBikeContract.Intent.OnNextClicked -> {}
         }
     }
 
@@ -96,5 +93,6 @@ interface NewBikeContract :
 
     sealed class Intent {
         class Filter(val filter: String) : Intent()
+        data object OnNextClicked : Intent()
     }
 }

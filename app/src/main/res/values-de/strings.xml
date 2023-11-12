@@ -29,5 +29,15 @@
 
     <string name="header_new_bike_entry">Fahrrad hinzufügen</string>
     <string name="copy_new_bike_entry">Suche für dein Fahrrad mittels der Marke und Modell. Keine Sorge, falls es nicht in der Liste steht. Du wirst nur ein paar Dinge selber eingeben müssen.</string>
+    <string name="label_new_bike_search">Fahrrad suchen</string>
 
+
+    <string name="label_road_type">Rennrad</string>
+    <string name="label_gravel_type">Gravel</string>
+    <string name="label_dh_type">Downhill</string>
+    <string name="label_xc_type">Cross Country</string>
+    <string name="label_trail_type">Trail</string>
+    <string name="label_all_mtn_type">All Mountain</string>
+    <string name="label_enduro_type">Enduro</string>
+    <string name="label_unknown_type"></string>
 </resources>

@@ -13,4 +13,15 @@ class BikeTemplate(
     val isEBike: Boolean,
     val frontSuspensionTravelInMM: Int,
     val rearSuspensionTravelInMM: Int
-)
+) {
+    companion object {
+        fun testData() = BikeTemplate(
+            id = 0,
+            name = "Evil Offering V2",
+            type = Bike.Type.ALL_MTN,
+            isEBike = false,
+            frontSuspensionTravelInMM = 140,
+            rearSuspensionTravelInMM = 140
+        )
+    }
+}

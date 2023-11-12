@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,7 +66,9 @@ fun EntryScreen(state: NewBikeContract.State.Entry, intent: (NewBikeContract.Int
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
-            label = { Text(text = "Bike name") } // TODO: localisation
+            label = {
+                Text(text = stringResource(id = R.string.label_new_bike_search))
+            }
         )
         AnimatedContent(
             modifier = Modifier
@@ -88,30 +92,63 @@ fun EntryScreen(state: NewBikeContract.State.Entry, intent: (NewBikeContract.Int
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         itemsIndexed(state.bikeTemplates) { index, item ->
-                            Row(
-                                modifier = Modifier
-                                    .padding(
-                                        vertical = 8.dp
-                                    )
-                                    .padding(horizontal = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                // todo: style that list element
-                                Text(text = item.name)
-                                Spacer(modifier = Modifier.weight(1.0f))
-                                Text(text = item.type.name)
-                            }
+                            ListItem(bike = item)
                             if (index < state.bikeTemplates.lastIndex) Divider()
                         }
                     }
                 }
             } else {
-                LargeButton(onClick = { /*TODO*/ }, modifier = Modifier.padding(vertical = 16.dp)) {
+                LargeButton(onClick = {
+                    intent(NewBikeContract.Intent.OnNextClicked)
+                }, modifier = Modifier.padding(vertical = 16.dp)) {
                     Text(text = stringResource(id = R.string.label_next_step)) // todo: better label
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ListItem(bike: BikeTemplate) {
+    Row(
+        modifier = Modifier
+            .padding(
+                vertical = 8.dp
+            )
+            .padding(horizontal = 16.dp).semantics(true) {},
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Column {
+            Text(text = bike.name)
+            Text(
+                text = stringResource(id = bike.type.labelRes),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontStyle = FontStyle.Italic
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1.0f))
+
+        Column {
+            Text(
+                text = stringResource(
+                    id = R.string.label_new_bike_travel,
+                    bike.frontSuspensionTravelInMM,
+                    bike.rearSuspensionTravelInMM
+                ),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ListItemPreview() {
+    AppTheme {
+        ListItem(bike = BikeTemplate.testData())
     }
 }
 
