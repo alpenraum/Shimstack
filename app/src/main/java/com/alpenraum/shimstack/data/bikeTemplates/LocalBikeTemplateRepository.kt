@@ -10,8 +10,7 @@ import javax.inject.Inject
 class LocalBikeTemplateRepository @Inject constructor(
     private val bikeTemplateDAO: BikeTemplateDAO,
     private val moshi: Moshi
-) :
-    BikeTemplateRepository {
+) : BikeTemplateRepository {
     @OptIn(ExperimentalStdlibApi::class)
     override suspend fun prepopulateData(context: Context) { // TODO: Add onboarding with this
         val adapter: JsonAdapter<List<BikeTemplate>> = moshi.adapter()
@@ -35,7 +34,11 @@ class LocalBikeTemplateRepository @Inject constructor(
                         type = Bike.Type.ENDURO,
                         false,
                         150,
-                        130
+                        130,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
                     )
                 )
             }

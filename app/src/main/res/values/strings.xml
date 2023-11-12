@@ -40,6 +40,9 @@
     <string name="label_new_bike_search">Search bike</string>
     <string name="label_new_bike_travel" translatable="false">%1smm / %2smm</string>
 
+    <string name="copy_new_bike_details">Enter or modify the data of your bike.</string>
+
+
     <string name="label_road_type">Road bike</string>
     <string name="label_gravel_type">Gravel</string>
     <string name="label_dh_type">Downhill</string>

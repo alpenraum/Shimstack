@@ -1,6 +1,7 @@
 package com.alpenraum.shimstack.ui.features.newBike
 
 import androidx.compose.runtime.Immutable
+import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -68,7 +69,14 @@ class NewBikeViewModel @Inject constructor(
             is NewBikeContract.Intent.Filter -> {
                 filterFlow.value = intent.filter
             }
-            NewBikeContract.Intent.OnNextClicked -> {}
+
+            NewBikeContract.Intent.OnNextClicked -> {
+                // TODO
+            }
+
+            is NewBikeContract.Intent.BikeTemplateSelected -> {
+                // TODO
+            }
         }
     }
 
@@ -87,6 +95,8 @@ interface NewBikeContract :
     sealed class State {
         data class Entry(val bikeTemplates: ImmutableList<BikeTemplate> = persistentListOf()) :
             State()
+
+        data class Details(val bike: BikeDTO) : State()
     }
 
     sealed class Event
@@ -94,5 +104,6 @@ interface NewBikeContract :
     sealed class Intent {
         class Filter(val filter: String) : Intent()
         data object OnNextClicked : Intent()
+        class BikeTemplateSelected(val bike: BikeTemplate) : Intent()
     }
 }

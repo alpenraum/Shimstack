@@ -30,6 +30,7 @@
     <string name="header_new_bike_entry">Fahrrad hinzufügen</string>
     <string name="copy_new_bike_entry">Suche für dein Fahrrad mittels der Marke und Modell. Keine Sorge, falls es nicht in der Liste steht. Du wirst nur ein paar Dinge selber eingeben müssen.</string>
     <string name="label_new_bike_search">Fahrrad suchen</string>
+    <string name="copy_new_bike_details">Gib die Daten deines Fahrrads ein oder ändere sie.</string>
 
 
     <string name="label_road_type">Rennrad</string>

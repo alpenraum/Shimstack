@@ -251,7 +251,7 @@ fun PreviewTireDataBig() {
 private val testBike = BikeDTO(
     name = "1",
     type = Bike.Type.UNKNOWN,
-    frontSuspension = Suspension(Pressure(60.0), Damping(1), Damping(1), 3),
+    frontSuspension = Suspension(Pressure(60.0), Damping(1), Damping(1), 3,140),
     frontTire = Tire(
         Pressure(20.0),
         0.0,
@@ -263,7 +263,7 @@ private val testBike = BikeDTO(
 private val testBikeMax = BikeDTO(
     name = "1",
     type = Bike.Type.UNKNOWN,
-    frontSuspension = Suspension(Pressure(60.0), Damping(1, 2), Damping(3, 4), 5),
+    frontSuspension = Suspension(Pressure(60.0), Damping(1, 2), Damping(3, 4), 5,420),
     frontTire = Tire(
         Pressure(20.0),
         0.0,

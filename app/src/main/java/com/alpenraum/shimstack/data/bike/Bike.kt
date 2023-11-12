@@ -65,8 +65,8 @@ data class BikeDTO(
                 isEBike = false,
                 frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
                 rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-                frontSuspension = Suspension(Pressure(0.0), Damping(0), Damping(0), 0),
-                rearSuspension = Suspension(Pressure(0.0), Damping(0), Damping(0), 0)
+                frontSuspension = Suspension(Pressure(0.0), Damping(0), Damping(0), 0,0),
+                rearSuspension = Suspension(Pressure(0.0), Damping(0), Damping(0), 0,0)
             )
     }
 

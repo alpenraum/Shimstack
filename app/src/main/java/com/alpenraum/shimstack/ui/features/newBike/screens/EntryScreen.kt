@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,13 +28,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
+import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
@@ -42,13 +42,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun EntryScreen(state: NewBikeContract.State.Entry, intent: (NewBikeContract.Intent) -> Unit) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = stringResource(id = R.string.header_new_bike_entry),
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+    Column {
         Text(
             text = stringResource(id = R.string.copy_new_bike_entry),
             style = MaterialTheme.typography.bodyLarge,
@@ -63,16 +57,13 @@ fun EntryScreen(state: NewBikeContract.State.Entry, intent: (NewBikeContract.Int
                 userInput = it
                 intent(NewBikeContract.Intent.Filter(it))
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             label = {
                 Text(text = stringResource(id = R.string.label_new_bike_search))
             }
         )
         AnimatedContent(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             targetState = state.bikeTemplates.isNotEmpty(),
             label = "",
             transitionSpec = {
@@ -83,16 +74,14 @@ fun EntryScreen(state: NewBikeContract.State.Entry, intent: (NewBikeContract.Int
         ) {
             if (it) {
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1.0f, fill = false)
+                    modifier = Modifier.fillMaxWidth().weight(1.0f, fill = false)
                         .padding(vertical = 16.dp)
                 ) {
                     LazyColumn(
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         itemsIndexed(state.bikeTemplates) { index, item ->
-                            ListItem(bike = item)
+                            ListItem(bike = item, intent)
                             if (index < state.bikeTemplates.lastIndex) Divider()
                         }
                     }
@@ -109,24 +98,18 @@ fun EntryScreen(state: NewBikeContract.State.Entry, intent: (NewBikeContract.Int
 }
 
 @Composable
-private fun ListItem(bike: BikeTemplate) {
+private fun ListItem(bike: BikeTemplate, intent: (NewBikeContract.Intent) -> Unit) {
     Row(
-        modifier = Modifier
-            .padding(
-                vertical = 8.dp
-            )
-            .padding(horizontal = 16.dp).semantics(true) {},
+        modifier = Modifier.padding(
+            vertical = 8.dp
+        ).padding(horizontal = 16.dp).semantics(true) {}
+            .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Column {
             Text(text = bike.name)
-            Text(
-                text = stringResource(id = bike.type.labelRes),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontStyle = FontStyle.Italic
-            )
+            InfoText(textRes = bike.type.labelRes)
         }
 
         Spacer(modifier = Modifier.weight(1.0f))
@@ -148,7 +131,7 @@ private fun ListItem(bike: BikeTemplate) {
 @Composable
 private fun ListItemPreview() {
     AppTheme {
-        ListItem(bike = BikeTemplate.testData())
+        ListItem(bike = BikeTemplate.testData()) {}
     }
 }
 
@@ -165,7 +148,11 @@ private fun EntryPreview() {
                         type = Bike.Type.ENDURO,
                         false,
                         150,
-                        130
+                        130,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
                     )
                 )
             }

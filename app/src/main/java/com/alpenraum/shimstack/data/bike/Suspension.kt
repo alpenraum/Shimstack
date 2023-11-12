@@ -8,7 +8,8 @@ data class Suspension(
     @Embedded(prefix = "pressure_") val pressure: Pressure,
     @Embedded(prefix = "compression_") val compression: Damping,
     @Embedded(prefix = "rebound_") val rebound: Damping,
-    val tokens: Int
+    val tokens: Int,
+    val travel: Int
 )
 
 @Immutable
