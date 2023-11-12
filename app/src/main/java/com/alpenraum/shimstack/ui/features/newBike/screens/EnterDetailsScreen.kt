@@ -180,7 +180,11 @@ private fun ColumnScope.TireInput(
     onTireWidthChanged: (Double) -> Unit,
     onRimWidthChanged: (Double) -> Unit
 ) {
-    Text(text = headline, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.padding(top = 16.dp))
+    Text(
+        text = headline,
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier.padding(top = 16.dp)
+    )
     Row(modifier = Modifier.padding(top = 8.dp)) {
         OutlinedTextField(
             shape = ShimstackRoundedCornerShape(),
