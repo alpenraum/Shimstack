@@ -23,6 +23,7 @@
 
     <string name="bar" translatable="false">Bar</string>
     <string name="psi" translatable="false">PSI</string>
+    <string name="mm" translatable="false">mm</string>
 
 
     <string name="copy_no_fork">This fork has no adjustable settings.</string>
@@ -41,6 +42,8 @@
     <string name="label_new_bike_travel" translatable="false">%1smm / %2smm</string>
 
     <string name="copy_new_bike_details">Enter or modify the data of your bike.</string>
+    <string name="copy_new_bike_internal_width_inf">Leave it empty if you are unsure.</string>
+    <string name="copy_new_bike_ebike">E-Bike?</string>
 
 
     <string name="label_road_type">Road bike</string>
@@ -50,6 +53,16 @@
     <string name="label_trail_type">Trail</string>
     <string name="label_all_mtn_type">All Mountain</string>
     <string name="label_enduro_type">Enduro</string>
-    <string name="label_unknown_type"></string>
+    <string name="label_unknown_type" />
+
+    <string name="label_name">Name</string>
+    <string name="label_type">Type</string>
+    <string name="label_travel">Travel</string>
+    <string name="label_front_suspension">Front suspension</string>
+    <string name="label_rear_suspension">Rear suspension</string>
+    <string name="label_rear_tire">Rear tire</string>
+    <string name="label_front_tire">Front tire</string>
+    <string name="label_tire_width">Tire width</string>
+    <string name="label_internal_rim_width">Internal rim width</string>
 
 </resources>

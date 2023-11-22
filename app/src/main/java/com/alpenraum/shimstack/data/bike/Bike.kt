@@ -65,8 +65,8 @@ data class BikeDTO(
                 isEBike = false,
                 frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
                 rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-                frontSuspension = Suspension(Pressure(0.0), Damping(0), Damping(0), 0,0),
-                rearSuspension = Suspension(Pressure(0.0), Damping(0), Damping(0), 0,0)
+                frontSuspension = Suspension(Pressure(0.0), Damping(0), Damping(0), 0, 0),
+                rearSuspension = Suspension(Pressure(0.0), Damping(0), Damping(0), 0, 0)
             )
     }
 
@@ -111,18 +111,18 @@ data class BikeDTO(
         }
     }
 
-    // TODO: Create DTOs FOR ALL SUBDATA
-    private fun getDampingUIData(damping: Damping, isRebound: Boolean, context: Context) = if (damping.highSpeedFromClosed != null) {
-        UIDataLabel.Complex(
-            mapOf(
-                context.getString(if (isRebound) R.string.lsr else R.string.lsc) to damping.lowSpeedFromClosed.toString(),
-                context.getString(if (isRebound) R.string.hsr else R.string.hsc) to damping.highSpeedFromClosed.toString()
+    private fun getDampingUIData(damping: Damping, isRebound: Boolean, context: Context) =
+        if (damping.highSpeedFromClosed != null) {
+            UIDataLabel.Complex(
+                mapOf(
+                    context.getString(if (isRebound) R.string.lsr else R.string.lsc) to damping.lowSpeedFromClosed.toString(),
+                    context.getString(if (isRebound) R.string.hsr else R.string.hsc) to damping.highSpeedFromClosed.toString()
+                )
             )
-        )
-    } else {
-        UIDataLabel.Simple(
-            context.getString(if (isRebound) R.string.rebound else R.string.comp),
-            damping.lowSpeedFromClosed.toString()
-        )
-    }
+        } else {
+            UIDataLabel.Simple(
+                context.getString(if (isRebound) R.string.rebound else R.string.comp),
+                damping.lowSpeedFromClosed.toString()
+            )
+        }
 }

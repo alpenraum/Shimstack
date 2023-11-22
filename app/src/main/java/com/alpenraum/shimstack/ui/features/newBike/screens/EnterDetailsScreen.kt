@@ -16,7 +16,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,26 +28,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
+import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
+import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.theme.AppTheme
 
-// TODO: Localisation
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnterDetailsScreen(
     state: NewBikeContract.State.Details,
     intent: (NewBikeContract.Intent) -> Unit
 ) {
+    val isCompactScreen =
+        LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Compact
     Column {
         Text(
             text = stringResource(id = R.string.copy_new_bike_details),
@@ -57,14 +65,20 @@ fun EnterDetailsScreen(
             onValueChange = {
                 // TODO
             },
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            modifier = if (!isCompactScreen) {
+                Modifier.padding(
+                    top = 16.dp
+                )
+            } else {
+                Modifier.fillMaxWidth().padding(top = 16.dp)
+            },
             label = {
-                Text(text = "Name")
+                Text(text = stringResource(id = R.string.label_name))
             }
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            modifier = Modifier.padding(top = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             var expanded by remember { mutableStateOf(false) }
@@ -73,14 +87,16 @@ fun EnterDetailsScreen(
                 onExpandedChange = {
                     expanded = !expanded
                 },
-                modifier = Modifier.weight(1.0f)
+                modifier = if (isCompactScreen) Modifier.weight(1.0f) else Modifier.padding(
+                    end = 32.dp
+                )
             ) {
                 OutlinedTextField(
                     shape = ShimstackRoundedCornerShape(),
                     readOnly = true,
                     value = stringResource(state.bike.type.labelRes),
                     onValueChange = {},
-                    label = { Text(text = "Type") },
+                    label = { Text(text = stringResource(id = R.string.label_type)) },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = expanded
@@ -105,12 +121,12 @@ fun EnterDetailsScreen(
                 modifier = Modifier.padding(start = 8.dp),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Text(text = "E-Bike?")
+                Text(text = stringResource(id = R.string.copy_new_bike_ebike))
                 Switch(checked = state.bike.isEBike, onCheckedChange = { /*todo*/ })
             }
         }
         SuspensionInput(
-            headline = "Front suspension",
+            headline = stringResource(id = R.string.label_front_suspension),
             data = state.bike.frontSuspension,
             initialState = state.bike.frontSuspension != null,
             onValueChange = {
@@ -118,15 +134,27 @@ fun EnterDetailsScreen(
             }
         )
         SuspensionInput(
-            headline = "Rear suspension",
+            headline = stringResource(id = R.string.label_rear_suspension),
             data = state.bike.rearSuspension,
             initialState = state.bike.rearSuspension != null,
             onValueChange = {
                 // todo
             }
         )
-        TireInput(headline = "Front Tire", data = state.bike.frontTire, {}, {}) // todo
-        TireInput(headline = "Rear Tire", data = state.bike.rearTire, {}, {}) // todo
+        TireInput(
+            headline = stringResource(id = R.string.label_front_tire),
+            data = state.bike.frontTire,
+            {
+            },
+            {}
+        ) // todo
+        TireInput(
+            headline = stringResource(id = R.string.label_rear_tire),
+            data = state.bike.rearTire,
+            {
+            },
+            {}
+        ) // todo
     }
 }
 
@@ -149,7 +177,7 @@ private fun ColumnScope.SuspensionInput(
         Switch(
             checked = showSuspensionInput,
             onCheckedChange = { showSuspensionInput = !showSuspensionInput },
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier.padding(start = 16.dp)
         )
     }
     AnimatedVisibility(visible = showSuspensionInput) {
@@ -162,10 +190,10 @@ private fun ColumnScope.SuspensionInput(
                     onValueChange(value)
                 }
             },
-            suffix = { Text(text = "mm") },
+            suffix = { Text(text = stringResource(id = R.string.mm)) },
             modifier = Modifier.padding(top = 8.dp),
             label = {
-                Text(text = "Travel")
+                Text(text = stringResource(id = R.string.label_travel))
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
 
@@ -195,10 +223,10 @@ private fun ColumnScope.TireInput(
                     onTireWidthChanged(it)
                 }
             },
-            suffix = { Text(text = "mm") },
-            modifier = Modifier.weight(1.0f).padding(end = 8.dp),
+            suffix = { stringResource(id = R.string.mm) },
+            modifier = Modifier.weight(1.0f).padding(end = 16.dp),
             label = {
-                Text(text = "Tire width")
+                Text(text = stringResource(id = R.string.label_tire_width))
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
         )
@@ -215,29 +243,48 @@ private fun ColumnScope.TireInput(
                         onRimWidthChanged(it)
                     }
                 },
-                suffix = { Text(text = "mm") },
+                suffix = { Text(text = stringResource(id = R.string.mm)) },
                 label = {
-                    Text(text = "Internal rim width")
+                    Text(text = stringResource(id = R.string.label_internal_rim_width))
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
             )
-            // todo convert to InfoText
-            Text(
-                text = "Leave it empty if you are unsure.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontStyle = FontStyle.Italic
-            )
+            InfoText(R.string.copy_new_bike_internal_width_inf)
         }
     }
 }
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(name = "PIXEL_C", device = Devices.PIXEL_C, showBackground = true)
 @Composable
 private fun Preview() {
-    AppTheme {
-        EnterDetailsScreen(
-            state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
-        ) {}
+    CompositionLocalProvider(
+        LocalWindowSizeClass provides WindowSizeClass.calculateFromSize(
+            DpSize(
+                4000.dp,
+                200.dp
+            )
+        )
+    ) {
+        AppTheme {
+            EnterDetailsScreen(
+                state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
+            ) {}
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(name = "PIXEL_5", device = Devices.PIXEL_4, showBackground = true)
+@Composable
+private fun Preview1() {
+    CompositionLocalProvider(
+        LocalWindowSizeClass provides WindowSizeClass.calculateFromSize(DpSize.Zero)
+    ) {
+        AppTheme {
+            EnterDetailsScreen(
+                state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
+            ) {}
+        }
     }
 }
