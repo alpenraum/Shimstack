@@ -16,11 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
@@ -39,10 +35,11 @@ import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.ui.compose.InfoText
+import com.alpenraum.shimstack.ui.compose.PhonePreview
 import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
+import com.alpenraum.shimstack.ui.compose.TabletPreview
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
-import com.alpenraum.shimstack.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -87,9 +84,13 @@ fun EnterDetailsScreen(
                 onExpandedChange = {
                     expanded = !expanded
                 },
-                modifier = if (isCompactScreen) Modifier.weight(1.0f) else Modifier.padding(
-                    end = 32.dp
-                )
+                modifier = if (isCompactScreen) {
+                    Modifier.weight(1.0f)
+                } else {
+                    Modifier.padding(
+                        end = 32.dp
+                    )
+                }
             ) {
                 OutlinedTextField(
                     shape = ShimstackRoundedCornerShape(),
@@ -254,37 +255,22 @@ private fun ColumnScope.TireInput(
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(name = "PIXEL_C", device = Devices.PIXEL_C, showBackground = true)
 @Composable
 private fun Preview() {
-    CompositionLocalProvider(
-        LocalWindowSizeClass provides WindowSizeClass.calculateFromSize(
-            DpSize(
-                4000.dp,
-                200.dp
-            )
-        )
-    ) {
-        AppTheme {
-            EnterDetailsScreen(
-                state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
-            ) {}
-        }
+    TabletPreview {
+        EnterDetailsScreen(
+            state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
+        ) {}
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(name = "PIXEL_5", device = Devices.PIXEL_4, showBackground = true)
 @Composable
 private fun Preview1() {
-    CompositionLocalProvider(
-        LocalWindowSizeClass provides WindowSizeClass.calculateFromSize(DpSize.Zero)
-    ) {
-        AppTheme {
-            EnterDetailsScreen(
-                state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
-            ) {}
-        }
+    PhonePreview {
+        EnterDetailsScreen(
+            state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
+        ) {}
     }
 }
