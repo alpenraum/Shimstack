@@ -95,14 +95,16 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.47")
     ksp("com.google.dagger:hilt-compiler:2.47")
-    // implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
-    // compose safe args
-    implementation("dev.olshevski.navigation:reimagined:1.5.0")
-    implementation("dev.olshevski.navigation:reimagined-hilt:1.5.0")
-    implementation("dev.olshevski.navigation:reimagined-material:1.5.0")
+    // navigation
+    implementation("androidx.navigation:navigation-compose:$2.7.5")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("io.github.raamcosta.compose-destinations:core:1.9.55")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.55")
+    implementation("io.github.raamcosta.compose-destinations:animations-core:1.9.55")
 
     implementation("com.google.accompanist:accompanist-placeholder-material:0.24.13-rc")
+    implementation("com.google.accompanist:accompanist-navigation-material:0.33.2-alpha")
 
     // room
     val roomVersion = "2.6.0"

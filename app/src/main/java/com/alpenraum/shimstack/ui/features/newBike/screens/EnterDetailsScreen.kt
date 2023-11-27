@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -35,11 +37,13 @@ import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.ui.compose.InfoText
+import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.PhonePreview
 import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.compose.TabletPreview
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
+import com.alpenraum.shimstack.usecases.biometrics.ValidateBikeDTOUseCase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +53,7 @@ fun EnterDetailsScreen(
 ) {
     val isCompactScreen =
         LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Compact
-    Column {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Text(
             text = stringResource(id = R.string.copy_new_bike_details),
             style = MaterialTheme.typography.bodyLarge,
@@ -60,7 +64,7 @@ fun EnterDetailsScreen(
             singleLine = true,
             value = state.bike.name,
             onValueChange = {
-                // TODO
+                intent(NewBikeContract.Intent.BikeNameInput(it))
             },
             modifier = if (!isCompactScreen) {
                 Modifier.padding(
@@ -71,7 +75,8 @@ fun EnterDetailsScreen(
             },
             label = {
                 Text(text = stringResource(id = R.string.label_name))
-            }
+            },
+            isError = state.validationErrors?.name == false
         )
 
         Row(
@@ -103,7 +108,8 @@ fun EnterDetailsScreen(
                             expanded = expanded
                         )
                     },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    isError = state.validationErrors?.type == false
                 )
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                     expanded = false
@@ -112,7 +118,7 @@ fun EnterDetailsScreen(
                         DropdownMenuItem(text = {
                             Text(text = stringResource(selectionOption.labelRes))
                         }, onClick = {
-                            // todo
+                            intent(NewBikeContract.Intent.BikeTypeInput(selectionOption))
                             expanded = false
                         })
                     }
@@ -123,39 +129,62 @@ fun EnterDetailsScreen(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(text = stringResource(id = R.string.copy_new_bike_ebike))
-                Switch(checked = state.bike.isEBike, onCheckedChange = { /*todo*/ })
+                Switch(
+                    checked = state.bike.isEBike,
+                    onCheckedChange = { intent(NewBikeContract.Intent.EbikeInput(it)) }
+                )
             }
         }
         SuspensionInput(
             headline = stringResource(id = R.string.label_front_suspension),
             data = state.bike.frontSuspension,
+            isError = state.validationErrors?.frontSuspension == false,
             initialState = state.bike.frontSuspension != null,
+            onSwitchToggle = {
+                if (!it) intent(NewBikeContract.Intent.FrontSuspensionInput(null))
+            },
             onValueChange = {
-                // todo
+                intent(NewBikeContract.Intent.FrontSuspensionInput(it))
             }
         )
         SuspensionInput(
             headline = stringResource(id = R.string.label_rear_suspension),
             data = state.bike.rearSuspension,
+            isError = state.validationErrors?.rearSuspension == false,
             initialState = state.bike.rearSuspension != null,
+            onSwitchToggle = {
+                if (!it) intent(NewBikeContract.Intent.RearSuspensionInput(null))
+            },
             onValueChange = {
-                // todo
+                intent(NewBikeContract.Intent.RearSuspensionInput(it))
             }
         )
         TireInput(
             headline = stringResource(id = R.string.label_front_tire),
             data = state.bike.frontTire,
+            isError = state.validationErrors?.frontTire == false,
             {
+                intent(NewBikeContract.Intent.FrontTireWidthInput(it))
             },
-            {}
-        ) // todo
+            {
+                intent(NewBikeContract.Intent.FrontInternalRimWidthInput(it))
+            }
+        )
         TireInput(
             headline = stringResource(id = R.string.label_rear_tire),
             data = state.bike.rearTire,
+            isError = state.validationErrors?.frontTire == false,
             {
+                intent(NewBikeContract.Intent.RearTireWidthInput(it))
             },
-            {}
-        ) // todo
+            { intent(NewBikeContract.Intent.FrontInternalRimWidthInput(it)) }
+        )
+
+        LargeButton(enabled = state.validationErrors == null, onClick = {
+            intent(NewBikeContract.Intent.OnNextClicked)
+        }, modifier = Modifier.padding(vertical = 16.dp)) {
+            Text(text = stringResource(id = R.string.label_next_step))
+        }
     }
 }
 
@@ -163,8 +192,10 @@ fun EnterDetailsScreen(
 private fun ColumnScope.SuspensionInput(
     headline: String,
     data: Suspension?,
+    isError: Boolean,
     initialState: Boolean,
-    onValueChange: (String) -> Unit
+    onSwitchToggle: (Boolean) -> Unit,
+    onValueChange: (Int?) -> Unit
 ) {
     var showSuspensionInput by remember {
         mutableStateOf(initialState)
@@ -177,7 +208,10 @@ private fun ColumnScope.SuspensionInput(
         Text(text = headline, style = MaterialTheme.typography.headlineSmall)
         Switch(
             checked = showSuspensionInput,
-            onCheckedChange = { showSuspensionInput = !showSuspensionInput },
+            onCheckedChange = {
+                showSuspensionInput = it
+                onSwitchToggle(it)
+            },
             modifier = Modifier.padding(start = 16.dp)
         )
     }
@@ -188,14 +222,15 @@ private fun ColumnScope.SuspensionInput(
             value = data?.travel?.toString() ?: "0",
             onValueChange = { value ->
                 value.toIntOrNull()?.let {
-                    onValueChange(value)
-                }
+                    onValueChange(it)
+                } ?: onValueChange(null)
             },
             suffix = { Text(text = stringResource(id = R.string.mm)) },
             modifier = Modifier.padding(top = 8.dp),
             label = {
                 Text(text = stringResource(id = R.string.label_travel))
             },
+            isError = isError,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
 
         )
@@ -206,8 +241,9 @@ private fun ColumnScope.SuspensionInput(
 private fun ColumnScope.TireInput(
     headline: String,
     data: Tire,
+    isError: Boolean,
     onTireWidthChanged: (Double) -> Unit,
-    onRimWidthChanged: (Double) -> Unit
+    onRimWidthChanged: (Double?) -> Unit
 ) {
     Text(
         text = headline,
@@ -229,6 +265,7 @@ private fun ColumnScope.TireInput(
             label = {
                 Text(text = stringResource(id = R.string.label_tire_width))
             },
+            isError = isError,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
         )
         Column(
@@ -242,12 +279,13 @@ private fun ColumnScope.TireInput(
                 onValueChange = { value ->
                     value.toDoubleOrNull()?.let {
                         onRimWidthChanged(it)
-                    }
+                    } ?: onRimWidthChanged(null)
                 },
                 suffix = { Text(text = stringResource(id = R.string.mm)) },
                 label = {
                     Text(text = stringResource(id = R.string.label_internal_rim_width))
                 },
+                isError = isError,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
             )
             InfoText(R.string.copy_new_bike_internal_width_inf)
@@ -271,6 +309,26 @@ private fun Preview1() {
     PhonePreview {
         EnterDetailsScreen(
             state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
+        ) {}
+    }
+}
+
+@Preview(name = "ERROR", device = Devices.PIXEL_4, showBackground = true)
+@Composable
+private fun Error() {
+    PhonePreview {
+        EnterDetailsScreen(
+            state = NewBikeContract.State.Details(
+                BikeTemplate.testData().toBikeDTO(),
+                ValidateBikeDTOUseCase.Result.Failure(
+                    name = false,
+                    type = false,
+                    frontTire = false,
+                    rearTire = false,
+                    frontSuspension = false,
+                    rearSuspension = false
+                )
+            )
         ) {}
     }
 }

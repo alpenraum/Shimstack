@@ -48,7 +48,7 @@ class EncryptedKeyValueStore @Inject constructor(
 
     private fun editor() = encryptedSharedPreferences.edit()
 
-    override fun getAll(): Map<String?, Any>? {
+    override fun getAll(): Map<String?, Any> {
         return buildMap {
         }
     }

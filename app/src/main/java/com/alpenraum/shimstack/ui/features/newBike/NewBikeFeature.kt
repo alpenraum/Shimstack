@@ -11,23 +11,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.common.popBackstackOrNavigate
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
-import com.alpenraum.shimstack.ui.features.newBike.screens.EnterDetailsScreen
-import com.alpenraum.shimstack.ui.features.newBike.screens.EntryScreen
-import dev.olshevski.navigation.reimagined.AnimatedNavHost
-import dev.olshevski.navigation.reimagined.NavBackHandler
-import dev.olshevski.navigation.reimagined.hilt.hiltViewModel
-import dev.olshevski.navigation.reimagined.rememberNavController
+import com.ramcosta.composedestinations.annotation.Destination
 
+@Destination(
+    navArgsDelegate = NewBikeNavArgs::class
+)
 @Composable
 fun NewBikeFeature() {
-    val navController = rememberNavController<NewBikeDestinations>(
-        startDestination = NewBikeDestinations.Entry
-    )
-    NavBackHandler(controller = navController)
+//    val navController = rememberNavController<NewBikeDestinations>(
+//        startDestination = NewBikeDestinations.Entry
+//    )
+//    NavBackHandler(controller = navController)
     val viewModel: NewBikeViewModel = hiltViewModel()
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intent, event) = use(viewModel)
@@ -38,7 +36,7 @@ fun NewBikeFeature() {
             is NewBikeContract.State.Details -> NewBikeDestinations.Details
         }
 
-        navController.popBackstackOrNavigate(destination)
+        // navController.popBackstackOrNavigate(destination)
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -49,18 +47,18 @@ fun NewBikeFeature() {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        AnimatedNavHost(controller = navController) {
-            when (it) {
-                is NewBikeDestinations.Entry -> EntryScreen(
-                    state = state as NewBikeContract.State.Entry,
-                    intent = intent
-                )
-
-                NewBikeDestinations.Details -> EnterDetailsScreen(
-                    state = state as NewBikeContract.State.Details,
-                    intent = intent
-                )
-            }
-        }
+//        AnimatedNavHost(controller = navController) {
+//            when (it) {
+//                is NewBikeDestinations.Entry -> EntryScreen(
+//                    state = state as NewBikeContract.State.Entry,
+//                    intent = intent
+//                )
+//
+//                NewBikeDestinations.Details -> EnterDetailsScreen(
+//                    state = state as NewBikeContract.State.Details,
+//                    intent = intent
+//                )
+//            }
+//        }
     }
 }

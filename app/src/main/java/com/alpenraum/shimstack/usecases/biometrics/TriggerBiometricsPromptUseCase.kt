@@ -7,7 +7,10 @@ import androidx.fragment.app.FragmentActivity
 
 class TriggerBiometricsPromptUseCase {
 
-    operator fun invoke(activity: FragmentActivity, authenticationCallback: AuthenticationCallback) {
+    operator fun invoke(
+        activity: FragmentActivity,
+        authenticationCallback: AuthenticationCallback
+    ) {
         val executor = ContextCompat.getMainExecutor(activity)
         val biometricPrompt = BiometricPrompt(
             activity,

@@ -20,13 +20,17 @@ class IsBiometricAuthenticationAvailableUseCase {
         return when (biometricManager.canAuthenticate(ALLOWED_BIOMETRIC_AUTHENTICATORS)) {
             BiometricManager.BIOMETRIC_SUCCESS ->
                 Result.Success
+
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
                 Result.Failure
+
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
                 Result.Failure
+
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                 Result.NoneEnrolled
             }
+
             else -> {
                 Result.Failure
             }

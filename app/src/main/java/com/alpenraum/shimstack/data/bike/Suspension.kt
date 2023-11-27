@@ -10,7 +10,9 @@ data class Suspension(
     @Embedded(prefix = "rebound_") val rebound: Damping,
     val tokens: Int,
     val travel: Int
-)
+) {
+    constructor(travel: Int) : this(Pressure(0.0), Damping(0), Damping(0), 0, travel)
+}
 
 @Immutable
 data class Damping(val lowSpeedFromClosed: Int, val highSpeedFromClosed: Int? = null)
