@@ -1,6 +1,5 @@
 package com.alpenraum.shimstack.ui.features.mainScreens
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,132 +14,100 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.alpenraum.shimstack.common.moveLastEntryToStart
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
-import com.alpenraum.shimstack.ui.features.main.navigation.bottomNavigation.BottomNavigationDestinations
-import com.alpenraum.shimstack.ui.features.mainScreens.home.HomeScreen
-import com.alpenraum.shimstack.ui.features.mainScreens.settings.SettingsScreen
-import dev.olshevski.navigation.reimagined.AnimatedNavHost
-import dev.olshevski.navigation.reimagined.NavController
-import dev.olshevski.navigation.reimagined.moveToTop
-import dev.olshevski.navigation.reimagined.navigate
-import dev.olshevski.navigation.reimagined.pop
-import dev.olshevski.navigation.reimagined.rememberNavController
+import com.alpenraum.shimstack.ui.features.main.navigation.bottomNavigation.BottomNavigationGraph
+import com.alpenraum.shimstack.ui.features.main.navigation.bottomNavigation.BottomNavigationItem
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@RootNavGraph(start = true)
+@Destination
 @Composable
-fun MainScreenFeature(onNewBikeClicked: () -> Unit) {
-    val navController = rememberNavController<BottomNavigationDestinations>(
-        startDestination = BottomNavigationDestinations.HomeScreen
-    )
-
+fun MainScreenFeature(navigator: DestinationsNavigator) {
     val useNavRail = LocalWindowSizeClass.current.widthSizeClass >= WindowWidthSizeClass.Medium
 
-    BottomNavigationBackHandler(navController)
-    val lastDestination = navController.backstack.entries.last().destination
+    val bottomNavController = rememberNavController()
+    val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     Row(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(visible = useNavRail) {
             NavigationRail(
                 modifier = Modifier.fillMaxHeight(),
                 containerColor = MaterialTheme.colorScheme.inverseOnSurface
             ) {
-                BottomNavigationDestinations.values().forEach { destination ->
-                    NavigationRailItem(label = {
-                        Text(
-                            stringResource(id = destination.item.title)
-                        )
-                    }, icon = {
-                        Icon(
-                            painter = painterResource(destination.item.icon),
-                            contentDescription = null
-                        )
-                    }, selected = destination == lastDestination, onClick = {
-                        // keep only one instance of a destination in the backstack
-                        if (!navController.moveToTop { it == destination }) {
-                            // if there is no existing instance, add it
-                            navController.navigate(destination)
+                BottomNavigationItem.asList().forEach { destination ->
+                    NavigationRailItem(
+                        label = {
+                            Text(
+                                stringResource(id = destination.title)
+                            )
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(destination.icon),
+                                contentDescription = null
+                            )
+                        },
+                        selected = currentRoute == destination.route,
+                        onClick = {
+                            bottomNavController.navigate(destination.route) {
+                                bottomNavController.graph.startDestinationRoute?.let { route ->
+                                    popUpTo(route) {
+                                        saveState = true
+                                    }
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
-                    })
+                    )
                 }
             }
         }
         Column(
             modifier = Modifier
         ) {
-            Content(
-                navController = navController,
-                modifier = Modifier.weight(1f),
-                onNewBikeClicked = onNewBikeClicked
-            )
+            BottomNavigationGraph(bottomNavController, navigator, Modifier.weight(1.0f))
+
             AnimatedVisibility(visible = !useNavRail) {
                 NavigationBar {
-                    BottomNavigationDestinations.values().forEach { destination ->
-                        NavigationBarItem(label = {
-                            Text(
-                                stringResource(id = destination.item.title)
-                            )
-                        }, icon = {
-                            Icon(
-                                painter = painterResource(destination.item.icon),
-                                contentDescription = null
-                            )
-                        }, selected = destination == lastDestination, onClick = {
-                            // keep only one instance of a destination in the backstack
-                            if (!navController.moveToTop {
-                                    it == destination
+                    BottomNavigationItem.asList().forEach { destination ->
+                        NavigationBarItem(
+                            label = {
+                                Text(
+                                    stringResource(id = destination.title)
+                                )
+                            },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(destination.icon),
+                                    contentDescription = null
+                                )
+                            },
+                            selected = destination.route == currentRoute,
+                            onClick = {
+                                bottomNavController.navigate(destination.route) {
+                                    bottomNavController.graph.startDestinationRoute?.let { route ->
+                                        popUpTo(route) {
+                                            saveState = true
+                                        }
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                            ) {
-                                // if there is no existing instance, add it
-                                navController.navigate(destination)
                             }
-                        })
+                        )
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun Content(
-    navController: NavController<BottomNavigationDestinations>,
-    modifier: Modifier = Modifier,
-    onNewBikeClicked: () -> Unit
-) {
-    AnimatedNavHost(controller = navController, modifier) { destination ->
-        when (destination) {
-            BottomNavigationDestinations.HomeScreen -> {
-                HomeScreen(
-                    modifier = Modifier,
-                    onNewBikeClicked = onNewBikeClicked
-                )
-            }
-
-            BottomNavigationDestinations.Test -> {
-                Text("Test screen")
-            }
-
-            BottomNavigationDestinations.Settings -> {
-                SettingsScreen()
-            }
-        }
-    }
-}
-
-@Composable
-private fun BottomNavigationBackHandler(
-    navController: NavController<BottomNavigationDestinations>
-) {
-    BackHandler(enabled = navController.backstack.entries.size > 1) {
-        val lastEntry = navController.backstack.entries.last()
-        if (lastEntry.destination == BottomNavigationDestinations.HomeScreen) {
-            // The start destination should always be the last to pop. We move it to the start
-            // to preserve its saved state and view models.
-            navController.moveLastEntryToStart()
-        } else {
-            navController.pop()
         }
     }
 }

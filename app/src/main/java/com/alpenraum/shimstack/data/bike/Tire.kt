@@ -8,7 +8,7 @@ import java.math.BigDecimal
 data class Tire(
     @Embedded(prefix = "pressure_") val pressure: Pressure,
     val widthInMM: Double,
-    val internalRimWidthInMM: Double
+    val internalRimWidthInMM: Double?
 ) {
     @Ignore
     constructor() : this(Pressure(BigDecimal.ZERO), 0.0, 0.0)

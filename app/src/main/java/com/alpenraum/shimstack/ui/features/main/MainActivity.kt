@@ -2,23 +2,26 @@ package com.alpenraum.shimstack.ui.features.main
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
-import com.alpenraum.shimstack.ui.features.main.navigation.mainNavigation.MainNavigationDestination
-import com.alpenraum.shimstack.ui.features.mainScreens.MainScreenFeature
-import com.alpenraum.shimstack.ui.features.newBike.NewBikeFeature
+import com.alpenraum.shimstack.ui.features.NavGraphs
 import com.alpenraum.shimstack.ui.theme.AppTheme
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaultAnimations
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
+import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
-import dev.olshevski.navigation.reimagined.AnimatedNavHost
-import dev.olshevski.navigation.reimagined.NavBackHandler
-import dev.olshevski.navigation.reimagined.navigate
-import dev.olshevski.navigation.reimagined.rememberNavController
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<MainViewModel>() {
@@ -57,38 +60,39 @@ class MainActivity : BaseActivity<MainViewModel>() {
 //        }
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @OptIn(
+        ExperimentalMaterial3WindowSizeClassApi::class,
+        ExperimentalMaterialNavigationApi::class,
+        ExperimentalAnimationApi::class
+    )
     private fun initializeContent() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(activity = this)
 
             CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
                 AppTheme {
-                    val navController =
-                        rememberNavController<MainNavigationDestination>(
-                            startDestination = MainNavigationDestination.MainScreen
+                    val navHostEngine = rememberAnimatedNavHostEngine(
+                        navHostContentAlignment = Alignment.TopCenter,
+                        rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING,
+                        defaultAnimationsForNestedNavGraph = mapOf(
+                            NavGraphs.root to NestedNavGraphDefaultAnimations(
+                                enterTransition = { slideInHorizontally() },
+                                exitTransition = { slideOutHorizontally() }
+                            )
                         )
-
-                    NavBackHandler(controller = navController)
-                    AnimatedNavHost(controller = navController) {
-                        when (it) {
-                            MainNavigationDestination.MainScreen -> MainScreenFeature {
-                                navController.navigate(
-                                    MainNavigationDestination.NewBike
-                                )
-                            }
-
-                            MainNavigationDestination.NewBike -> NewBikeFeature()
-                        }
-                    }
+                    )
+                    DestinationsNavHost(
+                        navGraph = NavGraphs.root,
+                        engine = navHostEngine
+                    )
                 }
             }
         }
     }
+}
 
-    @Preview(showBackground = true)
-    @Composable
-    fun DefaultPreview() {
-        AppTheme {}
-    }
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    AppTheme {}
 }

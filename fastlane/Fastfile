@@ -20,22 +20,13 @@ default_platform(:android)
 platform :android do
 
    lane :build_uat do |options|
-       bawagFlavors = ["bawaggoogle", "bawaghuawei"]
-       easybankFlavors = ["easybankgoogle", "easybankhuawei"]
 
-       flavors =  if options[:version]=="bawag"
-            bawagFlavors
-        else
-            easybankFlavors
-        end
+       flavor = options[:version]
 
-       flavors.each do |item|
-           flavor = "#{item}uat"
+       test(flavor: flavor)
+       build_apk(flavor: flavor)
 
-           test(flavor: flavor)
-           build_apk(flavor: flavor)
 
-       end
    end
 
 

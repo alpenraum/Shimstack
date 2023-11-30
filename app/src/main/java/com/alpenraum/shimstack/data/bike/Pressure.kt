@@ -18,7 +18,6 @@ data class Pressure(val pressureInBar: BigDecimal) {
     }
 
     fun toFormattedString(context: Context): String {
-        // TODO: add settings for pressure scale
         return if (true) {
             "$pressureInBar ${context.getString(R.string.bar)}"
         } else {

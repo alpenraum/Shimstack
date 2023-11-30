@@ -53,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
@@ -61,10 +62,11 @@ import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.CARD_MARGIN
 import com.alpenraum.shimstack.ui.compose.ForkDetails
+import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.compose.ShockDetails
 import com.alpenraum.shimstack.ui.compose.TireDetails
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
-import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
+import com.alpenraum.shimstack.ui.features.destinations.NewBikeFeatureDestination
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -75,7 +77,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
-import dev.olshevski.navigation.reimagined.hilt.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlinx.collections.immutable.persistentListOf
@@ -87,8 +89,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier,
-    onNewBikeClicked: () -> Unit
+    navController: DestinationsNavigator
 ) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     AttachToLifeCycle(viewModel = viewModel)
@@ -96,10 +97,8 @@ fun HomeScreen(
     HomeScreenContent(
         state = state,
         event = event,
-        intents = intents,
-        modifier,
-        onNewBikeClicked
-    )
+        intents = intents
+    ) { navController.navigate(NewBikeFeatureDestination.invoke("0"), onlyIfResumed = true) }
 }
 
 @Composable
@@ -108,7 +107,6 @@ private fun HomeScreenContent(
     state: HomeScreenContract.State,
     event: SharedFlow<HomeScreenContract.Event>,
     intents: (HomeScreenContract.Intent) -> Unit,
-    modifier: Modifier,
     onNewBikeClicked: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
@@ -143,7 +141,7 @@ private fun HomeScreenContent(
     val windowSizeClass = LocalWindowSizeClass.current
 
     Column(
-        modifier = modifier,
+        modifier = Modifier,
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -375,8 +373,7 @@ fun Preview() {
         HomeScreenContent(
             state = HomeScreenContract.State(persistentListOf(), persistentListOf()),
             event = MutableSharedFlow(),
-            intents = {},
-            modifier = Modifier
+            intents = {}
         ) {}
     }
 }

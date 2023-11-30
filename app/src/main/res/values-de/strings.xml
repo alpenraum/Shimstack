@@ -29,5 +29,29 @@
 
     <string name="header_new_bike_entry">Fahrrad hinzufügen</string>
     <string name="copy_new_bike_entry">Suche für dein Fahrrad mittels der Marke und Modell. Keine Sorge, falls es nicht in der Liste steht. Du wirst nur ein paar Dinge selber eingeben müssen.</string>
+    <string name="label_new_bike_search">Fahrrad suchen</string>
+    <string name="copy_new_bike_details">Gib die Daten deines Fahrrads ein oder ändere sie.</string>
+    <string name="copy_new_bike_internal_width_inf">Lass es leer wenn du dir unsicher bist.</string>
+    <string name="copy_new_bike_ebike">E-Bike?</string>
+
+
+    <string name="label_road_type">Rennrad</string>
+    <string name="label_gravel_type">Gravel</string>
+    <string name="label_dh_type">Downhill</string>
+    <string name="label_xc_type">Cross Country</string>
+    <string name="label_trail_type">Trail</string>
+    <string name="label_all_mtn_type">All Mountain</string>
+    <string name="label_enduro_type">Enduro</string>
+    <string name="label_unknown_type" />
+
+    <string name="label_name">Name</string>
+    <string name="label_type">Typ</string>
+    <string name="label_travel">Federweg</string>
+    <string name="label_front_suspension">Vordere Federung</string>
+    <string name="label_rear_suspension">Hintere Federung</string>
+    <string name="label_rear_tire">Hinterer Reifen</string>
+    <string name="label_front_tire">Vorderer Reifen</string>
+    <string name="label_tire_width">Reifenbreite</string>
+    <string name="label_internal_rim_width">Interne Felgenbreite</string>
 
 </resources>
