@@ -19,15 +19,18 @@ default_platform(:android)
 
 platform :android do
 
-   lane :build_uat do |options|
-
-       flavor = options[:version]
-
-       test(flavor: flavor)
-       build_apk(flavor: flavor)
-
+   lane :build_debug do |options|
+       test(flavor: "debug")
+       build_apk(flavor: "debug")
 
    end
+
+   lane :build_release do |options|
+          test(flavor: "release")
+          build_apk(flavor: "release")
+          build_aab(flavor: "release")
+
+      end
 
 
   desc "Runs all the tests"
