@@ -5,6 +5,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
@@ -14,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
+import com.alpenraum.shimstack.ui.compose.fadeIn
+import com.alpenraum.shimstack.ui.compose.fadeOut
 import com.alpenraum.shimstack.ui.features.NavGraphs
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -71,20 +75,29 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
             CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
                 AppTheme {
-                    val navHostEngine = rememberAnimatedNavHostEngine(
-                        navHostContentAlignment = Alignment.TopCenter,
-                        rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING,
-                        defaultAnimationsForNestedNavGraph = mapOf(
-                            NavGraphs.root to NestedNavGraphDefaultAnimations(
-                                enterTransition = { slideInHorizontally() },
-                                exitTransition = { slideOutHorizontally() }
+                    CompositionLocalProvider(
+                        LocalContentColor provides MaterialTheme.colorScheme.onSurface
+                    ) {
+                        val navHostEngine = rememberAnimatedNavHostEngine(
+                            navHostContentAlignment = Alignment.TopCenter,
+                            rootDefaultAnimations = RootNavGraphDefaultAnimations(
+                                enterTransition = { fadeIn() },
+                                exitTransition = { fadeOut() }
+                            ),
+                            defaultAnimationsForNestedNavGraph = mapOf(
+                                NavGraphs.root to NestedNavGraphDefaultAnimations(
+                                    enterTransition = { slideInHorizontally() },
+                                    exitTransition = { slideOutHorizontally() },
+                                    popEnterTransition = { slideInHorizontally() },
+                                    popExitTransition = { slideOutHorizontally() }
+                                )
                             )
                         )
-                    )
-                    DestinationsNavHost(
-                        navGraph = NavGraphs.root,
-                        engine = navHostEngine
-                    )
+                        DestinationsNavHost(
+                            navGraph = NavGraphs.root,
+                            engine = navHostEngine
+                        )
+                    }
                 }
             }
         }

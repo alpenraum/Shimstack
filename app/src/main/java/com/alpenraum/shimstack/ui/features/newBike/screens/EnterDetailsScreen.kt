@@ -20,6 +20,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,14 +44,36 @@ import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.compose.TabletPreview
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
+import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
 import com.alpenraum.shimstack.usecases.biometrics.ValidateBikeDTOUseCase
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Destination
+@NewBikeNavGraph
 fun EnterDetailsScreen(
-    state: NewBikeContract.State.Details,
-    intent: (NewBikeContract.Intent) -> Unit
+    navigator: DestinationsNavigator? = null,
+    state: NewBikeContract.State,
+    intent: (NewBikeContract.Intent) -> Unit,
+    event: SharedFlow<NewBikeContract.Event>
 ) {
+    LaunchedEffect(key1 = Unit) {
+        event.collectLatest {
+            when (it) {
+                NewBikeContract.Event.NavigateToNextStep -> { /* TODO */
+                }
+
+                NewBikeContract.Event.NavigateToPreviousStep -> { /*empty */
+                }
+            }
+        }
+    }
+
     val isCompactScreen =
         LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Compact
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -254,7 +277,7 @@ private fun ColumnScope.TireInput(
         OutlinedTextField(
             shape = ShimstackRoundedCornerShape(),
             singleLine = true,
-            value = data.widthInMM.toString(),
+            value = if (data.widthInMM == 0.0) "" else data.widthInMM.toString(),
             onValueChange = { value ->
                 value.toDoubleOrNull()?.let {
                     onTireWidthChanged(it)
@@ -275,7 +298,7 @@ private fun ColumnScope.TireInput(
             OutlinedTextField(
                 shape = ShimstackRoundedCornerShape(),
                 singleLine = true,
-                value = data.internalRimWidthInMM.toString(),
+                value = if (data.internalRimWidthInMM == 0.0) "" else data.internalRimWidthInMM.toString(),
                 onValueChange = { value ->
                     value.toDoubleOrNull()?.let {
                         onRimWidthChanged(it)
@@ -298,8 +321,10 @@ private fun ColumnScope.TireInput(
 private fun Preview() {
     TabletPreview {
         EnterDetailsScreen(
-            state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
-        ) {}
+            state = NewBikeContract.State(bike = BikeTemplate.testData().toBikeDTO()),
+            intent = {},
+            event = MutableSharedFlow()
+        )
     }
 }
 
@@ -308,8 +333,10 @@ private fun Preview() {
 private fun Preview1() {
     PhonePreview {
         EnterDetailsScreen(
-            state = NewBikeContract.State.Details(BikeTemplate.testData().toBikeDTO())
-        ) {}
+            state = NewBikeContract.State(bike = BikeTemplate.testData().toBikeDTO()),
+            intent = {},
+            event = MutableSharedFlow()
+        )
     }
 }
 
@@ -318,9 +345,9 @@ private fun Preview1() {
 private fun Error() {
     PhonePreview {
         EnterDetailsScreen(
-            state = NewBikeContract.State.Details(
-                BikeTemplate.testData().toBikeDTO(),
-                ValidateBikeDTOUseCase.Result.Failure(
+            state = NewBikeContract.State(
+                bike = BikeTemplate.testData().toBikeDTO(),
+                validationErrors = ValidateBikeDTOUseCase.Result.Failure(
                     name = false,
                     type = false,
                     frontTire = false,
@@ -328,7 +355,9 @@ private fun Error() {
                     frontSuspension = false,
                     rearSuspension = false
                 )
-            )
-        ) {}
+            ),
+            intent = {},
+            event = MutableSharedFlow()
+        )
     }
 }

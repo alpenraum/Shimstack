@@ -20,9 +20,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,19 +37,46 @@ import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
+import com.alpenraum.shimstack.ui.features.destinations.EnterDetailsScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
+import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
 import com.alpenraum.shimstack.ui.theme.AppTheme
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun EntryScreen(state: NewBikeContract.State.Entry, intent: (NewBikeContract.Intent) -> Unit) {
+@Destination
+@NewBikeNavGraph(start = true)
+fun EntryScreen(
+    navigator: DestinationsNavigator? = null,
+    state: NewBikeContract.State,
+    intent: (NewBikeContract.Intent) -> Unit,
+    event: SharedFlow<NewBikeContract.Event>
+) {
+    LaunchedEffect(key1 = Unit) {
+        event.collectLatest {
+            when (it) {
+                NewBikeContract.Event.NavigateToNextStep -> navigator?.navigate(
+                    EnterDetailsScreenDestination,
+                    onlyIfResumed = true
+                )
+
+                NewBikeContract.Event.NavigateToPreviousStep -> { /*empty */
+                }
+            }
+        }
+    }
     Column {
         Text(
             text = stringResource(id = R.string.copy_new_bike_entry),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp)
         )
-        var userInput by remember { mutableStateOf("") }
+        var userInput by rememberSaveable { mutableStateOf("") }
         OutlinedTextField(
             shape = ShimstackRoundedCornerShape(),
             singleLine = true,
@@ -100,10 +128,10 @@ fun EntryScreen(state: NewBikeContract.State.Entry, intent: (NewBikeContract.Int
 @Composable
 private fun ListItem(bike: BikeTemplate, intent: (NewBikeContract.Intent) -> Unit) {
     Row(
-        modifier = Modifier.padding(
-            vertical = 8.dp
-        ).padding(horizontal = 16.dp).semantics(true) {}
-            .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) },
+        modifier = Modifier.clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
+            .padding(
+                vertical = 8.dp
+            ).padding(horizontal = 16.dp).semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -157,6 +185,10 @@ private fun EntryPreview() {
                 )
             }
         }.toImmutableList()
-        EntryScreen(NewBikeContract.State.Entry(templates)) {}
+        EntryScreen(
+            state = NewBikeContract.State(templates),
+            intent = {},
+            event = MutableSharedFlow()
+        )
     }
 }

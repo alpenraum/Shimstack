@@ -26,7 +26,8 @@ class LocalBikeTemplateRepository @Inject constructor(
 
     override suspend fun getBikeTemplatesFilteredByName(name: String): List<BikeTemplate> {
         return buildList {
-            for (i in 0..300) {
+            for (i in 0..300) { // TODO: check if more performant with DB
+
                 add(
                     BikeTemplate(
                         id = i,

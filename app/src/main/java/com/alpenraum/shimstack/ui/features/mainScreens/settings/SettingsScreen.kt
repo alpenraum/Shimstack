@@ -58,7 +58,7 @@ private fun SettingsToggleRow(
         ) {
             Text(
                 text = stringResource(id = data.first.label),
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
                 modifier = Modifier.weight(1.0f)
             )
             Switch(
@@ -66,6 +66,7 @@ private fun SettingsToggleRow(
                 onCheckedChange = {
                     intents(SettingsContract.Intent.OnSettingsChanged(data.first, it))
                 }
+
             )
         }
     }

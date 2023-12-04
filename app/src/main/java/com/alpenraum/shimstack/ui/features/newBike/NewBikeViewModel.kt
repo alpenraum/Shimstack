@@ -39,7 +39,7 @@ class NewBikeViewModel @Inject constructor(
 
     private val navArgs: NewBikeNavArgs = savedStateHandle.navArgs() // todo: remove
 
-    private val _state = MutableStateFlow<NewBikeContract.State>(NewBikeContract.State.Entry())
+    private val _state = MutableStateFlow(NewBikeContract.State())
     override val state: StateFlow<NewBikeContract.State>
         get() = _state.asStateFlow()
 
@@ -53,7 +53,7 @@ class NewBikeViewModel @Inject constructor(
     init {
         iOScope.launch {
             _state.emit(
-                NewBikeContract.State.Entry(
+                NewBikeContract.State(
                     bikeTemplateRepository.getBikeTemplatesFilteredByName(
                         ""
                     ).toImmutableList()
@@ -64,8 +64,9 @@ class NewBikeViewModel @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-
-        filterJob = launchFilterBikeTemplates()
+        iOScope.launch {
+            filterJob = launchFilterBikeTemplates()
+        }
     }
 
     override fun onStop() {
@@ -77,15 +78,7 @@ class NewBikeViewModel @Inject constructor(
         iOScope.launch {
             when (intent) {
                 is NewBikeContract.Intent.Filter -> {
-                    filterFlow.value = intent.filter
-                }
-// Navigation
-                NewBikeContract.Intent.OnNextClicked -> {
-                    when (_state.value) {
-                        is NewBikeContract.State.Entry -> goToEnterDetailsScreen(null)
-                        is NewBikeContract.State.Details -> { /* TODO */
-                        }
-                    }
+                    filterFlow.emit(intent.filter)
                 }
 
 // Details Data Input
@@ -94,25 +87,25 @@ class NewBikeViewModel @Inject constructor(
                 )
 
                 is NewBikeContract.Intent.BikeNameInput -> validateAndUpdateInput(
-                    (_state.value as NewBikeContract.State.Details).bike.copy(
+                    state.value.bike.copy(
                         name = intent.name
                     )
                 )
 
                 is NewBikeContract.Intent.BikeTypeInput -> validateAndUpdateInput(
-                    (_state.value as NewBikeContract.State.Details).bike.copy(
+                    state.value.bike.copy(
                         type = intent.type
                     )
                 )
 
                 is NewBikeContract.Intent.EbikeInput -> validateAndUpdateInput(
-                    (_state.value as NewBikeContract.State.Details).bike.copy(
+                    state.value.bike.copy(
                         isEBike = intent.isEbike
                     )
                 )
 
                 is NewBikeContract.Intent.FrontInternalRimWidthInput -> {
-                    val data = (_state.value as NewBikeContract.State.Details).bike
+                    val data = state.value.bike
                     validateAndUpdateInput(
                         data.copy(
                             frontTire = data.frontTire.copy(internalRimWidthInMM = intent.width)
@@ -121,7 +114,7 @@ class NewBikeViewModel @Inject constructor(
                 }
 
                 is NewBikeContract.Intent.FrontSuspensionInput -> {
-                    val data = (_state.value as NewBikeContract.State.Details).bike
+                    val data = state.value.bike
                     validateAndUpdateInput(
                         data.copy(
                             frontSuspension = if (intent.travel != null && intent.travel > 0) {
@@ -136,7 +129,7 @@ class NewBikeViewModel @Inject constructor(
                 }
 
                 is NewBikeContract.Intent.FrontTireWidthInput -> {
-                    val data = (_state.value as NewBikeContract.State.Details).bike
+                    val data = state.value.bike
                     validateAndUpdateInput(
                         data.copy(
                             frontTire = data.frontTire.copy(widthInMM = intent.width)
@@ -145,7 +138,7 @@ class NewBikeViewModel @Inject constructor(
                 }
 
                 is NewBikeContract.Intent.RearInternalRimWidthInput -> {
-                    val data = (_state.value as NewBikeContract.State.Details).bike
+                    val data = state.value.bike
                     validateAndUpdateInput(
                         data.copy(
                             rearTire = data.rearTire.copy(internalRimWidthInMM = intent.width)
@@ -154,7 +147,7 @@ class NewBikeViewModel @Inject constructor(
                 }
 
                 is NewBikeContract.Intent.RearSuspensionInput -> {
-                    val data = (_state.value as NewBikeContract.State.Details).bike
+                    val data = state.value.bike
                     validateAndUpdateInput(
                         data.copy(
                             frontSuspension = if (intent.travel != null && intent.travel > 0) {
@@ -169,37 +162,34 @@ class NewBikeViewModel @Inject constructor(
                 }
 
                 is NewBikeContract.Intent.RearTireWidthInput -> {
-                    val data = (_state.value as NewBikeContract.State.Details).bike
+                    val data = state.value.bike
                     validateAndUpdateInput(
                         data.copy(
                             rearTire = data.rearTire.copy(widthInMM = intent.width)
                         )
                     )
                 }
+
+                NewBikeContract.Intent.OnNextClicked -> _event.emit(
+                    NewBikeContract.Event.NavigateToNextStep
+                )
             }
         }
     }
 
     private suspend fun validateAndUpdateInput(newData: BikeDTO) {
         iOScope.launch {
-            when (_state.value) {
-                is NewBikeContract.State.Details -> {
-                    val validationResult = validateBikeDTOUseCase(newData)
-
-                    _state.emit(
-                        NewBikeContract.State.Details(
-                            newData,
-                            if (validationResult.isSuccess().not()) {
-                                validationResult as ValidateBikeDTOUseCase.Result.Failure
-                            } else {
-                                null
-                            }
-                        )
-                    )
-                }
-
-                else -> return@launch
-            }
+            val validationResult = validateBikeDTOUseCase(newData)
+            _state.emit(
+                state.value.copy(
+                    bike = newData,
+                    validationErrors = if (validationResult.isSuccess().not()) {
+                        validationResult as ValidateBikeDTOUseCase.Result.Failure
+                    } else {
+                        null
+                    }
+                )
+            )
         }
     }
 
@@ -207,35 +197,35 @@ class NewBikeViewModel @Inject constructor(
     private fun launchFilterBikeTemplates() = iOScope.launch {
         filterFlow.sample(200.milliseconds).distinctUntilChanged().collectLatest {
             val filteredTemplates = bikeTemplateRepository.getBikeTemplatesFilteredByName(it)
-            _state.emit(NewBikeContract.State.Entry(filteredTemplates.toImmutableList()))
+            _state.emit(state.value.copy(bikeTemplates = filteredTemplates.toImmutableList()))
         }
     }
 
     private fun goToEnterDetailsScreen(template: BikeTemplate?) = iOScope.launch {
-        _state.emit(NewBikeContract.State.Details(template?.toBikeDTO() ?: BikeDTO.empty()))
+        _state.emit(state.value.copy(bike = template?.toBikeDTO() ?: BikeDTO.empty()))
+        _event.emit(NewBikeContract.Event.NavigateToNextStep)
     }
 }
 
 interface NewBikeContract :
     UnidirectionalViewModel<NewBikeContract.State, NewBikeContract.Intent, NewBikeContract.Event> {
     @Immutable
-    sealed class State {
-        data class Entry(val bikeTemplates: ImmutableList<BikeTemplate> = persistentListOf()) :
-            State()
+    data class State(
+        val bikeTemplates: ImmutableList<BikeTemplate> = persistentListOf(),
+        val bike: BikeDTO = BikeDTO.empty(),
+        val validationErrors: ValidateBikeDTOUseCase.Result.Failure? = null
+    )
 
-        data class Details(
-            val bike: BikeDTO,
-            val validationErrors: ValidateBikeDTOUseCase.Result.Failure? = null
-        ) : State()
+    sealed class Event {
+        data object NavigateToNextStep : Event()
+        data object NavigateToPreviousStep : Event()
     }
-
-    sealed class Event
 
     sealed class Intent {
         class Filter(val filter: String) : Intent()
-        data object OnNextClicked : Intent()
         class BikeTemplateSelected(val bike: BikeTemplate) : Intent()
 
+        object OnNextClicked : Intent()
         sealed class DataInput : Intent()
         class BikeNameInput(val name: String) : DataInput()
         class BikeTypeInput(val type: Bike.Type) : DataInput()
