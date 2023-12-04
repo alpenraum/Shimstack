@@ -4,6 +4,8 @@
 
     <string name="label_continue">Weiter</string>
     <string name="label_next_step">Nächster Schritt</string>
+    <string name="label_yes">Ja</string>
+    <string name="label_no">Nein</string>
 
     <string name="tire">Reifen</string>
     <string name="rear">Hinten</string>
@@ -33,6 +35,7 @@
     <string name="copy_new_bike_details">Gib die Daten deines Fahrrads ein oder ändere sie.</string>
     <string name="copy_new_bike_internal_width_inf">Lass es leer wenn du dir unsicher bist.</string>
     <string name="copy_new_bike_ebike">E-Bike?</string>
+    <string name="copy_new_bike_existing_setup">Hast du schon ein Fahrwerkssetup für dein Fahrrrad?</string>
 
 
     <string name="label_road_type">Rennrad</string>

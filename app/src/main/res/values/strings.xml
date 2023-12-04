@@ -3,6 +3,8 @@
     <string name="title_home">Home</string>
     <string name="label_continue">Continue</string>
     <string name="label_next_step">Next Step</string>
+    <string name="label_yes">Yes</string>
+    <string name="label_no">No</string>
 
 
     <string name="tire">Tire</string>
@@ -44,6 +46,7 @@
     <string name="copy_new_bike_details">Enter or modify the data of your bike.</string>
     <string name="copy_new_bike_internal_width_inf">Leave it empty if you are unsure.</string>
     <string name="copy_new_bike_ebike">E-Bike?</string>
+    <string name="copy_new_bike_existing_setup">Do you already have a suspension setup for your bike?</string>
 
 
     <string name="label_road_type">Road bike</string>

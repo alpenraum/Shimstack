@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +45,7 @@ import com.alpenraum.shimstack.ui.compose.PhonePreview
 import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.compose.TabletPreview
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
+import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
 import com.alpenraum.shimstack.usecases.biometrics.ValidateBikeDTOUseCase
@@ -65,7 +68,8 @@ fun EnterDetailsScreen(
     LaunchedEffect(key1 = Unit) {
         event.collectLatest {
             when (it) {
-                NewBikeContract.Event.NavigateToNextStep -> { /* TODO */
+                NewBikeContract.Event.NavigateToNextStep -> {
+                    navigator?.navigate(SetupDecisionScreenDestination, onlyIfResumed = true)
                 }
 
                 NewBikeContract.Event.NavigateToPreviousStep -> { /*empty */
@@ -99,7 +103,8 @@ fun EnterDetailsScreen(
             label = {
                 Text(text = stringResource(id = R.string.label_name))
             },
-            isError = state.validationErrors?.name == false
+            isError = state.validationErrors?.name == false,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
 
         Row(
@@ -186,6 +191,7 @@ fun EnterDetailsScreen(
             headline = stringResource(id = R.string.label_front_tire),
             data = state.bike.frontTire,
             isError = state.validationErrors?.frontTire == false,
+            lastInputImeAction = ImeAction.Next,
             {
                 intent(NewBikeContract.Intent.FrontTireWidthInput(it))
             },
@@ -196,16 +202,21 @@ fun EnterDetailsScreen(
         TireInput(
             headline = stringResource(id = R.string.label_rear_tire),
             data = state.bike.rearTire,
-            isError = state.validationErrors?.frontTire == false,
+            isError = state.validationErrors?.rearTire == false,
+            lastInputImeAction = ImeAction.Done,
             {
                 intent(NewBikeContract.Intent.RearTireWidthInput(it))
             },
-            { intent(NewBikeContract.Intent.FrontInternalRimWidthInput(it)) }
+            { intent(NewBikeContract.Intent.RearInternalRimWidthInput(it)) }
         )
 
-        LargeButton(enabled = state.validationErrors == null, onClick = {
-            intent(NewBikeContract.Intent.OnNextClicked)
-        }, modifier = Modifier.padding(vertical = 16.dp)) {
+        LargeButton(
+            enabled = state.validationErrors == null && state.bike.isPopulated(),
+            onClick = {
+                intent(NewBikeContract.Intent.OnNextClicked)
+            },
+            modifier = Modifier.padding(vertical = 16.dp)
+        ) {
             Text(text = stringResource(id = R.string.label_next_step))
         }
     }
@@ -254,7 +265,10 @@ private fun ColumnScope.SuspensionInput(
                 Text(text = stringResource(id = R.string.label_travel))
             },
             isError = isError,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            )
 
         )
     }
@@ -265,8 +279,10 @@ private fun ColumnScope.TireInput(
     headline: String,
     data: Tire,
     isError: Boolean,
+    lastInputImeAction: ImeAction,
     onTireWidthChanged: (Double) -> Unit,
     onRimWidthChanged: (Double?) -> Unit
+
 ) {
     Text(
         text = headline,
@@ -283,13 +299,17 @@ private fun ColumnScope.TireInput(
                     onTireWidthChanged(it)
                 }
             },
-            suffix = { stringResource(id = R.string.mm) },
+            suffix = { Text(text = stringResource(id = R.string.mm)) },
             modifier = Modifier.weight(1.0f).padding(end = 16.dp),
             label = {
                 Text(text = stringResource(id = R.string.label_tire_width))
             },
             isError = isError,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions()
         )
         Column(
             modifier = Modifier.weight(1.0f),
@@ -298,7 +318,7 @@ private fun ColumnScope.TireInput(
             OutlinedTextField(
                 shape = ShimstackRoundedCornerShape(),
                 singleLine = true,
-                value = if (data.internalRimWidthInMM == 0.0) "" else data.internalRimWidthInMM.toString(),
+                value = if (data.internalRimWidthInMM == 0.0 || data.internalRimWidthInMM == null) "" else data.internalRimWidthInMM.toString(),
                 onValueChange = { value ->
                     value.toDoubleOrNull()?.let {
                         onRimWidthChanged(it)
@@ -309,7 +329,10 @@ private fun ColumnScope.TireInput(
                     Text(text = stringResource(id = R.string.label_internal_rim_width))
                 },
                 isError = isError,
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = lastInputImeAction
+                )
             )
             InfoText(R.string.copy_new_bike_internal_width_inf)
         }

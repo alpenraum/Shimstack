@@ -125,4 +125,6 @@ data class BikeDTO(
                 damping.lowSpeedFromClosed.toString()
             )
         }
+
+    fun isPopulated() = name.isNotBlank() && type != Bike.Type.UNKNOWN && frontTire.widthInMM != 0.0 && rearTire.widthInMM != 0.0
 }
