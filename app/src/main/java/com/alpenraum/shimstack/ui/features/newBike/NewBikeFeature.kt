@@ -21,9 +21,13 @@ import com.alpenraum.shimstack.ui.compose.fadeIn
 import com.alpenraum.shimstack.ui.compose.fadeOut
 import com.alpenraum.shimstack.ui.features.NavGraphs
 import com.alpenraum.shimstack.ui.features.destinations.EnterDetailsScreenDestination
+import com.alpenraum.shimstack.ui.features.destinations.EnterSetupScreenDestination
 import com.alpenraum.shimstack.ui.features.destinations.EntryScreenDestination
+import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.screens.EnterDetailsScreen
+import com.alpenraum.shimstack.ui.features.newBike.screens.EnterSetupScreen
 import com.alpenraum.shimstack.ui.features.newBike.screens.EntryScreen
+import com.alpenraum.shimstack.ui.features.newBike.screens.SetupDecisionScreen
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaultAnimations
@@ -85,6 +89,19 @@ fun NewBikeFeature(navigator: DestinationsNavigator) {
                     state = state,
                     intent = intent,
                     event = event
+                )
+            }
+            composable(SetupDecisionScreenDestination) {
+                SetupDecisionScreen(
+                    navigator = this.destinationsNavigator
+                )
+            }
+            composable(EnterSetupScreenDestination) {
+                EnterSetupScreen(
+                    state,
+                    intent,
+                    event,
+                    navigator = this.destinationsNavigator
                 )
             }
         }

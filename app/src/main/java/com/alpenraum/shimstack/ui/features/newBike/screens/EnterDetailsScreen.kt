@@ -5,10 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
@@ -16,7 +17,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -36,15 +36,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
-import com.alpenraum.shimstack.data.bike.Suspension
-import com.alpenraum.shimstack.data.bike.Tire
-import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.PhonePreview
-import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.compose.TabletPreview
+import com.alpenraum.shimstack.ui.compose.TextInput
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
+import com.alpenraum.shimstack.ui.compose.number
 import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
@@ -86,10 +84,8 @@ fun EnterDetailsScreen(
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp)
         )
-        OutlinedTextField(
-            shape = ShimstackRoundedCornerShape(),
-            singleLine = true,
-            value = state.bike.name,
+        TextInput(
+            value = state.detailsInput.name ?: "",
             onValueChange = {
                 intent(NewBikeContract.Intent.BikeNameInput(it))
             },
@@ -100,9 +96,7 @@ fun EnterDetailsScreen(
             } else {
                 Modifier.fillMaxWidth().padding(top = 16.dp)
             },
-            label = {
-                Text(text = stringResource(id = R.string.label_name))
-            },
+            label = stringResource(id = R.string.label_name),
             isError = state.validationErrors?.name == false,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
@@ -125,12 +119,11 @@ fun EnterDetailsScreen(
                     )
                 }
             ) {
-                OutlinedTextField(
-                    shape = ShimstackRoundedCornerShape(),
+                TextInput(
                     readOnly = true,
-                    value = stringResource(state.bike.type.labelRes),
+                    value = stringResource(state.bikeType.labelRes),
                     onValueChange = {},
-                    label = { Text(text = stringResource(id = R.string.label_type)) },
+                    label = stringResource(id = R.string.label_type),
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = expanded
@@ -158,38 +151,49 @@ fun EnterDetailsScreen(
             ) {
                 Text(text = stringResource(id = R.string.copy_new_bike_ebike))
                 Switch(
-                    checked = state.bike.isEBike,
+                    checked = state.isEbike,
                     onCheckedChange = { intent(NewBikeContract.Intent.EbikeInput(it)) }
                 )
             }
         }
+        val frontSuspensionTravel = state.detailsInput.frontTravel
         SuspensionInput(
             headline = stringResource(id = R.string.label_front_suspension),
-            data = state.bike.frontSuspension,
+            travel = frontSuspensionTravel ?: "",
             isError = state.validationErrors?.frontSuspension == false,
-            initialState = state.bike.frontSuspension != null,
-            onSwitchToggle = {
+            initialState = frontSuspensionTravel != null,
+            hscSwitchState = state.hasHSCFork,
+            hsrSwitchState = state.hasHSRFork,
+            onSuspensionSwitchToggle = {
                 if (!it) intent(NewBikeContract.Intent.FrontSuspensionInput(null))
             },
             onValueChange = {
                 intent(NewBikeContract.Intent.FrontSuspensionInput(it))
-            }
+            },
+            onHSCSwitchToggle = { intent(NewBikeContract.Intent.HSCInput(it, true)) },
+            onHSRSwitchToggle = { intent(NewBikeContract.Intent.HSCInput(it, true)) }
         )
+        val rearSuspensionTravel = state.detailsInput.rearTravel
         SuspensionInput(
             headline = stringResource(id = R.string.label_rear_suspension),
-            data = state.bike.rearSuspension,
+            travel = rearSuspensionTravel ?: "",
             isError = state.validationErrors?.rearSuspension == false,
-            initialState = state.bike.rearSuspension != null,
-            onSwitchToggle = {
+            initialState = rearSuspensionTravel != null,
+            hscSwitchState = state.hasHSCShock,
+            hsrSwitchState = state.hasHSRShock,
+            onSuspensionSwitchToggle = {
                 if (!it) intent(NewBikeContract.Intent.RearSuspensionInput(null))
             },
             onValueChange = {
                 intent(NewBikeContract.Intent.RearSuspensionInput(it))
-            }
+            },
+            onHSCSwitchToggle = { intent(NewBikeContract.Intent.HSCInput(it, false)) },
+            onHSRSwitchToggle = { intent(NewBikeContract.Intent.HSCInput(it, false)) }
         )
         TireInput(
             headline = stringResource(id = R.string.label_front_tire),
-            data = state.bike.frontTire,
+            tireWidth = state.detailsInput.frontTireWidth,
+            internalRimWidth = state.detailsInput.frontInternalRimWidth,
             isError = state.validationErrors?.frontTire == false,
             lastInputImeAction = ImeAction.Next,
             {
@@ -201,7 +205,8 @@ fun EnterDetailsScreen(
         )
         TireInput(
             headline = stringResource(id = R.string.label_rear_tire),
-            data = state.bike.rearTire,
+            tireWidth = state.detailsInput.rearTireWidth,
+            internalRimWidth = state.detailsInput.rearInternalRimWidth,
             isError = state.validationErrors?.rearTire == false,
             lastInputImeAction = ImeAction.Done,
             {
@@ -211,7 +216,7 @@ fun EnterDetailsScreen(
         )
 
         LargeButton(
-            enabled = state.validationErrors == null && state.bike.isPopulated(),
+            enabled = state.validationErrors == null,
             onClick = {
                 intent(NewBikeContract.Intent.OnNextClicked)
             },
@@ -225,11 +230,15 @@ fun EnterDetailsScreen(
 @Composable
 private fun ColumnScope.SuspensionInput(
     headline: String,
-    data: Suspension?,
+    travel: String,
     isError: Boolean,
     initialState: Boolean,
-    onSwitchToggle: (Boolean) -> Unit,
-    onValueChange: (Int?) -> Unit
+    hscSwitchState: Boolean,
+    hsrSwitchState: Boolean,
+    onSuspensionSwitchToggle: (Boolean) -> Unit,
+    onValueChange: (String?) -> Unit,
+    onHSCSwitchToggle: (Boolean) -> Unit,
+    onHSRSwitchToggle: (Boolean) -> Unit
 ) {
     var showSuspensionInput by remember {
         mutableStateOf(initialState)
@@ -244,44 +253,56 @@ private fun ColumnScope.SuspensionInput(
             checked = showSuspensionInput,
             onCheckedChange = {
                 showSuspensionInput = it
-                onSwitchToggle(it)
+                onSuspensionSwitchToggle(it)
             },
             modifier = Modifier.padding(start = 16.dp)
         )
     }
     AnimatedVisibility(visible = showSuspensionInput) {
-        OutlinedTextField(
-            shape = ShimstackRoundedCornerShape(),
-            singleLine = true,
-            value = data?.travel?.toString() ?: "0",
-            onValueChange = { value ->
-                value.toIntOrNull()?.let {
-                    onValueChange(it)
-                } ?: onValueChange(null)
-            },
-            suffix = { Text(text = stringResource(id = R.string.mm)) },
-            modifier = Modifier.padding(top = 8.dp),
-            label = {
-                Text(text = stringResource(id = R.string.label_travel))
-            },
-            isError = isError,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next
-            )
+        Column {
+            TextInput(
+                value = travel,
+                onValueChange = { value ->
+                    onValueChange(value)
+                },
+                suffix = stringResource(id = R.string.mm),
+                modifier = Modifier.padding(top = 8.dp),
+                label = stringResource(id = R.string.label_travel),
+                isError = isError,
+                keyboardOptions = KeyboardOptions.number(ImeAction.Next)
 
-        )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Separate high- and low-speed Compression? ", modifier = Modifier.weight(1.0f))
+                Switch(
+                    checked = hscSwitchState,
+                    onCheckedChange = onHSCSwitchToggle,
+                    modifier = Modifier.weight(1.0f)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Separate high- and low-speed Rebound?", modifier = Modifier.weight(1.0f))
+                Switch(
+                    checked = hsrSwitchState,
+                    onCheckedChange = onHSRSwitchToggle,
+                    modifier = Modifier.weight(1.0f)
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun ColumnScope.TireInput(
     headline: String,
-    data: Tire,
+    tireWidth: String?,
+    internalRimWidth: String?,
     isError: Boolean,
     lastInputImeAction: ImeAction,
-    onTireWidthChanged: (Double) -> Unit,
-    onRimWidthChanged: (Double?) -> Unit
+    onTireWidthChanged: (String) -> Unit,
+    onRimWidthChanged: (String?) -> Unit
 
 ) {
     Text(
@@ -290,44 +311,28 @@ private fun ColumnScope.TireInput(
         modifier = Modifier.padding(top = 16.dp)
     )
     Row(modifier = Modifier.padding(top = 8.dp)) {
-        OutlinedTextField(
-            shape = ShimstackRoundedCornerShape(),
-            singleLine = true,
-            value = if (data.widthInMM == 0.0) "" else data.widthInMM.toString(),
+        TextInput(
+            value = tireWidth ?: "",
             onValueChange = { value ->
-                value.toDoubleOrNull()?.let {
-                    onTireWidthChanged(it)
-                }
+                onTireWidthChanged(value)
             },
-            suffix = { Text(text = stringResource(id = R.string.mm)) },
+            suffix = stringResource(id = R.string.mm),
             modifier = Modifier.weight(1.0f).padding(end = 16.dp),
-            label = {
-                Text(text = stringResource(id = R.string.label_tire_width))
-            },
+            label = stringResource(id = R.string.label_tire_width),
             isError = isError,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Decimal,
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions()
+            keyboardOptions = KeyboardOptions.number(ImeAction.Next)
         )
         Column(
             modifier = Modifier.weight(1.0f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
-                shape = ShimstackRoundedCornerShape(),
-                singleLine = true,
-                value = if (data.internalRimWidthInMM == 0.0 || data.internalRimWidthInMM == null) "" else data.internalRimWidthInMM.toString(),
+            TextInput(
+                value = internalRimWidth ?: "",
                 onValueChange = { value ->
-                    value.toDoubleOrNull()?.let {
-                        onRimWidthChanged(it)
-                    } ?: onRimWidthChanged(null)
+                    onRimWidthChanged(value)
                 },
-                suffix = { Text(text = stringResource(id = R.string.mm)) },
-                label = {
-                    Text(text = stringResource(id = R.string.label_internal_rim_width))
-                },
+                suffix = stringResource(id = R.string.mm),
+                label = stringResource(id = R.string.label_internal_rim_width),
                 isError = isError,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Decimal,
@@ -344,7 +349,7 @@ private fun ColumnScope.TireInput(
 private fun Preview() {
     TabletPreview {
         EnterDetailsScreen(
-            state = NewBikeContract.State(bike = BikeTemplate.testData().toBikeDTO()),
+            state = NewBikeContract.State(),
             intent = {},
             event = MutableSharedFlow()
         )
@@ -356,7 +361,7 @@ private fun Preview() {
 private fun Preview1() {
     PhonePreview {
         EnterDetailsScreen(
-            state = NewBikeContract.State(bike = BikeTemplate.testData().toBikeDTO()),
+            state = NewBikeContract.State(),
             intent = {},
             event = MutableSharedFlow()
         )
@@ -369,7 +374,6 @@ private fun Error() {
     PhonePreview {
         EnterDetailsScreen(
             state = NewBikeContract.State(
-                bike = BikeTemplate.testData().toBikeDTO(),
                 validationErrors = ValidateBikeDTOUseCase.Result.Failure(
                     name = false,
                     type = false,

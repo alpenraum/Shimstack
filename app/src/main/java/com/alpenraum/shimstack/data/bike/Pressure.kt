@@ -18,7 +18,7 @@ data class Pressure(val pressureInBar: BigDecimal) {
     }
 
     fun toFormattedString(context: Context): String {
-        return if (true) {
+        return if (true) { // TODO
             "$pressureInBar ${context.getString(R.string.bar)}"
         } else {
             "$pressureInPSI ${context.getString(R.string.psi)}"
@@ -32,4 +32,6 @@ data class Pressure(val pressureInBar: BigDecimal) {
         1,
         RoundingMode.HALF_EVEN
     )
+
+    fun isEmpty() = pressureInBar != BigDecimal.ZERO
 }

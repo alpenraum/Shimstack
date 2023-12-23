@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -16,11 +18,15 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -124,3 +130,38 @@ fun InfoText(@StringRes textRes: Int) {
 }
 
 fun ShimstackRoundedCornerShape() = RoundedCornerShape(20.dp)
+
+@Composable
+fun TextInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    isError: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    shape: Shape = ShimstackRoundedCornerShape(),
+    singleLine: Boolean = true,
+    suffix: String? = null,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+
+) = OutlinedTextField(
+    shape = shape,
+    singleLine = singleLine,
+    value = value,
+    onValueChange = onValueChange,
+    suffix = suffix?.let { { Text(text = it) } },
+    modifier = modifier,
+    label =
+    label?.let {
+        { Text(text = it) }
+    },
+    isError = isError,
+    keyboardOptions = keyboardOptions,
+    keyboardActions = keyboardActions,
+    readOnly = readOnly,
+    trailingIcon = trailingIcon,
+    colors = colors
+)

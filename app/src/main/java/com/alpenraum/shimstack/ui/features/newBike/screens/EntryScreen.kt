@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +35,7 @@ import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
-import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
+import com.alpenraum.shimstack.ui.compose.TextInput
 import com.alpenraum.shimstack.ui.features.destinations.EnterDetailsScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
@@ -77,18 +76,14 @@ fun EntryScreen(
             modifier = Modifier.padding(top = 8.dp)
         )
         var userInput by rememberSaveable { mutableStateOf("") }
-        OutlinedTextField(
-            shape = ShimstackRoundedCornerShape(),
-            singleLine = true,
+        TextInput(
             value = userInput,
             onValueChange = {
                 userInput = it
                 intent(NewBikeContract.Intent.Filter(it))
             },
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-            label = {
-                Text(text = stringResource(id = R.string.label_new_bike_search))
-            }
+            label = stringResource(id = R.string.label_new_bike_search)
         )
         AnimatedContent(
             modifier = Modifier.fillMaxWidth(),

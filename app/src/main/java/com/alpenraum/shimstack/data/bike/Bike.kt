@@ -25,25 +25,28 @@ data class Bike(
     fun toDTO() = BikeDTO(name, type, frontSuspension, rearSuspension, frontTire, rearTire, isEBike)
 
     companion object {
-        fun empty() =
-            Bike(
-                name = "",
-                type = Type.UNKNOWN,
-                isEBike = false,
-                frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-                rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0)
-            )
+        fun empty() = Bike(
+            name = "",
+            type = Type.UNKNOWN,
+            isEBike = false,
+            frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
+            rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0)
+        )
     }
 
     enum class Type(@StringRes val labelRes: Int) {
-        ROAD(R.string.label_road_type),
-        GRAVEL(R.string.label_gravel_type),
-        XC(R.string.label_xc_type),
-        TRAIL(R.string.label_trail_type),
-        ALL_MTN(R.string.label_all_mtn_type),
-        ENDURO(R.string.label_enduro_type),
-        DH(R.string.label_dh_type),
-        UNKNOWN(R.string.label_unknown_type)
+        ROAD(R.string.label_road_type), GRAVEL(R.string.label_gravel_type), XC(
+            R.string.label_xc_type
+        ),
+        TRAIL(
+            R.string.label_trail_type
+        ),
+        ALL_MTN(R.string.label_all_mtn_type), ENDURO(R.string.label_enduro_type), DH(
+            R.string.label_dh_type
+        ),
+        UNKNOWN(
+            R.string.label_unknown_type
+        )
     }
 }
 
@@ -58,29 +61,27 @@ data class BikeDTO(
 ) {
 
     companion object {
-        fun empty() =
-            BikeDTO(
-                name = "",
-                type = Bike.Type.UNKNOWN,
-                isEBike = false,
-                frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-                rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-                frontSuspension = null,
-                rearSuspension = null
-            )
+        fun empty() = BikeDTO(
+            name = "",
+            type = Bike.Type.UNKNOWN,
+            isEBike = false,
+            frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
+            rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
+            frontSuspension = null,
+            rearSuspension = null
+        )
     }
 
-    fun getTireUIData(context: Context) =
-        Pair(
-            UIDataLabel.Simple(
-                context.getString(R.string.front),
-                frontTire.getFormattedPressure(context)
-            ),
-            UIDataLabel.Simple(
-                context.getString(R.string.rear),
-                rearTire.getFormattedPressure(context)
-            )
+    fun getTireUIData(context: Context) = Pair(
+        UIDataLabel.Simple(
+            context.getString(R.string.front),
+            frontTire.getFormattedPressure(context)
+        ),
+        UIDataLabel.Simple(
+            context.getString(R.string.rear),
+            rearTire.getFormattedPressure(context)
         )
+    )
 
     fun getFrontSuspensionUIData(context: Context): List<UIDataLabel>? = frontSuspension?.let {
         return getSuspensionUIData(it, context)
@@ -126,5 +127,12 @@ data class BikeDTO(
             )
         }
 
-    fun isPopulated() = name.isNotBlank() && type != Bike.Type.UNKNOWN && frontTire.widthInMM != 0.0 && rearTire.widthInMM != 0.0
+    fun isPopulated() =
+        name.isNotBlank() && type != Bike.Type.UNKNOWN && frontTire.widthInMM != 0.0 && rearTire.widthInMM != 0.0
+
+    fun hasSetup() =
+        !frontTire.pressure.isEmpty() &&
+            !rearTire.pressure.isEmpty() &&
+            frontSuspension?.pressure?.isEmpty() != true &&
+            rearSuspension?.pressure?.isEmpty() != true
 }

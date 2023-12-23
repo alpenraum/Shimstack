@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack.data.bikeTemplates
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.alpenraum.shimstack.data.bike.Bike
@@ -11,6 +12,7 @@ import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.db.AppDatabase
 
 @Entity(tableName = AppDatabase.table_bike_template)
+@Immutable
 class BikeTemplate(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     val name: String,
