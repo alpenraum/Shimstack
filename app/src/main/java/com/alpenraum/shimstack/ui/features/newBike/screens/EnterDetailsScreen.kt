@@ -46,7 +46,7 @@ import com.alpenraum.shimstack.ui.compose.number
 import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
-import com.alpenraum.shimstack.usecases.biometrics.ValidateBikeDTOUseCase
+import com.alpenraum.shimstack.usecases.ValidateBikeDTOUseCase
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -97,7 +97,7 @@ fun EnterDetailsScreen(
                 Modifier.fillMaxWidth().padding(top = 16.dp)
             },
             label = stringResource(id = R.string.label_name),
-            isError = state.validationErrors?.name == false,
+            isError = state.detailsValidationErrors?.name == false,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
 
@@ -130,7 +130,7 @@ fun EnterDetailsScreen(
                         )
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                    isError = state.validationErrors?.type == false
+                    isError = state.detailsValidationErrors?.type == false
                 )
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                     expanded = false
@@ -160,7 +160,7 @@ fun EnterDetailsScreen(
         SuspensionInput(
             headline = stringResource(id = R.string.label_front_suspension),
             travel = frontSuspensionTravel ?: "",
-            isError = state.validationErrors?.frontSuspension == false,
+            isError = state.detailsValidationErrors?.frontSuspension == false,
             initialState = frontSuspensionTravel != null,
             hscSwitchState = state.hasHSCFork,
             hsrSwitchState = state.hasHSRFork,
@@ -177,7 +177,7 @@ fun EnterDetailsScreen(
         SuspensionInput(
             headline = stringResource(id = R.string.label_rear_suspension),
             travel = rearSuspensionTravel ?: "",
-            isError = state.validationErrors?.rearSuspension == false,
+            isError = state.detailsValidationErrors?.rearSuspension == false,
             initialState = rearSuspensionTravel != null,
             hscSwitchState = state.hasHSCShock,
             hsrSwitchState = state.hasHSRShock,
@@ -194,7 +194,7 @@ fun EnterDetailsScreen(
             headline = stringResource(id = R.string.label_front_tire),
             tireWidth = state.detailsInput.frontTireWidth,
             internalRimWidth = state.detailsInput.frontInternalRimWidth,
-            isError = state.validationErrors?.frontTire == false,
+            isError = state.detailsValidationErrors?.frontTire == false,
             lastInputImeAction = ImeAction.Next,
             {
                 intent(NewBikeContract.Intent.FrontTireWidthInput(it))
@@ -207,7 +207,7 @@ fun EnterDetailsScreen(
             headline = stringResource(id = R.string.label_rear_tire),
             tireWidth = state.detailsInput.rearTireWidth,
             internalRimWidth = state.detailsInput.rearInternalRimWidth,
-            isError = state.validationErrors?.rearTire == false,
+            isError = state.detailsValidationErrors?.rearTire == false,
             lastInputImeAction = ImeAction.Done,
             {
                 intent(NewBikeContract.Intent.RearTireWidthInput(it))
@@ -216,7 +216,7 @@ fun EnterDetailsScreen(
         )
 
         LargeButton(
-            enabled = state.validationErrors == null,
+            enabled = state.detailsValidationErrors == null,
             onClick = {
                 intent(NewBikeContract.Intent.OnNextClicked)
             },
@@ -374,7 +374,7 @@ private fun Error() {
     PhonePreview {
         EnterDetailsScreen(
             state = NewBikeContract.State(
-                validationErrors = ValidateBikeDTOUseCase.Result.Failure(
+                detailsValidationErrors = ValidateBikeDTOUseCase.DetailsFailure(
                     name = false,
                     type = false,
                     frontTire = false,

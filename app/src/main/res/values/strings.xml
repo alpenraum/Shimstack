@@ -68,4 +68,6 @@
     <string name="label_tire_width">Tire width</string>
     <string name="label_internal_rim_width">Internal rim width</string>
 
+    <string name="copy_setup_outlier_hint">Some values seem out of the ordinary. Double check if you entered everything correctly.</string>
+
 </resources>

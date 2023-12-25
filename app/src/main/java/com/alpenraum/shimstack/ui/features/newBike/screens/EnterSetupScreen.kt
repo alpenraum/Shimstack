@@ -157,9 +157,11 @@ fun EnterSetupScreen(
       HSR / LSR
 
    */
-
+        AnimatedVisibility(visible = state.showSetupOutlierHint) {
+            InfoText(textRes = R.string.copy_setup_outlier_hint)
+        }
         LargeButton(
-            enabled = state.validationErrors == null,
+            enabled = state.setupValidationErrors == null,
             onClick = {
                 intent(NewBikeContract.Intent.OnNextClicked)
             },

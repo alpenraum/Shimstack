@@ -9,7 +9,8 @@ import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import com.alpenraum.shimstack.ui.features.navArgs
-import com.alpenraum.shimstack.usecases.biometrics.ValidateBikeDTOUseCase
+import com.alpenraum.shimstack.usecases.ValidateBikeDTOUseCase
+import com.alpenraum.shimstack.usecases.ValidateSetupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -33,7 +34,8 @@ import kotlinx.coroutines.launch
 class NewBikeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bikeTemplateRepository: LocalBikeTemplateRepository,
-    private val validateBikeDTOUseCase: ValidateBikeDTOUseCase
+    private val validateBikeDTOUseCase: ValidateBikeDTOUseCase,
+    private val validateSetupUseCase: ValidateSetupUseCase
 ) : BaseViewModel(), NewBikeContract {
 
     private val navArgs: NewBikeNavArgs = savedStateHandle.navArgs() // todo: remove
@@ -225,7 +227,8 @@ class NewBikeViewModel @Inject constructor(
         iOScope.launch {
             val detailsInput = detailsInputData?.let { createNewInputData(it) }
             val setupInput = setupInputData?.let { createNewInputSetup(it) }
-            // val validationResult = validateBikeDTOUseCase(newData) TODO
+            val detailsValidationResult = detailsInput?.let { validateBikeDTOUseCase(it, bikeType) }
+            val setupValidationResult = setupInput?.let { validateSetupUseCase(it) }
             _state.emit(
                 state.value.copy(
                     detailsInput = detailsInput ?: state.value.detailsInput,
@@ -235,12 +238,20 @@ class NewBikeViewModel @Inject constructor(
                     hasHSCFork = hasHSCFork ?: state.value.hasHSCFork,
                     hasHSRFork = hasHSRFork ?: state.value.hasHSRFork,
                     hasHSCShock = hasHSCShock ?: state.value.hasHSCShock,
-                    hasHSRShock = hasHSRShock ?: state.value.hasHSRShock
-//                    validationErrors = if (validationResult.isSuccess().not()) {
-//                        validationResult as ValidateBikeDTOUseCase.Result.Failure
-//                    } else {
-//                        null
-//                    }
+                    hasHSRShock = hasHSRShock ?: state.value.hasHSRShock,
+                    detailsValidationErrors = if (detailsValidationResult?.isSuccess()
+                            ?.not() == true
+                    ) {
+                        detailsValidationResult as ValidateBikeDTOUseCase.DetailsFailure
+                    } else {
+                        null
+                    },
+                    setupValidationErrors = if (setupValidationResult?.isSuccess()?.not() == true) {
+                        setupValidationResult as ValidateSetupUseCase.SetupFailure
+                    } else {
+                        null
+                    },
+                    showSetupOutlierHint = setupValidationResult is ValidateSetupUseCase.SetupOutlier
                 )
             )
         }
@@ -295,7 +306,9 @@ interface NewBikeContract :
     @Immutable
     data class State(
         val bikeTemplates: ImmutableList<BikeTemplate> = persistentListOf(),
-        val validationErrors: ValidateBikeDTOUseCase.Result.Failure? = null,
+        val detailsValidationErrors: ValidateBikeDTOUseCase.DetailsFailure? = null,
+        val setupValidationErrors: ValidateSetupUseCase.SetupFailure? = null,
+        val showSetupOutlierHint: Boolean = false,
         val isEbike: Boolean = false,
         val bikeType: Bike.Type = Bike.Type.UNKNOWN,
         val detailsInput: DetailsInputData = DetailsInputData(),
@@ -304,22 +317,7 @@ interface NewBikeContract :
         val hasHSRFork: Boolean = false,
         val hasHSCShock: Boolean = false,
         val hasHSRShock: Boolean = false
-    ) {
-        companion object {
-            const val INPUT_NAME = "INPUT_NAME"
-            const val INPUT_FRONT_TRAVEL = "INPUT_FRONT_TRAVEL"
-            const val INPUT_REAR_TRAVEL = "INPUT_REAR_TRAVEL"
-            const val INPUT_FRONT_TIRE_WIDTH = "INPUT_FRONT_TIRE_WIDTH"
-            const val INPUT_REAR_TIRE_WIDTH = "INPUT_REAR_TIRE_WIDTH"
-            const val INPUT_FRONT_INTERNAL_RIM_WIDTH = "INPUT_FRONT_INTERNAL_RIM_WIDTH"
-            const val INPUT_REAR_INTERNAL_RIM_WIDTH = "INPUT_REAR_INTERNAL_RIM_WIDTH"
-
-            // Setup
-            const val INPUT_FRONT_TIRE_PRESSURE = "INPUT_FRONT_TIRE_PRESSURE"
-            const val INPUT_REAR_TIRE_PRESSURE = "INPUT_REAR_TIRE_PRESSURE"
-            const val INPUT_FRONT_SUSPENSION_PRESSURE = "INPUT_FRONT_SUSPENSION_PRESSURE"
-        }
-    }
+    )
 
     sealed class Event {
         data object NavigateToNextStep : Event()
