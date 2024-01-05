@@ -131,6 +131,7 @@ fun EnterDetailsScreen(
                             expanded = expanded
                         )
                     },
+                    modifier = Modifier.menuAnchor(),
                     colors = ExposedDropdownMenuDefaults.textFieldColors(),
                     isError = state.detailsValidationErrors?.type == false
                 )
@@ -138,12 +139,14 @@ fun EnterDetailsScreen(
                     expanded = false
                 }) {
                     Bike.Type.values().forEach { selectionOption ->
-                        DropdownMenuItem(text = {
-                            Text(text = stringResource(selectionOption.labelRes))
-                        }, onClick = {
-                            intent(NewBikeContract.Intent.BikeTypeInput(selectionOption))
-                            expanded = false
-                        })
+                        if (selectionOption != Bike.Type.UNKNOWN) {
+                            DropdownMenuItem(text = {
+                                Text(text = stringResource(selectionOption.labelRes))
+                            }, onClick = {
+                                intent(NewBikeContract.Intent.BikeTypeInput(selectionOption))
+                                expanded = false
+                            })
+                        }
                     }
                 }
             }
@@ -173,7 +176,7 @@ fun EnterDetailsScreen(
                 intent(NewBikeContract.Intent.FrontSuspensionInput(it))
             },
             onHSCSwitchToggle = { intent(NewBikeContract.Intent.HSCInput(it, true)) },
-            onHSRSwitchToggle = { intent(NewBikeContract.Intent.HSCInput(it, true)) }
+            onHSRSwitchToggle = { intent(NewBikeContract.Intent.HSRInput(it, true)) }
         )
         val rearSuspensionTravel = state.detailsInput.rearTravel
         SuspensionInput(
@@ -190,7 +193,7 @@ fun EnterDetailsScreen(
                 intent(NewBikeContract.Intent.RearSuspensionInput(it))
             },
             onHSCSwitchToggle = { intent(NewBikeContract.Intent.HSCInput(it, false)) },
-            onHSRSwitchToggle = { intent(NewBikeContract.Intent.HSCInput(it, false)) }
+            onHSRSwitchToggle = { intent(NewBikeContract.Intent.HSRInput(it, false)) }
         )
         TireInput(
             headline = stringResource(id = R.string.label_front_tire),

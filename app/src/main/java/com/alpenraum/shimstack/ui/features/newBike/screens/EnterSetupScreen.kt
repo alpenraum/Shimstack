@@ -79,7 +79,7 @@ fun EnterSetupScreen(
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
             TextInput(
-                value = "${state.setupInput.frontTirePressure}",
+                value = state.setupInput.frontTirePressure ?: "",
                 onValueChange = {
                     intent(NewBikeContract.Intent.FrontTirePressureInput(it))
                 },
@@ -96,7 +96,7 @@ fun EnterSetupScreen(
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
             )
             TextInput(
-                value = "${state.setupInput.rearSuspensionTokens}",
+                value = state.setupInput.rearSuspensionTokens ?: "",
                 onValueChange = {
                     intent(NewBikeContract.Intent.RearTirePressureInput(it))
                 },
@@ -117,12 +117,12 @@ fun EnterSetupScreen(
         if (state.detailsInput.frontTravel?.isNotEmpty() == true) {
             SuspensionInput(
                 title = stringResource(id = R.string.label_front_suspension),
-                pressureInput = "${state.setupInput.frontSuspensionPressure}",
-                tokensInput = "${state.setupInput.frontSuspensionTokens}",
-                lscInput = "${state.setupInput.frontSuspensionLSC}",
-                hscInput = "${state.setupInput.frontSuspensionHSC}",
-                lsrInput = "${state.setupInput.frontSuspensionLSR}",
-                hsrInput = "${state.setupInput.frontSuspensionHSR}",
+                pressureInput = state.setupInput.frontSuspensionPressure ?: "",
+                tokensInput = state.setupInput.frontSuspensionTokens ?: "",
+                lscInput = state.setupInput.frontSuspensionLSC ?: "",
+                hscInput = state.setupInput.frontSuspensionHSC ?: "",
+                lsrInput = state.setupInput.frontSuspensionLSR ?: "",
+                hsrInput = state.setupInput.frontSuspensionHSR ?: "",
                 showHSC = state.hasHSCFork,
                 showHSR = state.hasHSRFork,
                 onPressureChanged = { intent(NewBikeContract.Intent.FrontSuspensionPressure(it)) },
@@ -137,12 +137,12 @@ fun EnterSetupScreen(
         if (state.detailsInput.rearTravel?.isNotEmpty() == true) {
             SuspensionInput(
                 title = stringResource(id = R.string.label_rear_suspension),
-                pressureInput = "${state.setupInput.rearSuspensionPressure}",
-                tokensInput = "${state.setupInput.rearSuspensionTokens}",
-                lscInput = "${state.setupInput.rearSuspensionLSC}",
-                hscInput = "${state.setupInput.rearSuspensionHSC}",
-                lsrInput = "${state.setupInput.rearSuspensionLSR}",
-                hsrInput = "${state.setupInput.rearSuspensionHSR}",
+                pressureInput = state.setupInput.rearSuspensionPressure ?: "",
+                tokensInput = state.setupInput.rearSuspensionTokens ?: "",
+                lscInput = state.setupInput.rearSuspensionLSC ?: "",
+                hscInput = state.setupInput.rearSuspensionHSC ?: "",
+                lsrInput = state.setupInput.rearSuspensionLSR ?: "",
+                hsrInput = state.setupInput.rearSuspensionHSR ?: "",
                 showHSC = state.hasHSCShock,
                 showHSR = state.hasHSRShock,
                 onPressureChanged = { intent(NewBikeContract.Intent.RearSuspensionPressure(it)) },
@@ -204,7 +204,6 @@ private fun ColumnScope.SuspensionInput(
         TextInput(
             value = tokensInput,
             onValueChange = onTokensChanged,
-            suffix = stringResource(id = R.string.bar),
             label = stringResource(id = R.string.tokens),
             keyboardOptions = KeyboardOptions.number(ImeAction.Next),
             modifier = Modifier.weight(1.0f)
@@ -222,21 +221,23 @@ private fun ColumnScope.SuspensionInput(
         showHighSpeed = showHSC,
         onLowSpeedChanged = onLSCChanged,
         onHighSpeedChanged = onHSCChanged,
-        modifier = Modifier.padding(top = 8.dp)
+        modifier = Modifier.padding(top = 8.dp),
+        isLastInput = false
     )
     Text(
         text = stringResource(id = R.string.rebound),
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(top = 16.dp)
     )
-    InfoText(textRes = androidx.appcompat.R.string.abc_search_hint)
+    InfoText(textRes = androidx.appcompat.R.string.abc_search_hint) // TODO: What did I want to write here?
     DampingInput(
         lowSpeed = lsrInput,
         highSpeed = hsrInput,
         showHighSpeed = showHSR,
         onLowSpeedChanged = onLSRChanged,
         onHighSpeedChanged = onHSRChanged,
-        modifier = Modifier.padding(top = 8.dp)
+        modifier = Modifier.padding(top = 8.dp),
+        isLastInput = true
     )
 }
 
@@ -245,6 +246,7 @@ private fun ColumnScope.DampingInput(
     lowSpeed: String?,
     highSpeed: String?,
     showHighSpeed: Boolean,
+    isLastInput: Boolean,
     onHighSpeedChanged: (String) -> Unit,
     onLowSpeedChanged: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -257,12 +259,16 @@ private fun ColumnScope.DampingInput(
             value = lowSpeed ?: "",
             onValueChange = { onLowSpeedChanged(it) },
             modifier = Modifier.weight(1.0f),
+            keyboardOptions = KeyboardOptions.number(
+                if (isLastInput) ImeAction.Done else ImeAction.Next
+            ),
             label = stringResource(id = R.string.label_entersetup_low_speed_clicks)
         )
         AnimatedVisibility(visible = showHighSpeed, modifier = Modifier.weight(1.0f)) {
             TextInput(
                 value = highSpeed ?: "",
                 onValueChange = { onHighSpeedChanged(it) },
+                keyboardOptions = KeyboardOptions.number(ImeAction.Next),
                 label = stringResource(id = R.string.label_entersetup_high_speed_clicks)
             )
         }

@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack.usecases
 
+import android.util.Log
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.ui.features.newBike.DetailsInputData
@@ -35,7 +36,7 @@ constructor() {
     ): Result {
         return fromResults(
             validateName(data.name),
-            type?.let { validateType(it) } ?: true,
+            type?.let { validateType(it) } ?: false,
             validateTireWidth(data.frontTireWidth?.toDoubleOrNull()) &&
                 data.frontInternalRimWidth?.let {
                     validateInternalRimWidth(
@@ -58,6 +59,7 @@ constructor() {
     }
 
     private fun validateType(type: Bike.Type): Boolean {
+        Log.d("___", "validateType: $type")
         return type != Bike.Type.UNKNOWN
     }
 

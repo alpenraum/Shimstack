@@ -1,8 +1,9 @@
 package com.alpenraum.shimstack.usecases
 
 import com.alpenraum.shimstack.ui.features.newBike.SetupInputData
+import javax.inject.Inject
 
-class ValidateSetupUseCase {
+class ValidateSetupUseCase @Inject constructor() {
     operator fun invoke(setupInputData: SetupInputData): Result {
         val results =
             buildList {

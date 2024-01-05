@@ -307,10 +307,8 @@ constructor(
 
     private fun goToEnterDetailsScreen(template: BikeTemplate?) =
         iOScope.launch {
-            _state.emit(
-                state.value.copy(
-                    detailsInput = mapFromBikeDTO(template?.toBikeDTO() ?: BikeDTO.empty())
-                )
+            validateAndUpdateInput(
+                mapFromBikeDTO(template?.toBikeDTO() ?: BikeDTO.empty())
             )
             _event.emit(NewBikeContract.Event.NavigateToNextStep)
         }
