@@ -1,9 +1,6 @@
 package com.alpenraum.shimstack.ui.features.main.navigation.bottomNavigation
 
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,27 +15,25 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun BottomNavigationGraph(
     navController: NavHostController,
     rootNavigator: DestinationsNavigator,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
-
-        NavHost(
-            navController,
-            startDestination = BottomNavigationItem.Home.route,
-            modifier = modifier,
-            enterTransition = { fadeIn() },
-            exitTransition = { fadeOut() },
-            popExitTransition = { fadeOut() },
-            popEnterTransition = { fadeIn() }
-        ) {
-            composable(BottomNavigationItem.Home.route) {
-                HomeScreen(rootNavigator)
-            }
-            composable(BottomNavigationItem.Test.route) {
-                SettingsScreen()
-            }
-            composable(BottomNavigationItem.Settings.route) {
-                SettingsScreen()
-            }
+    NavHost(
+        navController,
+        startDestination = BottomNavigationItem.Home.route,
+        modifier = modifier,
+        enterTransition = { fadeIn() },
+        exitTransition = { fadeOut() },
+        popExitTransition = { fadeOut() },
+        popEnterTransition = { fadeIn() }
+    ) {
+        composable(BottomNavigationItem.Home.route) {
+            HomeScreen(rootNavigator)
+        }
+        composable(BottomNavigationItem.Test.route) {
+            SettingsScreen()
+        }
+        composable(BottomNavigationItem.Settings.route) {
+            SettingsScreen()
         }
     }
-
+}

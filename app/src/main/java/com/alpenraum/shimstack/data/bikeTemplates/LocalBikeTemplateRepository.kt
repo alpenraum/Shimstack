@@ -7,7 +7,9 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 import javax.inject.Inject
 
-class LocalBikeTemplateRepository @Inject constructor(
+class LocalBikeTemplateRepository
+@Inject
+constructor(
     private val bikeTemplateDAO: BikeTemplateDAO,
     private val moshi: Moshi
 ) : BikeTemplateRepository {

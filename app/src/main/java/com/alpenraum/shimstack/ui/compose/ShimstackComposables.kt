@@ -54,11 +54,12 @@ fun VerticalDivider(
     thickness: Dp = DividerDefaults.Thickness,
     color: Color = DividerDefaults.color
 ) {
-    val targetThickness = if (thickness == Dp.Hairline) {
-        (1f / LocalDensity.current.density).dp
-    } else {
-        thickness
-    }
+    val targetThickness =
+        if (thickness == Dp.Hairline) {
+            (1f / LocalDensity.current.density).dp
+        } else {
+            thickness
+        }
     Box(
         modifier
             .fillMaxHeight()
@@ -70,12 +71,15 @@ fun VerticalDivider(
 @Composable
 fun CardWithPlaceholder(
     showPlaceholder: Boolean,
-    modifier: Modifier = Modifier,
     placeholderColor: Color,
-    content: @Composable() ColumnScope.() -> Unit
+    modifier: Modifier = Modifier,
+    content:
+    @Composable()
+    ColumnScope.() -> Unit
 ) {
     Card(
-        modifier = modifier.placeholder(
+        modifier =
+        modifier.placeholder(
             visible = showPlaceholder,
             highlight = PlaceholderHighlight.fade(),
             color = placeholderColor,
@@ -120,16 +124,20 @@ fun LargeSecondaryButton(
 }
 
 @Composable
-fun InfoText(@StringRes textRes: Int) {
+fun InfoText(
+    @StringRes textRes: Int,
+    modifier: Modifier = Modifier
+) {
     Text(
         text = stringResource(id = textRes),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        fontStyle = FontStyle.Italic
+        fontStyle = FontStyle.Italic,
+        modifier = modifier
     )
 }
 
-fun ShimstackRoundedCornerShape() = RoundedCornerShape(20.dp)
+fun shimstackRoundedCornerShape() = RoundedCornerShape(20.dp)
 
 @Composable
 fun TextInput(
@@ -140,13 +148,12 @@ fun TextInput(
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    shape: Shape = ShimstackRoundedCornerShape(),
+    shape: Shape = shimstackRoundedCornerShape(),
     singleLine: Boolean = true,
     suffix: String? = null,
     readOnly: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
-
 ) = OutlinedTextField(
     shape = shape,
     singleLine = singleLine,

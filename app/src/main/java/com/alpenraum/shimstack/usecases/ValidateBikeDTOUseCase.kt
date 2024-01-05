@@ -5,8 +5,9 @@ import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.ui.features.newBike.DetailsInputData
 import javax.inject.Inject
 
-class ValidateBikeDTOUseCase @Inject constructor() {
-
+class ValidateBikeDTOUseCase
+@Inject
+constructor() {
     operator fun invoke(bikeDTO: BikeDTO): Result {
         return fromResults(
             validateName(bikeDTO.name),
@@ -25,11 +26,13 @@ class ValidateBikeDTOUseCase @Inject constructor() {
                 } ?: true,
             bikeDTO.frontSuspension?.travel?.let { validateSuspensionTravel(it) } ?: true,
             bikeDTO.rearSuspension?.travel?.let { validateSuspensionTravel(it) } ?: true
-
         )
     }
 
-    operator fun invoke(data: DetailsInputData, type: Bike.Type?): Result {
+    operator fun invoke(
+        data: DetailsInputData,
+        type: Bike.Type?
+    ): Result {
         return fromResults(
             validateName(data.name),
             type?.let { validateType(it) } ?: true,
@@ -47,7 +50,6 @@ class ValidateBikeDTOUseCase @Inject constructor() {
                 } ?: true,
             data.frontTravel?.toIntOrNull()?.let { validateSuspensionTravel(it) } ?: true,
             data.rearTravel?.toIntOrNull()?.let { validateSuspensionTravel(it) } ?: true
-
         )
     }
 

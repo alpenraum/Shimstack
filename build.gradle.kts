@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.47")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:11.0.0")
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:12.0.3")
     }
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
@@ -14,4 +14,16 @@ plugins {
 }
 allprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        version.set("1.1.0")
+        android.set(true)
+        outputToConsole.set(true)
+        outputColorName.set("RED")
+
+        filter {
+            exclude("**/generated/**")
+            include("**/kotlin/**")
+        }
+    }
 }

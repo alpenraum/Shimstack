@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 object ConfigDataStore {
-
     private val dataStore = ShimstackApplication.appContext?.dataStore
 
     const val SETTINGS_PREFERENCES_NAME = "shimstack_settings"

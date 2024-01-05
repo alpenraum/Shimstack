@@ -5,13 +5,15 @@ import androidx.biometric.BiometricManager
 import com.alpenraum.shimstack.common.CryptoConstants.ALLOWED_BIOMETRIC_AUTHENTICATORS
 
 class IsBiometricAuthenticationAvailableUseCase {
-
     sealed class Result {
         object Success : Result()
+
         object Failure : Result()
+
         object NoneEnrolled : Result()
 
         fun isSuccess() = this is Success
+
         fun isFailure() = this is Failure
     }
 

@@ -61,10 +61,10 @@ import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.CARD_MARGIN
 import com.alpenraum.shimstack.ui.compose.ForkDetails
-import com.alpenraum.shimstack.ui.compose.ShimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.compose.ShockDetails
 import com.alpenraum.shimstack.ui.compose.TireDetails
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
+import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.features.destinations.NewBikeFeatureDestination
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -77,20 +77,21 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlin.math.absoluteValue
-import kotlin.math.max
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
+import kotlin.math.max
 
 @Composable
 fun HomeScreen(
-    navController: DestinationsNavigator
+    navController: DestinationsNavigator,
+    viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
-    val viewModel = hiltViewModel<HomeScreenViewModel>()
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel)
     HomeScreenContent(
@@ -119,17 +120,20 @@ private fun HomeScreenContent(
         event.collectLatest {
             when (it) {
                 HomeScreenContract.Event.Error -> scope.launch { snackState.showSnackbar("ERROR") }
-                HomeScreenContract.Event.FinishedLoading -> scope.launch {
-                    isLoading.value = false
-                }
+                HomeScreenContract.Event.FinishedLoading ->
+                    scope.launch {
+                        isLoading.value = false
+                    }
 
-                HomeScreenContract.Event.Loading -> scope.launch {
-                    isLoading.value = true
-                }
+                HomeScreenContract.Event.Loading ->
+                    scope.launch {
+                        isLoading.value = true
+                    }
 
-                HomeScreenContract.Event.NewPageSelected -> scope.launch {
-                    lastPagerPosition.intValue = pagerState.currentPage
-                }
+                HomeScreenContract.Event.NewPageSelected ->
+                    scope.launch {
+                        lastPagerPosition.intValue = pagerState.currentPage
+                    }
 
                 HomeScreenContract.Event.NavigateToNewBikeFeature -> {
                     onNewBikeClicked()
@@ -145,7 +149,8 @@ private fun HomeScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BikePager(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(top = 32.dp, bottom = 16.dp),
             showPlaceholder = isLoading.value,
             state = state,
@@ -194,7 +199,8 @@ private fun EmptyDetailsEyeCandy() {
         Image(
             painter = painterResource(id = R.drawable.il_empty_mountain),
             contentDescription = null,
-            modifier = Modifier.semantics {
+            modifier =
+            Modifier.semantics {
                 invisibleToUser()
             }.fillMaxSize(0.6f).padding(bottom = 8.dp)
         )
@@ -211,12 +217,13 @@ private fun EmptyDetailsEyeCandy() {
 @Composable
 private fun BikeDetails(
     bike: BikeDTO,
-    cardSetup: List<CardSetup>,
+    cardSetup: ImmutableList<CardSetup>,
     intents: (HomeScreenContract.Intent) -> Unit,
     state: LazyGridState
 ) {
     FlowRow(
-        modifier = Modifier
+        modifier =
+        Modifier
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(CARD_MARGIN, alignment = Alignment.Start)
@@ -234,7 +241,7 @@ private fun BikeDetails(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun BikePager(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     state: HomeScreenContract.State,
     intents: (HomeScreenContract.Intent) -> Unit,
     showPlaceholder: Boolean,
@@ -254,7 +261,8 @@ private fun BikePager(
             state.bikes.size + 1,
             modifier = Modifier,
             pagerState,
-            contentPadding = PaddingValues(
+            contentPadding =
+            PaddingValues(
                 horizontal = calculatePagerItemPadding(itemWidth = itemSize)
             ),
             verticalAlignment = Alignment.Top,
@@ -262,14 +270,16 @@ private fun BikePager(
         ) { page ->
             val bike = state.bikes.getOrNull(page)
 
-            val content: @Composable (modifier: Modifier) -> Unit = if (page == state.bikes.size) {
-                { addNewBikeCardContent(intents = intents) }
-            } else {
-                { BikeCardContent(bike = bike, it) }
-            }
+            val content: @Composable (modifier: Modifier) -> Unit =
+                if (page == state.bikes.size) {
+                    { AddNewBikeCardContent(intents = intents) }
+                } else {
+                    { BikeCardContent(bike = bike, it) }
+                }
 
             BikeCard(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .size(itemSize)
                     .graphicsLayer {
                         val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
@@ -288,7 +298,8 @@ private fun BikePager(
         }
         HorizontalPagerIndicator(
             pagerState = pagerState,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(16.dp),
             activeColor = MaterialTheme.colorScheme.primary
@@ -297,26 +308,28 @@ private fun BikePager(
 }
 
 @Composable
-private fun calculatePagerItemPadding(itemWidth: Dp) = max(
-    ((LocalConfiguration.current.screenWidthDp - itemWidth.value) / 2.0f),
-    0.0f
-).dp
+private fun calculatePagerItemPadding(itemWidth: Dp) =
+    max(
+        ((LocalConfiguration.current.screenWidthDp - itemWidth.value) / 2.0f),
+        0.0f
+    ).dp
 
 @Composable
 private fun BikeCard(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     showPlaceholder: Boolean,
     content: @Composable (modifier: Modifier) -> Unit
 ) {
     Surface(
-        modifier = modifier
+        modifier =
+        modifier
             .placeholder(
                 visible = showPlaceholder,
                 highlight = PlaceholderHighlight.fade(),
                 color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = ShimstackRoundedCornerShape()
+                shape = shimstackRoundedCornerShape()
             ),
-        shape = ShimstackRoundedCornerShape(),
+        shape = shimstackRoundedCornerShape(),
         tonalElevation = 10.dp,
         color = MaterialTheme.colorScheme.secondaryContainer
     ) {
@@ -325,7 +338,10 @@ private fun BikeCard(
 }
 
 @Composable
-private fun BikeCardContent(bike: BikeDTO?, modifier: Modifier = Modifier) {
+private fun BikeCardContent(
+    bike: BikeDTO?,
+    modifier: Modifier = Modifier
+) {
     Text(
         bike?.name ?: "",
         style = MaterialTheme.typography.bodyMedium,
@@ -335,13 +351,14 @@ private fun BikeCardContent(bike: BikeDTO?, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun addNewBikeCardContent(
+private fun AddNewBikeCardContent(
     modifier: Modifier = Modifier,
     intents: (HomeScreenContract.Intent) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxSize()
             .clickable {
                 intents(HomeScreenContract.Intent.OnAddNewBike)
@@ -352,7 +369,8 @@ private fun addNewBikeCardContent(
             Icon(
                 Icons.Rounded.Add,
                 contentDescription = "",
-                modifier = Modifier
+                modifier =
+                Modifier
                     .size(100.dp)
                     .semantics { invisibleToUser() },
                 tint = MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.8f)
@@ -367,7 +385,7 @@ private fun addNewBikeCardContent(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun Preview() {
+private fun Preview() {
     AppTheme {
         HomeScreenContent(
             state = HomeScreenContract.State(persistentListOf(), persistentListOf()),

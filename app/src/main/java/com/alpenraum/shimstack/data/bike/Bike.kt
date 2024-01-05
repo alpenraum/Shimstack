@@ -8,9 +8,11 @@ import androidx.room.PrimaryKey
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.db.AppDatabase
 import com.alpenraum.shimstack.ui.features.mainScreens.home.UIDataLabel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import java.math.BigDecimal
 
-@Entity(tableName = AppDatabase.table_bike)
+@Entity(tableName = AppDatabase.TABLE_BIKE)
 data class Bike(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     val name: String,
@@ -21,27 +23,33 @@ data class Bike(
     @Embedded(prefix = "rear_tire_") val rearTire: Tire,
     val isEBike: Boolean
 ) {
-
     fun toDTO() = BikeDTO(name, type, frontSuspension, rearSuspension, frontTire, rearTire, isEBike)
 
     companion object {
-        fun empty() = Bike(
-            name = "",
-            type = Type.UNKNOWN,
-            isEBike = false,
-            frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-            rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0)
-        )
+        fun empty() =
+            Bike(
+                name = "",
+                type = Type.UNKNOWN,
+                isEBike = false,
+                frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
+                rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0)
+            )
     }
 
-    enum class Type(@StringRes val labelRes: Int) {
-        ROAD(R.string.label_road_type), GRAVEL(R.string.label_gravel_type), XC(
+    enum class Type(
+        @StringRes val labelRes: Int
+    ) {
+        ROAD(R.string.label_road_type),
+        GRAVEL(R.string.label_gravel_type),
+        XC(
             R.string.label_xc_type
         ),
         TRAIL(
             R.string.label_trail_type
         ),
-        ALL_MTN(R.string.label_all_mtn_type), ENDURO(R.string.label_enduro_type), DH(
+        ALL_MTN(R.string.label_all_mtn_type),
+        ENDURO(R.string.label_enduro_type),
+        DH(
             R.string.label_dh_type
         ),
         UNKNOWN(
@@ -59,39 +67,45 @@ data class BikeDTO(
     val rearTire: Tire,
     val isEBike: Boolean
 ) {
-
     companion object {
-        fun empty() = BikeDTO(
-            name = "",
-            type = Bike.Type.UNKNOWN,
-            isEBike = false,
-            frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-            rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-            frontSuspension = null,
-            rearSuspension = null
+        fun empty() =
+            BikeDTO(
+                name = "",
+                type = Bike.Type.UNKNOWN,
+                isEBike = false,
+                frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
+                rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
+                frontSuspension = null,
+                rearSuspension = null
+            )
+    }
+
+    fun getTireUIData(context: Context) =
+        Pair(
+            UIDataLabel.Simple(
+                context.getString(R.string.front),
+                frontTire.getFormattedPressure(context)
+            ),
+            UIDataLabel.Simple(
+                context.getString(R.string.rear),
+                rearTire.getFormattedPressure(context)
+            )
         )
-    }
 
-    fun getTireUIData(context: Context) = Pair(
-        UIDataLabel.Simple(
-            context.getString(R.string.front),
-            frontTire.getFormattedPressure(context)
-        ),
-        UIDataLabel.Simple(
-            context.getString(R.string.rear),
-            rearTire.getFormattedPressure(context)
-        )
-    )
+    fun getFrontSuspensionUIData(context: Context): ImmutableList<UIDataLabel>? =
+        frontSuspension?.let {
+            return getSuspensionUIData(it, context).toImmutableList()
+        }
 
-    fun getFrontSuspensionUIData(context: Context): List<UIDataLabel>? = frontSuspension?.let {
-        return getSuspensionUIData(it, context)
-    }
+    fun getRearSuspensionUIData(context: Context): ImmutableList<UIDataLabel>? =
+        rearSuspension?.let {
+            return getSuspensionUIData(it, context).toImmutableList()
+        }
 
-    fun getRearSuspensionUIData(context: Context): List<UIDataLabel>? = rearSuspension?.let {
-        return getSuspensionUIData(it, context)
-    }
-
-    private fun getSuspensionUIData(suspension: Suspension, context: Context): List<UIDataLabel> {
+    private fun getSuspensionUIData(
+        suspension: Suspension,
+        context: Context
+    ): ImmutableList<UIDataLabel> {
         with(suspension) {
             val uiData = ArrayList<UIDataLabel>()
 
@@ -108,24 +122,27 @@ data class BikeDTO(
             )
             uiData.add(UIDataLabel.Simple(context.getString(R.string.tokens), tokens.toString()))
 
-            return uiData
+            return uiData.toImmutableList()
         }
     }
 
-    private fun getDampingUIData(damping: Damping, isRebound: Boolean, context: Context) =
-        if (damping.highSpeedFromClosed != null) {
-            UIDataLabel.Complex(
-                mapOf(
-                    context.getString(if (isRebound) R.string.lsr else R.string.lsc) to damping.lowSpeedFromClosed.toString(),
-                    context.getString(if (isRebound) R.string.hsr else R.string.hsc) to damping.highSpeedFromClosed.toString()
-                )
+    private fun getDampingUIData(
+        damping: Damping,
+        isRebound: Boolean,
+        context: Context
+    ) = if (damping.highSpeedFromClosed != null) {
+        UIDataLabel.Complex(
+            mapOf(
+                context.getString(if (isRebound) R.string.lsr else R.string.lsc) to damping.lowSpeedFromClosed.toString(),
+                context.getString(if (isRebound) R.string.hsr else R.string.hsc) to damping.highSpeedFromClosed.toString()
             )
-        } else {
-            UIDataLabel.Simple(
-                context.getString(if (isRebound) R.string.rebound else R.string.comp),
-                damping.lowSpeedFromClosed.toString()
-            )
-        }
+        )
+    } else {
+        UIDataLabel.Simple(
+            context.getString(if (isRebound) R.string.rebound else R.string.comp),
+            damping.lowSpeedFromClosed.toString()
+        )
+    }
 
     fun isPopulated() =
         name.isNotBlank() && type != Bike.Type.UNKNOWN && frontTire.widthInMM != 0.0 && rearTire.widthInMM != 0.0

@@ -8,7 +8,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
 abstract class BaseViewModel : ViewModel() {
-
     var arguments: Bundle? = null
 
     protected val iOScope: CoroutineScope by lazy {
@@ -21,5 +20,6 @@ abstract class BaseViewModel : ViewModel() {
     }
 
     open fun onStart() {}
+
     open fun onStop() {}
 }

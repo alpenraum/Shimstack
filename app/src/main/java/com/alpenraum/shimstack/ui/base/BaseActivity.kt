@@ -8,7 +8,6 @@ import com.example.opensky.ui.base.BoundView
 abstract class BaseActivity<VIEW_MODEL : BaseViewModel> :
     FragmentActivity(),
     BoundView<VIEW_MODEL> {
-
     private lateinit var _viewModel: VIEW_MODEL
 
     override val viewModel: VIEW_MODEL
@@ -17,10 +16,11 @@ abstract class BaseActivity<VIEW_MODEL : BaseViewModel> :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        _viewModel = ViewModelProvider(
-            this,
-            defaultViewModelProviderFactory
-        )[viewModelClass as Class<VIEW_MODEL>]
+        _viewModel =
+            ViewModelProvider(
+                this,
+                defaultViewModelProviderFactory
+            )[viewModelClass as Class<VIEW_MODEL>]
 
         intent.extras?.let {
             _viewModel.arguments = it

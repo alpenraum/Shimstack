@@ -55,7 +55,7 @@ fun EnterSetupScreen(
                     navigator?.navigate(SetupDecisionScreenDestination, onlyIfResumed = true)
                 }
 
-                NewBikeContract.Event.NavigateToPreviousStep -> { /*empty */
+                NewBikeContract.Event.NavigateToPreviousStep -> { // empty
                 }
             }
         }
@@ -84,7 +84,8 @@ fun EnterSetupScreen(
                     intent(NewBikeContract.Intent.FrontTirePressureInput(it))
                 },
                 suffix = stringResource(id = R.string.bar),
-                modifier = Modifier
+                modifier =
+                Modifier
                     .weight(1.0f)
                     .padding(top = 8.dp),
                 label = "${stringResource(id = R.string.front)} ${
@@ -93,7 +94,6 @@ fun EnterSetupScreen(
                     )
                 }",
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
-
             )
             TextInput(
                 value = "${state.setupInput.rearSuspensionTokens}",
@@ -101,7 +101,8 @@ fun EnterSetupScreen(
                     intent(NewBikeContract.Intent.RearTirePressureInput(it))
                 },
                 suffix = stringResource(id = R.string.bar),
-                modifier = Modifier
+                modifier =
+                Modifier
                     .weight(1.0f)
                     .padding(top = 8.dp),
                 label = "${stringResource(id = R.string.rear)} ${
@@ -110,7 +111,6 @@ fun EnterSetupScreen(
                     )
                 }",
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
-
             )
         }
 
@@ -180,7 +180,6 @@ private fun ColumnScope.SuspensionInput(
     hsrInput: String?,
     showHSC: Boolean,
     showHSR: Boolean,
-
     onPressureChanged: (String) -> Unit,
     onTokensChanged: (String) -> Unit,
     onLSCChanged: (String) -> Unit,
@@ -275,8 +274,10 @@ private fun ColumnScope.DampingInput(
 private fun Preview() {
     AppTheme {
         EnterSetupScreen(
-            state = NewBikeContract.State(
-                detailsInput = DetailsInputData(
+            state =
+            NewBikeContract.State(
+                detailsInput =
+                DetailsInputData(
                     frontTravel = "1",
                     rearTravel = "1"
                 ),

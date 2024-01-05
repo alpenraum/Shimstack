@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface UnidirectionalViewModel<STATE, INTENT, EVENT> {
     val state: StateFlow<STATE>
     val event: SharedFlow<EVENT>
+
     fun intent(intent: INTENT)
 }
 

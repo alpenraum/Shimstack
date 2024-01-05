@@ -9,7 +9,6 @@ import java.math.RoundingMode
 
 @Immutable
 data class Pressure(val pressureInBar: BigDecimal) {
-
     @Ignore
     constructor(pressureInBar: Double) : this(pressureInBar.toBigDecimal())
 
@@ -28,10 +27,11 @@ data class Pressure(val pressureInBar: BigDecimal) {
     val pressureInPSI: BigDecimal
         get() = getPressureInPsi()
 
-    private fun getPressureInPsi() = (pressureInBar.times(BAR_TO_PSI_CONVERSION)).setScale(
-        1,
-        RoundingMode.HALF_EVEN
-    )
+    private fun getPressureInPsi() =
+        (pressureInBar.times(BAR_TO_PSI_CONVERSION)).setScale(
+            1,
+            RoundingMode.HALF_EVEN
+        )
 
     fun isEmpty() = pressureInBar != BigDecimal.ZERO
 }

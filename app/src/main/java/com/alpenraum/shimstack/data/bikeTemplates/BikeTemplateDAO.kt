@@ -7,12 +7,11 @@ import com.alpenraum.shimstack.data.db.AppDatabase
 
 @Dao
 interface BikeTemplateDAO {
-
     @Insert
     fun insertBike(bikes: List<BikeTemplate>)
 
     @Query(
-        "SELECT * FROM ${AppDatabase.table_bike_template} WHERE name LIKE '%' || :searchTerm || '%'"
+        "SELECT * FROM ${AppDatabase.TABLE_BIKE_TEMPLATE} WHERE name LIKE '%' || :searchTerm || '%'"
     )
     fun getBikeTemplatesFilteredByName(searchTerm: String?): List<BikeTemplate>
 }

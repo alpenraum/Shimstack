@@ -59,12 +59,13 @@ fun EntryScreen(
     LaunchedEffect(key1 = Unit) {
         event.collectLatest {
             when (it) {
-                NewBikeContract.Event.NavigateToNextStep -> navigator?.navigate(
-                    EnterDetailsScreenDestination,
-                    onlyIfResumed = true
-                )
+                NewBikeContract.Event.NavigateToNextStep ->
+                    navigator?.navigate(
+                        EnterDetailsScreenDestination,
+                        onlyIfResumed = true
+                    )
 
-                NewBikeContract.Event.NavigateToPreviousStep -> { /*empty */
+                NewBikeContract.Event.NavigateToPreviousStep -> { // empty
                 }
             }
         }
@@ -90,14 +91,16 @@ fun EntryScreen(
             targetState = state.bikeTemplates.isNotEmpty(),
             label = "",
             transitionSpec = {
-                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Down) togetherWith fadeOut() + slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Up
-                )
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Down) togetherWith fadeOut() +
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Up
+                    )
             }
         ) {
             if (it) {
                 Card(
-                    modifier = Modifier.fillMaxWidth().weight(1.0f, fill = false)
+                    modifier =
+                    Modifier.fillMaxWidth().weight(1.0f, fill = false)
                         .padding(vertical = 16.dp)
                 ) {
                     LazyColumn(
@@ -121,9 +124,13 @@ fun EntryScreen(
 }
 
 @Composable
-private fun ListItem(bike: BikeTemplate, intent: (NewBikeContract.Intent) -> Unit) {
+private fun ListItem(
+    bike: BikeTemplate,
+    intent: (NewBikeContract.Intent) -> Unit
+) {
     Row(
-        modifier = Modifier.clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
+        modifier =
+        Modifier.clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
             .padding(
                 vertical = 8.dp
             ).padding(horizontal = 16.dp).semantics(true) {},
@@ -139,7 +146,8 @@ private fun ListItem(bike: BikeTemplate, intent: (NewBikeContract.Intent) -> Uni
 
         Column {
             Text(
-                text = stringResource(
+                text =
+                stringResource(
                     id = R.string.label_new_bike_travel,
                     bike.frontSuspensionTravelInMM,
                     bike.rearSuspensionTravelInMM
@@ -162,24 +170,25 @@ private fun ListItemPreview() {
 @Composable
 private fun EntryPreview() {
     AppTheme {
-        val templates = buildList {
-            for (i in 0 until 30) {
-                add(
-                    BikeTemplate(
-                        id = i,
-                        name = "bike $i",
-                        type = Bike.Type.ENDURO,
-                        false,
-                        150,
-                        130,
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
+        val templates =
+            buildList {
+                for (i in 0 until 30) {
+                    add(
+                        BikeTemplate(
+                            id = i,
+                            name = "bike $i",
+                            type = Bike.Type.ENDURO,
+                            false,
+                            150,
+                            130,
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        )
                     )
-                )
-            }
-        }.toImmutableList()
+                }
+            }.toImmutableList()
         EntryScreen(
             state = NewBikeContract.State(templates),
             intent = {},

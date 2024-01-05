@@ -10,9 +10,11 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 @Module
 class StoreModule {
-
     @Provides
-    fun provideKeyValueStore(context: Context, moshi: Moshi): KeyValueStore =
+    fun provideKeyValueStore(
+        context: Context,
+        moshi: Moshi
+    ): KeyValueStore =
         EncryptedKeyValueStore(
             context,
             moshi

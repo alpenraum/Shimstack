@@ -8,7 +8,6 @@ import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -19,17 +18,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(private val bikeRepository: LocalBikeRepository) :
+class HomeScreenViewModel
+@Inject
+constructor(private val bikeRepository: LocalBikeRepository) :
     BaseViewModel(), HomeScreenContract {
-
-    private val mutableState = MutableStateFlow(
-        HomeScreenContract.State(
-            persistentListOf(null),
-            CardSetup.defaultConfig()
+    private val mutableState =
+        MutableStateFlow(
+            HomeScreenContract.State(
+                persistentListOf(null),
+                CardSetup.defaultConfig()
+            )
         )
-    )
     override val state: StateFlow<HomeScreenContract.State> =
         mutableState.asStateFlow()
 
@@ -71,7 +73,6 @@ class HomeScreenViewModel @Inject constructor(private val bikeRepository: LocalB
 
 interface HomeScreenContract :
     UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
-
     @Immutable
     data class State(
         val bikes: ImmutableList<BikeDTO?>,
@@ -82,20 +83,27 @@ interface HomeScreenContract :
 
     sealed class Event {
         data object Loading : Event()
+
         data object FinishedLoading : Event()
+
         data object Error : Event()
+
         data object NewPageSelected : Event()
+
         data object NavigateToNewBikeFeature : Event()
     }
 
     sealed class Intent {
         data object OnRefresh : Intent()
+
         class OnViewPagerSelectionChanged(val page: Int) : Intent()
+
         data object OnAddNewBike : Intent()
     }
 }
 
 sealed class UIDataLabel {
     class Simple(val heading: String, val content: String) : UIDataLabel()
+
     class Complex(val data: Map<String, String>) : UIDataLabel()
 }

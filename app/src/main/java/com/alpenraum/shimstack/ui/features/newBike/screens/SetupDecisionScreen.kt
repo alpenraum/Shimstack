@@ -3,6 +3,7 @@ package com.alpenraum.shimstack.ui.features.newBike.screens
 import android.widget.Toast
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.alpenraum.shimstack.R
@@ -18,9 +19,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 @Destination
 @NewBikeNavGraph
-fun SetupDecisionScreen(
-    navigator: DestinationsNavigator? = null
-) {
+fun SetupDecisionScreen(navigator: DestinationsNavigator? = null) {
     val isCompactScreen =
         LocalWindowSizeClass.current.widthSizeClass == WindowWidthSizeClass.Compact
 
@@ -28,6 +27,7 @@ fun SetupDecisionScreen(
     DecisionScreen(
         imageRes = null,
         contentRes = R.string.copy_new_bike_existing_setup,
+        modifier = Modifier,
         DecisionButtonConfig(R.string.label_yes, true) {
             navigator?.navigate(EnterSetupScreenDestination, onlyIfResumed = true)
         },

@@ -23,16 +23,18 @@ import com.alpenraum.shimstack.ui.theme.AppTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+@Suppress("ktlint:compose:vm-forwarding-check")
 @Composable
 fun SettingsScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val viewModel: SettingsViewModel = hiltViewModel()
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel)
 
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
             .verticalScroll(rememberScrollState())
@@ -51,14 +53,18 @@ private fun SettingsToggleRow(
 ) {
     data.second?.collectAsState(false)?.let {
         Row(
-            modifier = modifier
+            modifier =
+            modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(id = data.first.label),
-                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+                style =
+                MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
                 modifier = Modifier.weight(1.0f)
             )
             Switch(
@@ -66,7 +72,6 @@ private fun SettingsToggleRow(
                 onCheckedChange = {
                     intents(SettingsContract.Intent.OnSettingsChanged(data.first, it))
                 }
-
             )
         }
     }

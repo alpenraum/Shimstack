@@ -29,7 +29,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<MainViewModel>() {
-
     override val viewModelClass: Class<MainViewModel> = MainViewModel::class.java
 
 //    private val isBiometricAuthenticationAvailableUseCase = IsBiometricAuthenticationAvailableUseCase()
@@ -78,21 +77,25 @@ class MainActivity : BaseActivity<MainViewModel>() {
                     CompositionLocalProvider(
                         LocalContentColor provides MaterialTheme.colorScheme.onSurface
                     ) {
-                        val navHostEngine = rememberAnimatedNavHostEngine(
-                            navHostContentAlignment = Alignment.TopCenter,
-                            rootDefaultAnimations = RootNavGraphDefaultAnimations(
-                                enterTransition = { fadeIn() },
-                                exitTransition = { fadeOut() }
-                            ),
-                            defaultAnimationsForNestedNavGraph = mapOf(
-                                NavGraphs.root to NestedNavGraphDefaultAnimations(
-                                    enterTransition = { slideInHorizontally() },
-                                    exitTransition = { slideOutHorizontally() },
-                                    popEnterTransition = { slideInHorizontally() },
-                                    popExitTransition = { slideOutHorizontally() }
+                        val navHostEngine =
+                            rememberAnimatedNavHostEngine(
+                                navHostContentAlignment = Alignment.TopCenter,
+                                rootDefaultAnimations =
+                                RootNavGraphDefaultAnimations(
+                                    enterTransition = { fadeIn() },
+                                    exitTransition = { fadeOut() }
+                                ),
+                                defaultAnimationsForNestedNavGraph =
+                                mapOf(
+                                    NavGraphs.root to
+                                        NestedNavGraphDefaultAnimations(
+                                            enterTransition = { slideInHorizontally() },
+                                            exitTransition = { slideOutHorizontally() },
+                                            popEnterTransition = { slideInHorizontally() },
+                                            popExitTransition = { slideOutHorizontally() }
+                                        )
                                 )
                             )
-                        )
                         DestinationsNavHost(
                             navGraph = NavGraphs.root,
                             engine = navHostEngine
@@ -106,6 +109,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+private fun DefaultPreview() {
     AppTheme {}
 }

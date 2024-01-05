@@ -18,8 +18,8 @@ private const val TEXT_SCALE_REDUCTION_INTERVAL = 0.9f
 
 @Composable
 fun AdaptiveSizeText(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
     color: Color? = null,
     textAlign: TextAlign? = null,
     style: TextStyle = MaterialTheme.typography.bodyMedium,

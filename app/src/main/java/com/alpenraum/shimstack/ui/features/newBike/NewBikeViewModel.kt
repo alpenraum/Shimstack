@@ -12,8 +12,6 @@ import com.alpenraum.shimstack.ui.features.navArgs
 import com.alpenraum.shimstack.usecases.ValidateBikeDTOUseCase
 import com.alpenraum.shimstack.usecases.ValidateSetupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -29,15 +27,18 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
-class NewBikeViewModel @Inject constructor(
+class NewBikeViewModel
+@Inject
+constructor(
     savedStateHandle: SavedStateHandle,
     private val bikeTemplateRepository: LocalBikeTemplateRepository,
     private val validateBikeDTOUseCase: ValidateBikeDTOUseCase,
     private val validateSetupUseCase: ValidateSetupUseCase
 ) : BaseViewModel(), NewBikeContract {
-
     private val navArgs: NewBikeNavArgs = savedStateHandle.navArgs() // todo: remove
 
     private val _state = MutableStateFlow(NewBikeContract.State())
@@ -83,21 +84,25 @@ class NewBikeViewModel @Inject constructor(
                 }
 
 // Details Data Input
-                is NewBikeContract.Intent.BikeTemplateSelected -> goToEnterDetailsScreen(
-                    intent.bike
-                )
+                is NewBikeContract.Intent.BikeTemplateSelected ->
+                    goToEnterDetailsScreen(
+                        intent.bike
+                    )
 
-                is NewBikeContract.Intent.BikeNameInput -> validateAndUpdateInput(
-                    DetailsInputData(name = intent.name)
-                )
+                is NewBikeContract.Intent.BikeNameInput ->
+                    validateAndUpdateInput(
+                        DetailsInputData(name = intent.name)
+                    )
 
-                is NewBikeContract.Intent.BikeTypeInput -> validateAndUpdateInput(
-                    bikeType = intent.type
-                )
+                is NewBikeContract.Intent.BikeTypeInput ->
+                    validateAndUpdateInput(
+                        bikeType = intent.type
+                    )
 
-                is NewBikeContract.Intent.EbikeInput -> validateAndUpdateInput(
-                    isEbike = intent.isEbike
-                )
+                is NewBikeContract.Intent.EbikeInput ->
+                    validateAndUpdateInput(
+                        isEbike = intent.isEbike
+                    )
 
                 is NewBikeContract.Intent.FrontInternalRimWidthInput -> {
                     validateAndUpdateInput(
@@ -135,17 +140,20 @@ class NewBikeViewModel @Inject constructor(
                     )
                 }
 
-                NewBikeContract.Intent.OnNextClicked -> _event.emit(
-                    NewBikeContract.Event.NavigateToNextStep
-                )
+                NewBikeContract.Intent.OnNextClicked ->
+                    _event.emit(
+                        NewBikeContract.Event.NavigateToNextStep
+                    )
 
-                is NewBikeContract.Intent.FrontTirePressureInput -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(frontTirePressure = intent.pressure)
-                )
+                is NewBikeContract.Intent.FrontTirePressureInput ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(frontTirePressure = intent.pressure)
+                    )
 
-                is NewBikeContract.Intent.RearTirePressureInput -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(rearTirePressure = intent.pressure)
-                )
+                is NewBikeContract.Intent.RearTirePressureInput ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(rearTirePressure = intent.pressure)
+                    )
 
                 is NewBikeContract.Intent.HSCInput -> {
                     if (intent.isFork) {
@@ -163,53 +171,71 @@ class NewBikeViewModel @Inject constructor(
                     }
                 }
 
-                is NewBikeContract.Intent.FrontSuspensionPressure -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(frontSuspensionPressure = intent.pressure)
-                )
+                is NewBikeContract.Intent.FrontSuspensionPressure ->
+                    validateAndUpdateInput(
+                        setupInputData =
+                        SetupInputData(
+                            frontSuspensionPressure = intent.pressure
+                        )
+                    )
 
-                is NewBikeContract.Intent.FrontSuspensionTokens -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(frontSuspensionTokens = intent.tokens)
-                )
+                is NewBikeContract.Intent.FrontSuspensionTokens ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(frontSuspensionTokens = intent.tokens)
+                    )
 
-                is NewBikeContract.Intent.RearSuspensionPressure -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(rearSuspensionPressure = intent.pressure)
-                )
+                is NewBikeContract.Intent.RearSuspensionPressure ->
+                    validateAndUpdateInput(
+                        setupInputData =
+                        SetupInputData(
+                            rearSuspensionPressure = intent.pressure
+                        )
+                    )
 
-                is NewBikeContract.Intent.RearSuspensionTokens -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(rearSuspensionTokens = intent.tokens)
-                )
+                is NewBikeContract.Intent.RearSuspensionTokens ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(rearSuspensionTokens = intent.tokens)
+                    )
 
-                is NewBikeContract.Intent.FrontSuspensionHSC -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(frontSuspensionHSC = intent.clicks)
-                )
+                is NewBikeContract.Intent.FrontSuspensionHSC ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(frontSuspensionHSC = intent.clicks)
+                    )
 
-                is NewBikeContract.Intent.FrontSuspensionHSR -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(frontSuspensionHSR = intent.clicks)
-                )
+                is NewBikeContract.Intent.FrontSuspensionHSR ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(frontSuspensionHSR = intent.clicks)
+                    )
 
-                is NewBikeContract.Intent.FrontSuspensionLSC -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(frontSuspensionLSC = intent.clicks)
-                )
+                is NewBikeContract.Intent.FrontSuspensionLSC ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(frontSuspensionLSC = intent.clicks)
+                    )
 
-                is NewBikeContract.Intent.FrontSuspensionLSR -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(frontSuspensionHSR = intent.clicks)
-                )
+                is NewBikeContract.Intent.FrontSuspensionLSR ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(frontSuspensionHSR = intent.clicks)
+                    )
 
-                is NewBikeContract.Intent.RearSuspensionHSC -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(rearSuspensionHSC = intent.clicks)
-                )
+                is NewBikeContract.Intent.RearSuspensionHSC ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(rearSuspensionHSC = intent.clicks)
+                    )
 
-                is NewBikeContract.Intent.RearSuspensionHSR -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(rearSuspensionHSR = intent.clicks)
-                )
+                is NewBikeContract.Intent.RearSuspensionHSR ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(rearSuspensionHSR = intent.clicks)
+                    )
 
-                is NewBikeContract.Intent.RearSuspensionLSC -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(rearSuspensionLSC = intent.clicks)
-                )
+                is NewBikeContract.Intent.RearSuspensionLSC ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(rearSuspensionLSC = intent.clicks)
+                    )
 
-                is NewBikeContract.Intent.RearSuspensionLSR -> validateAndUpdateInput(
-                    setupInputData = SetupInputData(rearSuspensionLSR = intent.clicks)
-                )
+                is NewBikeContract.Intent.RearSuspensionLSR ->
+                    validateAndUpdateInput(
+                        setupInputData = SetupInputData(rearSuspensionLSR = intent.clicks)
+                    )
             }
         }
     }
@@ -227,7 +253,13 @@ class NewBikeViewModel @Inject constructor(
         iOScope.launch {
             val detailsInput = detailsInputData?.let { createNewInputData(it) }
             val setupInput = setupInputData?.let { createNewInputSetup(it) }
-            val detailsValidationResult = detailsInput?.let { validateBikeDTOUseCase(it, bikeType) }
+            val detailsValidationResult =
+                detailsInput?.let {
+                    validateBikeDTOUseCase(
+                        it,
+                        bikeType
+                    )
+                }
             val setupValidationResult = setupInput?.let { validateSetupUseCase(it) }
             _state.emit(
                 state.value.copy(
@@ -239,14 +271,16 @@ class NewBikeViewModel @Inject constructor(
                     hasHSRFork = hasHSRFork ?: state.value.hasHSRFork,
                     hasHSCShock = hasHSCShock ?: state.value.hasHSCShock,
                     hasHSRShock = hasHSRShock ?: state.value.hasHSRShock,
-                    detailsValidationErrors = if (detailsValidationResult?.isSuccess()
+                    detailsValidationErrors =
+                    if (detailsValidationResult?.isSuccess()
                             ?.not() == true
                     ) {
                         detailsValidationResult as ValidateBikeDTOUseCase.DetailsFailure
                     } else {
                         null
                     },
-                    setupValidationErrors = if (setupValidationResult?.isSuccess()?.not() == true) {
+                    setupValidationErrors =
+                    if (setupValidationResult?.isSuccess()?.not() == true) {
                         setupValidationResult as ValidateSetupUseCase.SetupFailure
                     } else {
                         null
@@ -258,47 +292,57 @@ class NewBikeViewModel @Inject constructor(
     }
 
     @OptIn(FlowPreview::class)
-    private fun launchFilterBikeTemplates() = iOScope.launch {
-        filterFlow.sample(200.milliseconds).distinctUntilChanged().collectLatest {
-            val filteredTemplates = bikeTemplateRepository.getBikeTemplatesFilteredByName(it)
-            _state.emit(state.value.copy(bikeTemplates = filteredTemplates.toImmutableList()))
+    private fun launchFilterBikeTemplates() =
+        iOScope.launch {
+            filterFlow.sample(200.milliseconds).distinctUntilChanged().collectLatest {
+                val filteredTemplates =
+                    bikeTemplateRepository.getBikeTemplatesFilteredByName(
+                        it
+                    )
+                _state.emit(
+                    state.value.copy(bikeTemplates = filteredTemplates.toImmutableList())
+                )
+            }
         }
-    }
 
-    private fun goToEnterDetailsScreen(template: BikeTemplate?) = iOScope.launch {
-        _state.emit(
-            state.value.copy(
-                detailsInput = mapFromBikeDTO(template?.toBikeDTO() ?: BikeDTO.empty())
+    private fun goToEnterDetailsScreen(template: BikeTemplate?) =
+        iOScope.launch {
+            _state.emit(
+                state.value.copy(
+                    detailsInput = mapFromBikeDTO(template?.toBikeDTO() ?: BikeDTO.empty())
+                )
             )
+            _event.emit(NewBikeContract.Event.NavigateToNextStep)
+        }
+
+    private fun createNewInputData(detailsInputData: DetailsInputData) =
+        DetailsInputData(
+            detailsInputData.name ?: state.value.detailsInput.name,
+            detailsInputData.frontTravel ?: state.value.detailsInput.frontTravel,
+            detailsInputData.rearTravel ?: state.value.detailsInput.rearTravel,
+            detailsInputData.frontTireWidth ?: state.value.detailsInput.frontTireWidth,
+            detailsInputData.rearTireWidth ?: state.value.detailsInput.rearTireWidth,
+            detailsInputData.frontInternalRimWidth
+                ?: state.value.detailsInput.frontInternalRimWidth,
+            detailsInputData.rearInternalRimWidth ?: state.value.detailsInput.rearInternalRimWidth
         )
-        _event.emit(NewBikeContract.Event.NavigateToNextStep)
-    }
 
-    private fun createNewInputData(detailsInputData: DetailsInputData) = DetailsInputData(
-        detailsInputData.name ?: state.value.detailsInput.name,
-        detailsInputData.frontTravel ?: state.value.detailsInput.frontTravel,
-        detailsInputData.rearTravel ?: state.value.detailsInput.rearTravel,
-        detailsInputData.frontTireWidth ?: state.value.detailsInput.frontTireWidth,
-        detailsInputData.rearTireWidth ?: state.value.detailsInput.rearTireWidth,
-        detailsInputData.frontInternalRimWidth ?: state.value.detailsInput.frontInternalRimWidth,
-        detailsInputData.rearInternalRimWidth ?: state.value.detailsInput.rearInternalRimWidth
-    )
+    private fun createNewInputSetup(setupInput: SetupInputData) =
+        SetupInputData(
+            setupInput.frontTirePressure ?: state.value.setupInput.frontTirePressure,
+            setupInput.rearTirePressure ?: state.value.setupInput.rearTirePressure
+        )
 
-    private fun createNewInputSetup(setupInput: SetupInputData) = SetupInputData(
-        setupInput.frontTirePressure ?: state.value.setupInput.frontTirePressure,
-        setupInput.rearTirePressure ?: state.value.setupInput.rearTirePressure
-
-    )
-
-    private fun mapFromBikeDTO(bikeDTO: BikeDTO) = DetailsInputData(
-        bikeDTO.name,
-        bikeDTO.frontSuspension?.travel?.toString(),
-        bikeDTO.frontSuspension?.travel?.toString(),
-        bikeDTO.frontTire.widthInMM.toString(),
-        bikeDTO.rearTire.widthInMM.toString(),
-        bikeDTO.frontTire.internalRimWidthInMM?.toString(),
-        bikeDTO.rearTire.internalRimWidthInMM?.toString()
-    )
+    private fun mapFromBikeDTO(bikeDTO: BikeDTO) =
+        DetailsInputData(
+            bikeDTO.name,
+            bikeDTO.frontSuspension?.travel?.toString(),
+            bikeDTO.frontSuspension?.travel?.toString(),
+            bikeDTO.frontTire.widthInMM.toString(),
+            bikeDTO.rearTire.widthInMM.toString(),
+            bikeDTO.frontTire.internalRimWidthInMM?.toString(),
+            bikeDTO.rearTire.internalRimWidthInMM?.toString()
+        )
 }
 
 interface NewBikeContract :
@@ -321,45 +365,69 @@ interface NewBikeContract :
 
     sealed class Event {
         data object NavigateToNextStep : Event()
+
         data object NavigateToPreviousStep : Event()
     }
 
     sealed class Intent {
         class Filter(val filter: String) : Intent()
+
         class BikeTemplateSelected(val bike: BikeTemplate) : Intent()
 
         object OnNextClicked : Intent()
+
         sealed class DataInput : Intent()
+
         class BikeNameInput(val name: String) : DataInput()
+
         class BikeTypeInput(val type: Bike.Type) : DataInput()
+
         class EbikeInput(val isEbike: Boolean) : DataInput()
+
         class HSCInput(val hasHsc: Boolean, val isFork: Boolean) : DataInput()
+
         class HSRInput(val hasHsr: Boolean, val isFork: Boolean) : DataInput()
+
         class FrontSuspensionInput(val travel: String?) : DataInput()
+
         class RearSuspensionInput(val travel: String?) : DataInput()
 
         class FrontTireWidthInput(val width: String) : DataInput()
+
         class RearTireWidthInput(val width: String) : DataInput()
 
         class FrontInternalRimWidthInput(val width: String?) : DataInput()
+
         class RearInternalRimWidthInput(val width: String?) : DataInput()
 
         sealed class SetupInput : Intent()
 
         class FrontTirePressureInput(val pressure: String?) : SetupInput()
+
         class RearTirePressureInput(val pressure: String?) : SetupInput()
+
         class FrontSuspensionPressure(val pressure: String?) : SetupInput()
+
         class FrontSuspensionTokens(val tokens: String?) : SetupInput()
+
         class RearSuspensionPressure(val pressure: String?) : SetupInput()
+
         class RearSuspensionTokens(val tokens: String?) : SetupInput()
+
         class FrontSuspensionLSC(val clicks: String?) : SetupInput()
+
         class FrontSuspensionHSC(val clicks: String?) : SetupInput()
+
         class FrontSuspensionLSR(val clicks: String?) : SetupInput()
+
         class FrontSuspensionHSR(val clicks: String?) : SetupInput()
 
         class RearSuspensionLSC(val clicks: String?) : SetupInput()
+
         class RearSuspensionHSC(val clicks: String?) : SetupInput()
+
         class RearSuspensionLSR(val clicks: String?) : SetupInput()
+
         class RearSuspensionHSR(val clicks: String?) : SetupInput()
     }
 }

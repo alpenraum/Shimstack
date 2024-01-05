@@ -42,8 +42,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
     navArgsDelegate = NewBikeNavArgs::class
 )
 @Composable
-fun NewBikeFeature(navigator: DestinationsNavigator) {
-    val viewModel: NewBikeViewModel = hiltViewModel()
+fun NewBikeFeature(
+    navigator: DestinationsNavigator,
+    viewModel: NewBikeViewModel = hiltViewModel()
+) {
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intent, event) = use(viewModel)
 
@@ -55,21 +57,25 @@ fun NewBikeFeature(navigator: DestinationsNavigator) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        val navHostEngine = rememberAnimatedNavHostEngine(
-            navHostContentAlignment = Alignment.TopCenter,
-            rootDefaultAnimations = RootNavGraphDefaultAnimations(
-                enterTransition = { fadeIn() },
-                exitTransition = { fadeOut() }
-            ),
-            defaultAnimationsForNestedNavGraph = mapOf(
-                NavGraphs.newBike to NestedNavGraphDefaultAnimations(
-                    enterTransition = { slideInHorizontally() },
-                    exitTransition = { slideOutHorizontally() },
-                    popEnterTransition = { slideInHorizontally() },
-                    popExitTransition = { slideOutHorizontally() }
+        val navHostEngine =
+            rememberAnimatedNavHostEngine(
+                navHostContentAlignment = Alignment.TopCenter,
+                rootDefaultAnimations =
+                RootNavGraphDefaultAnimations(
+                    enterTransition = { fadeIn() },
+                    exitTransition = { fadeOut() }
+                ),
+                defaultAnimationsForNestedNavGraph =
+                mapOf(
+                    NavGraphs.newBike to
+                        NestedNavGraphDefaultAnimations(
+                            enterTransition = { slideInHorizontally() },
+                            exitTransition = { slideOutHorizontally() },
+                            popEnterTransition = { slideInHorizontally() },
+                            popExitTransition = { slideOutHorizontally() }
+                        )
                 )
             )
-        )
 
         DestinationsNavHost(
             navGraph = NavGraphs.newBike,

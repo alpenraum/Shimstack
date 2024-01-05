@@ -13,10 +13,11 @@ import com.alpenraum.shimstack.data.db.typeconverter.BigDecimalTypeConverter
 @TypeConverters(BigDecimalTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bikeDao(): BikeDAO
+
     abstract fun bikeTemplateDao(): BikeTemplateDAO
 
     companion object {
-        const val table_bike = "user_bikes"
-        const val table_bike_template = "template_bikes"
+        const val TABLE_BIKE = "user_bikes"
+        const val TABLE_BIKE_TEMPLATE = "template_bikes"
     }
 }

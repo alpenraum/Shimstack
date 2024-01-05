@@ -128,6 +128,8 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-pager:0.29.1-alpha")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.22.0-rc")
+
+    ktlintRuleset("io.nlopez.compose.rules:ktlint:0.3.8")
 }
 kapt {
     correctErrorTypes = true

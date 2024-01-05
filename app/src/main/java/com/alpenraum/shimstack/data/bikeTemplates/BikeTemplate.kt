@@ -11,7 +11,7 @@ import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.db.AppDatabase
 
-@Entity(tableName = AppDatabase.table_bike_template)
+@Entity(tableName = AppDatabase.TABLE_BIKE_TEMPLATE)
 @Immutable
 class BikeTemplate(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
@@ -25,53 +25,57 @@ class BikeTemplate(
     val rearTireWidthInMM: Double,
     val rearRimWidthInMM: Double
 ) {
-
-    fun toBikeDTO() = BikeDTO(
-        name = name,
-        type = type,
-        frontSuspension = if (frontSuspensionTravelInMM == 0) {
-            null
-        } else {
-            Suspension(
+    fun toBikeDTO() =
+        BikeDTO(
+            name = name,
+            type = type,
+            frontSuspension =
+            if (frontSuspensionTravelInMM == 0) {
+                null
+            } else {
+                Suspension(
+                    Pressure(0.0),
+                    Damping(0, 0),
+                    Damping(0, 0),
+                    0,
+                    frontSuspensionTravelInMM
+                )
+            },
+            rearSuspension =
+            if (rearSuspensionTravelInMM == 0) {
+                null
+            } else {
+                Suspension(
+                    Pressure(0.0),
+                    Damping(0, 0),
+                    Damping(0, 0),
+                    0,
+                    rearSuspensionTravelInMM
+                )
+            },
+            frontTire = Tire(Pressure(0.0), frontTireWidthInMM, frontRimWidthInMM),
+            rearTire =
+            Tire(
                 Pressure(0.0),
-                Damping(0, 0),
-                Damping(0, 0),
-                0,
-                frontSuspensionTravelInMM
-            )
-        },
-        rearSuspension = if (rearSuspensionTravelInMM == 0) {
-            null
-        } else {
-            Suspension(
-                Pressure(0.0),
-                Damping(0, 0),
-                Damping(0, 0),
-                0,
-                rearSuspensionTravelInMM
-            )
-        },
-        frontTire = Tire(Pressure(0.0), frontTireWidthInMM, frontRimWidthInMM),
-        rearTire = Tire(
-            Pressure(0.0),
-            rearTireWidthInMM,
-            rearRimWidthInMM
-        ),
-        isEBike
-    )
+                rearTireWidthInMM,
+                rearRimWidthInMM
+            ),
+            isEBike
+        )
 
     companion object {
-        fun testData() = BikeTemplate(
-            id = 0,
-            name = "Evil Offering V2",
-            type = Bike.Type.ALL_MTN,
-            isEBike = false,
-            frontSuspensionTravelInMM = 140,
-            rearSuspensionTravelInMM = 140,
-            frontRimWidthInMM = 30.0,
-            frontTireWidthInMM = 50.0,
-            rearRimWidthInMM = 30.0,
-            rearTireWidthInMM = 45.0
-        )
+        fun testData() =
+            BikeTemplate(
+                id = 0,
+                name = "Evil Offering V2",
+                type = Bike.Type.ALL_MTN,
+                isEBike = false,
+                frontSuspensionTravelInMM = 140,
+                rearSuspensionTravelInMM = 140,
+                frontRimWidthInMM = 30.0,
+                frontTireWidthInMM = 50.0,
+                rearRimWidthInMM = 30.0,
+                rearTireWidthInMM = 45.0
+            )
     }
 }

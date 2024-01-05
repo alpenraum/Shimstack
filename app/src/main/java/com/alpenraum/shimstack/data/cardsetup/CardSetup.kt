@@ -6,12 +6,13 @@ import kotlinx.collections.immutable.persistentListOf
 @Immutable
 data class CardSetup(val type: CardType, val bigCard: Boolean) {
     companion object {
-        fun defaultConfig() = persistentListOf(
-            CardSetup(CardType.TIRES, false),
-            CardSetup(CardType.FORK, false),
-            CardSetup(CardType.SHOCK, false),
-            CardSetup(CardType.SHOCK, true)
-        )
+        fun defaultConfig() =
+            persistentListOf(
+                CardSetup(CardType.TIRES, false),
+                CardSetup(CardType.FORK, false),
+                CardSetup(CardType.SHOCK, false),
+                CardSetup(CardType.SHOCK, true)
+            )
     }
 }
 

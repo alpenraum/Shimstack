@@ -6,6 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class MainViewModel
+@Inject
+constructor(
     private val keyValueStore: KeyValueStore
 ) : BaseViewModel()

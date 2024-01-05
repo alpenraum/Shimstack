@@ -32,12 +32,18 @@ import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.ui.features.mainScreens.home.UIDataLabel
 import com.alpenraum.shimstack.ui.theme.AppTheme
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun TireDetails(bigCard: Boolean, bike: BikeDTO) {
-    DetailsCard(title = R.string.tire, bigCard) {
+fun TireDetails(
+    bigCard: Boolean,
+    bike: BikeDTO,
+    modifier: Modifier = Modifier
+) {
+    DetailsCard(title = R.string.tire, bigCard, modifier = modifier) {
         Row(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(horizontal = 8.dp)
                 .padding(top = 16.dp)
                 .weight(1.0f),
@@ -65,33 +71,36 @@ private fun SimpleTextPair(
     content: String,
     bigCard: Boolean,
     modifier: Modifier = Modifier
-) =
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
-        AdaptiveSizeText(
-            text = heading,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.outline
-            ),
-            modifier = Modifier.padding(bottom = 4.dp),
+) = Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier) {
+    AdaptiveSizeText(
+        text = heading,
+        style =
+        MaterialTheme.typography.bodyMedium.copy(
+            color = MaterialTheme.colorScheme.outline
+        ),
+        modifier = Modifier.padding(bottom = 4.dp),
+        textAlign = TextAlign.Center
+    )
+    if (bigCard) {
+        Text(
+            text = content,
+            style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
-        if (bigCard) {
-            Text(
-                text = content,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-        } else {
-            Text(
-                text = content,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-        }
+    } else {
+        Text(
+            text = content,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
+        )
     }
+}
 
 @Composable
-fun ForkDetails(bigCard: Boolean, bike: BikeDTO) {
+fun ForkDetails(
+    bigCard: Boolean,
+    bike: BikeDTO
+) {
     SuspensionDetails(
         bigCard = bigCard,
         suspensionData = bike.getFrontSuspensionUIData(LocalContext.current),
@@ -101,7 +110,10 @@ fun ForkDetails(bigCard: Boolean, bike: BikeDTO) {
 }
 
 @Composable
-fun ShockDetails(bigCard: Boolean, bike: BikeDTO) {
+fun ShockDetails(
+    bigCard: Boolean,
+    bike: BikeDTO
+) {
     SuspensionDetails(
         bigCard = bigCard,
         suspensionData = bike.getRearSuspensionUIData(LocalContext.current),
@@ -113,14 +125,15 @@ fun ShockDetails(bigCard: Boolean, bike: BikeDTO) {
 @Composable
 private fun SuspensionDetails(
     bigCard: Boolean,
-    suspensionData: List<UIDataLabel>?,
     @StringRes titleRes: Int,
-    @StringRes errorTextRes: Int
+    @StringRes errorTextRes: Int,
+    suspensionData: ImmutableList<UIDataLabel>?
 ) {
     DetailsCard(title = titleRes, bigCard = bigCard) {
         suspensionData?.let {
             Column(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxSize()
                     .padding(top = 16.dp)
                     .weight(1.0f),
@@ -129,7 +142,8 @@ private fun SuspensionDetails(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxWidth()
                         .padding(bottom = 8.dp)
                         .weight(1.0f)
@@ -141,7 +155,8 @@ private fun SuspensionDetails(
                 Divider()
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp)
                         .weight(1.0f)
@@ -152,7 +167,8 @@ private fun SuspensionDetails(
             }
         } ?: run {
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxSize()
                     .padding(8.dp)
                     .weight(1.0f),
@@ -169,7 +185,10 @@ private fun SuspensionDetails(
 }
 
 @Composable
-private fun SuspensionQuarter(data: UIDataLabel, modifier: Modifier = Modifier) {
+private fun SuspensionQuarter(
+    data: UIDataLabel,
+    modifier: Modifier = Modifier
+) {
     when (data) {
         is UIDataLabel.Simple -> {
             SimpleTextPair(
@@ -186,7 +205,8 @@ private fun SuspensionQuarter(data: UIDataLabel, modifier: Modifier = Modifier) 
                     Row(modifier = Modifier.padding(bottom = 4.dp)) {
                         Text(
                             text = it.key,
-                            style = MaterialTheme.typography.bodyMedium.copy(
+                            style =
+                            MaterialTheme.typography.bodyMedium.copy(
                                 color = MaterialTheme.colorScheme.outline
                             ),
                             modifier = Modifier.padding(end = 8.dp),
@@ -212,7 +232,8 @@ private fun DetailsCard(
     content: @Composable (ColumnScope.() -> Unit)
 ) {
     Card(
-        modifier = modifier
+        modifier =
+        modifier
             .height(CARD_DIMENSION)
             .width(if (bigCard) CARD_DIMENSION * 2.0f + CARD_MARGIN else CARD_DIMENSION * 1.0f)
             .padding(vertical = CARD_MARGIN / 2.0f)
@@ -234,7 +255,7 @@ private fun DetailsCard(
 
 @Preview()
 @Composable
-fun PreviewTireData() {
+private fun PreviewTireData() {
     AppTheme {
         TireDetails(bigCard = false, BikeDTO.empty())
     }
@@ -242,49 +263,53 @@ fun PreviewTireData() {
 
 @Preview()
 @Composable
-fun PreviewTireDataBig() {
+private fun PreviewTireDataBig() {
     AppTheme {
         TireDetails(bigCard = true, BikeDTO.empty())
     }
 }
 
-private val testBike = BikeDTO(
-    name = "1",
-    type = Bike.Type.UNKNOWN,
-    frontSuspension = Suspension(Pressure(60.0), Damping(1), Damping(1), 3, 140),
-    frontTire = Tire(
-        Pressure(20.0),
-        0.0,
-        0.0
-    ),
-    rearTire = Tire(Pressure(20.0), 0.0, 0.0),
-    isEBike = false
-)
-private val testBikeMax = BikeDTO(
-    name = "1",
-    type = Bike.Type.UNKNOWN,
-    frontSuspension = Suspension(Pressure(60.0), Damping(1, 2), Damping(3, 4), 5, 420),
-    frontTire = Tire(
-        Pressure(20.0),
-        0.0,
-        0.0
-    ),
-    rearTire = Tire(Pressure(20.0), 0.0, 0.0),
-    isEBike = false
-)
+private val testBike =
+    BikeDTO(
+        name = "1",
+        type = Bike.Type.UNKNOWN,
+        frontSuspension = Suspension(Pressure(60.0), Damping(1), Damping(1), 3, 140),
+        frontTire =
+        Tire(
+            Pressure(20.0),
+            0.0,
+            0.0
+        ),
+        rearTire = Tire(Pressure(20.0), 0.0, 0.0),
+        isEBike = false
+    )
+private val testBikeMax =
+    BikeDTO(
+        name = "1",
+        type = Bike.Type.UNKNOWN,
+        frontSuspension = Suspension(Pressure(60.0), Damping(1, 2), Damping(3, 4), 5, 420),
+        frontTire =
+        Tire(
+            Pressure(20.0),
+            0.0,
+            0.0
+        ),
+        rearTire = Tire(Pressure(20.0), 0.0, 0.0),
+        isEBike = false
+    )
 
 @Preview
 @Composable
-fun PreviewForkData() = ForkDetails(bigCard = false, bike = testBike)
+private fun PreviewForkData() = ForkDetails(bigCard = false, bike = testBike)
 
 @Preview
 @Composable
-fun PreviewForkDataBig() = ForkDetails(bigCard = true, bike = testBike)
+private fun PreviewForkDataBig() = ForkDetails(bigCard = true, bike = testBike)
 
 @Preview
 @Composable
-fun PreviewForkDataMax() = ForkDetails(bigCard = false, bike = testBikeMax)
+private fun PreviewForkDataMax() = ForkDetails(bigCard = false, bike = testBikeMax)
 
 @Preview
 @Composable
-fun PreviewForkDataMaxBig() = ForkDetails(bigCard = true, bike = testBikeMax)
+private fun PreviewForkDataMaxBig() = ForkDetails(bigCard = true, bike = testBikeMax)

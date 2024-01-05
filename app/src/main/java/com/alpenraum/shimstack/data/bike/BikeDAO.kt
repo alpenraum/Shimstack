@@ -7,8 +7,7 @@ import com.alpenraum.shimstack.data.db.AppDatabase
 
 @Dao
 interface BikeDAO {
-
-    @Query("SELECT * FROM ${AppDatabase.table_bike}")
+    @Query("SELECT * FROM ${AppDatabase.TABLE_BIKE}")
     fun getAllBikes(): List<Bike>
 
     @Insert

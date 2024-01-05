@@ -70,7 +70,7 @@ fun EnterDetailsScreen(
                     navigator?.navigate(SetupDecisionScreenDestination, onlyIfResumed = true)
                 }
 
-                NewBikeContract.Event.NavigateToPreviousStep -> { /*empty */
+                NewBikeContract.Event.NavigateToPreviousStep -> { // empty
                 }
             }
         }
@@ -89,7 +89,8 @@ fun EnterDetailsScreen(
             onValueChange = {
                 intent(NewBikeContract.Intent.BikeNameInput(it))
             },
-            modifier = if (!isCompactScreen) {
+            modifier =
+            if (!isCompactScreen) {
                 Modifier.padding(
                     top = 16.dp
                 )
@@ -111,7 +112,8 @@ fun EnterDetailsScreen(
                 onExpandedChange = {
                     expanded = !expanded
                 },
-                modifier = if (isCompactScreen) {
+                modifier =
+                if (isCompactScreen) {
                     Modifier.weight(1.0f)
                 } else {
                     Modifier.padding(
@@ -270,7 +272,6 @@ private fun ColumnScope.SuspensionInput(
                 label = stringResource(id = R.string.label_travel),
                 isError = isError,
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
-
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -303,7 +304,6 @@ private fun ColumnScope.TireInput(
     lastInputImeAction: ImeAction,
     onTireWidthChanged: (String) -> Unit,
     onRimWidthChanged: (String?) -> Unit
-
 ) {
     Text(
         text = headline,
@@ -334,7 +334,8 @@ private fun ColumnScope.TireInput(
                 suffix = stringResource(id = R.string.mm),
                 label = stringResource(id = R.string.label_internal_rim_width),
                 isError = isError,
-                keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardOptions =
+                KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = lastInputImeAction
                 )
@@ -373,8 +374,10 @@ private fun Preview1() {
 private fun Error() {
     PhonePreview {
         EnterDetailsScreen(
-            state = NewBikeContract.State(
-                detailsValidationErrors = ValidateBikeDTOUseCase.DetailsFailure(
+            state =
+            NewBikeContract.State(
+                detailsValidationErrors =
+                ValidateBikeDTOUseCase.DetailsFailure(
                     name = false,
                     type = false,
                     frontTire = false,
