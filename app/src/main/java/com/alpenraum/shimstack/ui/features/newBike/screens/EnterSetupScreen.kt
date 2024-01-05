@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -40,7 +39,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Destination
 @NewBikeNavGraph
@@ -69,13 +67,13 @@ fun EnterSetupScreen(
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Text(
-            text = "Enter your existing setup!", // TODO
+            text = stringResource(id = R.string.label_entersetup_intro),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = 8.dp)
         )
 
         Text(
-            text = "Tire pressure",
+            text = stringResource(id = R.string.label_tire_pressure),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(top = 16.dp)
         )
@@ -89,7 +87,11 @@ fun EnterSetupScreen(
                 modifier = Modifier
                     .weight(1.0f)
                     .padding(top = 8.dp),
-                label = "Front tire pressure", // TODO
+                label = "${stringResource(id = R.string.front)} ${
+                    stringResource(
+                        id = R.string.label_tire_pressure
+                    )
+                }",
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
 
             )
@@ -102,7 +104,11 @@ fun EnterSetupScreen(
                 modifier = Modifier
                     .weight(1.0f)
                     .padding(top = 8.dp),
-                label = "Rear tire pressure", // TODO
+                label = "${stringResource(id = R.string.rear)} ${
+                    stringResource(
+                        id = R.string.label_tire_pressure
+                    )
+                }",
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
 
             )
@@ -110,7 +116,7 @@ fun EnterSetupScreen(
 
         if (state.detailsInput.frontTravel?.isNotEmpty() == true) {
             SuspensionInput(
-                title = "Front Suspension",
+                title = stringResource(id = R.string.label_front_suspension),
                 pressureInput = "${state.setupInput.frontSuspensionPressure}",
                 tokensInput = "${state.setupInput.frontSuspensionTokens}",
                 lscInput = "${state.setupInput.frontSuspensionLSC}",
@@ -130,7 +136,7 @@ fun EnterSetupScreen(
 
         if (state.detailsInput.rearTravel?.isNotEmpty() == true) {
             SuspensionInput(
-                title = "Rear Suspension",
+                title = stringResource(id = R.string.label_rear_suspension),
                 pressureInput = "${state.setupInput.rearSuspensionPressure}",
                 tokensInput = "${state.setupInput.rearSuspensionTokens}",
                 lscInput = "${state.setupInput.rearSuspensionLSC}",
@@ -148,15 +154,6 @@ fun EnterSetupScreen(
             )
         }
 
-        /*
-  Tire pressure F + R
-  Suspension F+R:
-      Pressure
-      Tokens
-      HSC / LSC
-      HSR / LSR
-
-   */
         AnimatedVisibility(visible = state.showSetupOutlierHint) {
             InfoText(textRes = R.string.copy_setup_outlier_hint)
         }
@@ -201,7 +198,7 @@ private fun ColumnScope.SuspensionInput(
             value = pressureInput,
             onValueChange = onPressureChanged,
             suffix = stringResource(id = R.string.bar),
-            label = "Pressure",
+            label = stringResource(id = R.string.pressure),
             keyboardOptions = KeyboardOptions.number(ImeAction.Next),
             modifier = Modifier.weight(1.0f)
         )
@@ -209,7 +206,7 @@ private fun ColumnScope.SuspensionInput(
             value = tokensInput,
             onValueChange = onTokensChanged,
             suffix = stringResource(id = R.string.bar),
-            label = "Tokens",
+            label = stringResource(id = R.string.tokens),
             keyboardOptions = KeyboardOptions.number(ImeAction.Next),
             modifier = Modifier.weight(1.0f)
         )
@@ -261,13 +258,13 @@ private fun ColumnScope.DampingInput(
             value = lowSpeed ?: "",
             onValueChange = { onLowSpeedChanged(it) },
             modifier = Modifier.weight(1.0f),
-            label = "Low speed clicks from closed"
+            label = stringResource(id = R.string.label_entersetup_low_speed_clicks)
         )
         AnimatedVisibility(visible = showHighSpeed, modifier = Modifier.weight(1.0f)) {
             TextInput(
                 value = highSpeed ?: "",
                 onValueChange = { onHighSpeedChanged(it) },
-                label = "High speed clicks from closed"
+                label = stringResource(id = R.string.label_entersetup_high_speed_clicks)
             )
         }
     }

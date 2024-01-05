@@ -67,7 +67,10 @@
     <string name="label_front_tire">Front tire</string>
     <string name="label_tire_width">Tire width</string>
     <string name="label_internal_rim_width">Internal rim width</string>
-
+    <string name="label_tire_pressure">Tire Pressure</string>
     <string name="copy_setup_outlier_hint">Some values seem out of the ordinary. Double check if you entered everything correctly.</string>
 
+    <string name="label_entersetup_intro">Enter your existing setup!</string>
+    <string name="label_entersetup_low_speed_clicks">Low speed clicks from closed</string>
+    <string name="label_entersetup_high_speed_clicks">High speed clicks from closed</string>
 </resources>
