@@ -214,7 +214,7 @@ private fun ColumnScope.SuspensionInput(
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(top = 16.dp)
     )
-    InfoText(textRes = androidx.appcompat.R.string.abc_search_hint)
+    InfoText(textRes = R.string.info_compression)
     DampingInput(
         lowSpeed = lscInput,
         highSpeed = hscInput,
@@ -229,7 +229,7 @@ private fun ColumnScope.SuspensionInput(
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(top = 16.dp)
     )
-    InfoText(textRes = androidx.appcompat.R.string.abc_search_hint) // TODO: What did I want to write here?
+    InfoText(textRes = R.string.info_rebound)
     DampingInput(
         lowSpeed = lsrInput,
         highSpeed = hsrInput,
