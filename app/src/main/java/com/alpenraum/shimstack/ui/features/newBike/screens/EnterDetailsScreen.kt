@@ -70,8 +70,7 @@ fun EnterDetailsScreen(
                     navigator?.navigate(SetupDecisionScreenDestination, onlyIfResumed = true)
                 }
 
-                NewBikeContract.Event.NavigateToPreviousStep -> { // empty
-                }
+                else -> {}
             }
         }
     }
@@ -223,7 +222,7 @@ fun EnterDetailsScreen(
         LargeButton(
             enabled = state.detailsValidationErrors == null,
             onClick = {
-                intent(NewBikeContract.Intent.OnNextClicked)
+                intent(NewBikeContract.Intent.OnNextClicked())
             },
             modifier = Modifier.padding(vertical = 16.dp)
         ) {

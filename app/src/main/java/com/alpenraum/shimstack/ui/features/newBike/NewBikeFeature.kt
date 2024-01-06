@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack.ui.features.newBike
 
+import android.widget.Toast
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -8,8 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,10 +26,12 @@ import com.alpenraum.shimstack.ui.features.NavGraphs
 import com.alpenraum.shimstack.ui.features.destinations.EnterDetailsScreenDestination
 import com.alpenraum.shimstack.ui.features.destinations.EnterSetupScreenDestination
 import com.alpenraum.shimstack.ui.features.destinations.EntryScreenDestination
+import com.alpenraum.shimstack.ui.features.destinations.NewBikeSuccessScreenDestination
 import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.screens.EnterDetailsScreen
 import com.alpenraum.shimstack.ui.features.newBike.screens.EnterSetupScreen
 import com.alpenraum.shimstack.ui.features.newBike.screens.EntryScreen
+import com.alpenraum.shimstack.ui.features.newBike.screens.NewBikeSuccessScreen
 import com.alpenraum.shimstack.ui.features.newBike.screens.SetupDecisionScreen
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -36,6 +41,7 @@ import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
 @Destination(
@@ -48,6 +54,23 @@ fun NewBikeFeature(
 ) {
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intent, event) = use(viewModel)
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        event.collectLatest {
+            when (it) {
+                NewBikeContract.Event.NavigateToHomeScreen -> navigator.popBackStack()
+                is NewBikeContract.Event.ShowToast -> Toast.makeText(
+                    context,
+                    it.messageRes,
+                    Toast.LENGTH_LONG
+                ).show()
+
+                else -> {}
+            }
+        }
+    }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
@@ -108,6 +131,12 @@ fun NewBikeFeature(
                     intent,
                     event,
                     navigator = this.destinationsNavigator
+                )
+            }
+            composable(NewBikeSuccessScreenDestination) {
+                NewBikeSuccessScreen(
+                    navigator = this.destinationsNavigator,
+                    intent = intent
                 )
             }
         }

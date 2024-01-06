@@ -5,6 +5,7 @@
     <string name="label_next_step">Next Step</string>
     <string name="label_yes">Yes</string>
     <string name="label_no">No</string>
+    <string name="label_done">Done</string>
 
 
     <string name="tire">Tire</string>
@@ -75,4 +76,9 @@
     <string name="label_entersetup_high_speed_clicks">High speed clicks from closed</string>
     <string name="info_compression">Affects the stiffness when diving into the travel.</string>
     <string name="info_rebound">Affects how quickly the suspension decompresses</string>
+
+    <string name="copy_new_bike_success">And we\'re done! You can add another bike if you want to.</string>
+    <string name="label_add_another_bike">Add another bike</string>
+    <string name="error_create_bike">Something went wrong while creating the bike. Please try again later.</string>
+
 </resources>

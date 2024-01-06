@@ -33,12 +33,24 @@ fun DecisionScreen(
     modifier: Modifier = Modifier,
     vararg buttons: DecisionButtonConfig
 ) {
+    DecisionScreen(imageContent = {
+        imageRes?.let { Image(painter = painterResource(id = it), contentDescription = null) }
+    }, contentRes = contentRes, modifier = modifier, buttons = buttons)
+}
+
+@Composable
+fun DecisionScreen(
+    imageContent: @Composable () -> Unit,
+    @StringRes contentRes: Int,
+    modifier: Modifier = Modifier,
+    vararg buttons: DecisionButtonConfig
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxHeight()
     ) {
-        imageRes?.let { Image(painter = painterResource(id = it), contentDescription = null) }
+        imageContent()
         Text(
             text = stringResource(contentRes),
             style = MaterialTheme.typography.titleLarge,

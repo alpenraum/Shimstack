@@ -1,9 +1,16 @@
 package com.alpenraum.shimstack.ui.features.newBike
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
+import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeDTO
+import com.alpenraum.shimstack.data.bike.Damping
+import com.alpenraum.shimstack.data.bike.LocalBikeRepository
+import com.alpenraum.shimstack.data.bike.Pressure
+import com.alpenraum.shimstack.data.bike.Suspension
+import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -36,6 +43,7 @@ class NewBikeViewModel
 constructor(
     savedStateHandle: SavedStateHandle,
     private val bikeTemplateRepository: LocalBikeTemplateRepository,
+    private val bikeRepository: LocalBikeRepository,
     private val validateBikeDTOUseCase: ValidateBikeDTOUseCase,
     private val validateSetupUseCase: ValidateSetupUseCase
 ) : BaseViewModel(), NewBikeContract {
@@ -81,6 +89,10 @@ constructor(
             when (intent) {
                 is NewBikeContract.Intent.Filter -> {
                     filterFlow.emit(intent.filter)
+                }
+
+                NewBikeContract.Intent.OnFlowFinished -> {
+                    _event.emit(NewBikeContract.Event.NavigateToHomeScreen)
                 }
 
 // Details Data Input
@@ -140,10 +152,22 @@ constructor(
                     )
                 }
 
-                NewBikeContract.Intent.OnNextClicked ->
-                    _event.emit(
-                        NewBikeContract.Event.NavigateToNextStep
-                    )
+                is NewBikeContract.Intent.OnNextClicked -> {
+                    if (intent.flowFinished) {
+                        try {
+                            saveBike()
+                            _event.emit(
+                                NewBikeContract.Event.NavigateToNextStep
+                            )
+                        } catch (e: Exception) {
+                            _event.emit(NewBikeContract.Event.ShowToast(R.string.error_create_bike))
+                        }
+                    } else {
+                        _event.emit(
+                            NewBikeContract.Event.NavigateToNextStep
+                        )
+                    }
+                }
 
                 is NewBikeContract.Intent.FrontTirePressureInput ->
                     validateAndUpdateInput(
@@ -214,7 +238,7 @@ constructor(
 
                 is NewBikeContract.Intent.FrontSuspensionLSR ->
                     validateAndUpdateInput(
-                        setupInputData = SetupInputData(frontSuspensionHSR = intent.clicks)
+                        setupInputData = SetupInputData(frontSuspensionLSR = intent.clicks)
                     )
 
                 is NewBikeContract.Intent.RearSuspensionHSC ->
@@ -240,6 +264,10 @@ constructor(
         }
     }
 
+    private suspend fun saveBike() {
+        bikeRepository.createBike(_state.value.toBike())
+    }
+
     private suspend fun validateAndUpdateInput(
         detailsInputData: DetailsInputData? = null,
         setupInputData: SetupInputData? = null,
@@ -257,7 +285,7 @@ constructor(
                 detailsInput?.let {
                     validateBikeDTOUseCase(
                         it,
-                        bikeType
+                        bikeType ?: state.value.bikeType
                     )
                 }
             val setupValidationResult = setupInput?.let { validateSetupUseCase(it) }
@@ -328,7 +356,32 @@ constructor(
     private fun createNewInputSetup(setupInput: SetupInputData) =
         SetupInputData(
             setupInput.frontTirePressure ?: state.value.setupInput.frontTirePressure,
-            setupInput.rearTirePressure ?: state.value.setupInput.rearTirePressure
+            setupInput.rearTirePressure ?: state.value.setupInput.rearTirePressure,
+            frontSuspensionPressure = setupInput.frontSuspensionPressure
+                ?: state.value.setupInput.frontSuspensionPressure,
+            rearSuspensionPressure = setupInput.rearSuspensionPressure
+                ?: state.value.setupInput.rearSuspensionPressure,
+            frontSuspensionTokens = setupInput.frontSuspensionTokens
+                ?: state.value.setupInput.frontSuspensionTokens,
+            rearSuspensionTokens = setupInput.rearSuspensionTokens
+                ?: state.value.setupInput.rearSuspensionTokens,
+            frontSuspensionLSC = setupInput.frontSuspensionLSC
+                ?: state.value.setupInput.frontSuspensionLSC,
+            frontSuspensionLSR = setupInput.frontSuspensionLSR
+                ?: state.value.setupInput.frontSuspensionLSR,
+            frontSuspensionHSC = setupInput.frontSuspensionHSC
+                ?: state.value.setupInput.frontSuspensionHSC,
+            frontSuspensionHSR = setupInput.frontSuspensionHSR
+                ?: state.value.setupInput.frontSuspensionHSR,
+            rearSuspensionLSC = setupInput.rearSuspensionLSC
+                ?: state.value.setupInput.rearSuspensionLSC,
+            rearSuspensionLSR = setupInput.rearSuspensionLSR
+                ?: state.value.setupInput.rearSuspensionLSR,
+            rearSuspensionHSC = setupInput.rearSuspensionHSC
+                ?: state.value.setupInput.rearSuspensionHSC,
+            rearSuspensionHSR = setupInput.rearSuspensionHSR
+                ?: state.value.setupInput.rearSuspensionHSR
+
         )
 
     private fun mapFromBikeDTO(bikeDTO: BikeDTO) =
@@ -359,12 +412,76 @@ interface NewBikeContract :
         val hasHSRFork: Boolean = false,
         val hasHSCShock: Boolean = false,
         val hasHSRShock: Boolean = false
-    )
+    ) {
+
+        fun hasFrontSuspension() = detailsInput.frontTravel?.isNotEmpty() == true
+        fun hasRearSuspension() = detailsInput.rearTravel?.isNotEmpty() == true
+        fun toBike(): Bike {
+            val frontSuspension = if (hasFrontSuspension()) {
+                Suspension(
+                    Pressure(setupInput.frontSuspensionPressure?.toDouble() ?: 0.0),
+                    Damping(
+                        setupInput.frontSuspensionLSC?.toInt() ?: 0,
+                        if (hasHSCFork) setupInput.frontSuspensionHSC?.toInt() ?: 0 else null
+                    ),
+                    Damping(
+                        setupInput.frontSuspensionLSR?.toInt() ?: 0,
+                        if (hasHSRFork) setupInput.frontSuspensionHSR?.toInt() ?: 0 else null
+                    ),
+                    detailsInput.frontTravel?.toInt() ?: 0,
+                    setupInput.frontSuspensionTokens?.toInt() ?: 0
+                )
+            } else {
+                null
+            }
+            val rearSuspension = if (hasRearSuspension()) {
+                Suspension(
+                    Pressure(setupInput.rearSuspensionPressure?.toDouble() ?: 0.0),
+                    Damping(
+                        setupInput.rearSuspensionLSC?.toInt() ?: 0,
+                        if (hasHSCShock) setupInput.rearSuspensionHSC?.toInt() ?: 0 else null
+                    ),
+                    Damping(
+                        setupInput.rearSuspensionLSR?.toInt() ?: 0,
+                        if (hasHSRShock) setupInput.rearSuspensionHSR?.toInt() ?: 0 else null
+                    ),
+                    detailsInput.rearTravel?.toInt() ?: 0,
+                    setupInput.rearSuspensionTokens?.toInt() ?: 0
+                )
+            } else {
+                null
+            }
+            val frontTire = Tire(
+                Pressure(setupInput.frontTirePressure?.toDouble() ?: 0.0),
+                detailsInput.frontTireWidth?.toDouble() ?: 0.0,
+                detailsInput.frontInternalRimWidth?.toDoubleOrNull()
+            )
+            val rearTire = Tire(
+                Pressure(setupInput.rearTirePressure?.toDouble() ?: 0.0),
+                detailsInput.rearTireWidth?.toDouble() ?: 0.0,
+                detailsInput.rearInternalRimWidth?.toDoubleOrNull()
+            )
+
+            return Bike(
+                name = detailsInput.name ?: "",
+                type = bikeType,
+                isEBike = isEbike,
+                frontSuspension = frontSuspension,
+                rearSuspension = rearSuspension,
+                frontTire = frontTire,
+                rearTire = rearTire
+            )
+        }
+    }
 
     sealed class Event {
         data object NavigateToNextStep : Event()
 
         data object NavigateToPreviousStep : Event()
+
+        data object NavigateToHomeScreen : Event()
+
+        class ShowToast(@StringRes val messageRes: Int) : Event()
     }
 
     sealed class Intent {
@@ -372,7 +489,7 @@ interface NewBikeContract :
 
         class BikeTemplateSelected(val bike: BikeTemplate) : Intent()
 
-        object OnNextClicked : Intent()
+        class OnNextClicked(val flowFinished: Boolean = false) : Intent()
 
         sealed class DataInput : Intent()
 
@@ -427,6 +544,8 @@ interface NewBikeContract :
         class RearSuspensionLSR(val clicks: String?) : SetupInput()
 
         class RearSuspensionHSR(val clicks: String?) : SetupInput()
+
+        data object OnFlowFinished : Intent()
     }
 }
 

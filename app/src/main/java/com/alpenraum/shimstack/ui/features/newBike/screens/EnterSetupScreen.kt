@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,7 +30,7 @@ import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.TextInput
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.number
-import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
+import com.alpenraum.shimstack.ui.features.destinations.NewBikeSuccessScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.DetailsInputData
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
@@ -52,11 +54,13 @@ fun EnterSetupScreen(
         event.collectLatest {
             when (it) {
                 NewBikeContract.Event.NavigateToNextStep -> {
-                    navigator?.navigate(SetupDecisionScreenDestination, onlyIfResumed = true)
+                    navigator?.navigate(
+                        NewBikeSuccessScreenDestination,
+                        onlyIfResumed = true
+                    )
                 }
 
-                NewBikeContract.Event.NavigateToPreviousStep -> { // empty
-                }
+                else -> {}
             }
         }
     }
@@ -96,7 +100,7 @@ fun EnterSetupScreen(
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
             )
             TextInput(
-                value = state.setupInput.rearSuspensionTokens ?: "",
+                value = state.setupInput.rearTirePressure ?: "",
                 onValueChange = {
                     intent(NewBikeContract.Intent.RearTirePressureInput(it))
                 },
@@ -114,7 +118,9 @@ fun EnterSetupScreen(
             )
         }
 
-        if (state.detailsInput.frontTravel?.isNotEmpty() == true) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (state.hasFrontSuspension()) {
             SuspensionInput(
                 title = stringResource(id = R.string.label_front_suspension),
                 pressureInput = state.setupInput.frontSuspensionPressure ?: "",
@@ -133,8 +139,8 @@ fun EnterSetupScreen(
                 onHSRChanged = { intent(NewBikeContract.Intent.FrontSuspensionHSR(it)) }
             )
         }
-
-        if (state.detailsInput.rearTravel?.isNotEmpty() == true) {
+        Spacer(modifier = Modifier.height(16.dp))
+        if (state.hasRearSuspension()) {
             SuspensionInput(
                 title = stringResource(id = R.string.label_rear_suspension),
                 pressureInput = state.setupInput.rearSuspensionPressure ?: "",
@@ -160,7 +166,7 @@ fun EnterSetupScreen(
         LargeButton(
             enabled = state.setupValidationErrors == null,
             onClick = {
-                intent(NewBikeContract.Intent.OnNextClicked)
+                intent(NewBikeContract.Intent.OnNextClicked(flowFinished = true))
             },
             modifier = Modifier.padding(vertical = 16.dp)
         ) {

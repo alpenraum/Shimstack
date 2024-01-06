@@ -1,6 +1,5 @@
 package com.alpenraum.shimstack.usecases
 
-import android.util.Log
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.ui.features.newBike.DetailsInputData
@@ -59,7 +58,6 @@ constructor() {
     }
 
     private fun validateType(type: Bike.Type): Boolean {
-        Log.d("___", "validateType: $type")
         return type != Bike.Type.UNKNOWN
     }
 

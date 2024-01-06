@@ -6,6 +6,7 @@
     <string name="label_next_step">Nächster Schritt</string>
     <string name="label_yes">Ja</string>
     <string name="label_no">Nein</string>
+    <string name="label_done">Fertig</string>
 
     <string name="tire">Reifen</string>
     <string name="rear">Hinten</string>
@@ -64,5 +65,10 @@
     <string name="label_entersetup_high_speed_clicks">High-Speed Klicks von geschlossener Stellung</string>
     <string name="info_compression">Wie hart der Widerstand beim Einfedern ist.</string>
     <string name="info_rebound">Wie schnell der Dämpfer wieder ausfedert.</string>
+
+    <string name="copy_new_bike_success">Fertig! Du kannst noch weitere Fahrräder hinzufügen.</string>
+    <string name="label_add_another_bike">Weiteres Fahrrad hinzufügen</string>
+    <string name="error_create_bike">Beim Erstellen das Fahrrads ist etwas schief gelaufen. Bitte versuche es später nochmal.</string>
+
 
 </resources>

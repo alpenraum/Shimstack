@@ -65,8 +65,7 @@ fun EntryScreen(
                         onlyIfResumed = true
                     )
 
-                NewBikeContract.Event.NavigateToPreviousStep -> { // empty
-                }
+                else -> {}
             }
         }
     }
@@ -114,7 +113,7 @@ fun EntryScreen(
                 }
             } else {
                 LargeButton(onClick = {
-                    intent(NewBikeContract.Intent.OnNextClicked)
+                    intent(NewBikeContract.Intent.OnNextClicked())
                 }, modifier = Modifier.padding(vertical = 16.dp)) {
                     Text(text = stringResource(id = R.string.label_next_step)) // todo: better label
                 }
