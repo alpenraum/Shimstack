@@ -29,7 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -171,4 +173,17 @@ fun TextInput(
     readOnly = readOnly,
     trailingIcon = trailingIcon,
     colors = colors
+)
+
+@Composable
+fun ButtonText(
+    @StringRes textRes: Int,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    weight: FontWeight = FontWeight.SemiBold
+) = Text(
+    text = stringResource(id = textRes),
+    modifier = modifier,
+    style = style,
+    fontWeight = weight
 )

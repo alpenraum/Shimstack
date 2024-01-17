@@ -130,6 +130,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:0.22.0-rc")
 
     ktlintRuleset("io.nlopez.compose.rules:ktlint:0.3.8")
+
+    // animation
+    implementation("com.airbnb.android:lottie-compose:6.3.0")
 }
 kapt {
     correctErrorTypes = true

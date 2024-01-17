@@ -3,13 +3,12 @@ package com.alpenraum.shimstack.ui.theme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 // Replace with your font locations
 val Roboto = FontFamily.Default
-val serif = FontFamily.Cursive
+val serif = FontFamily.Serif
 
 val AppTypography =
     Typography(
@@ -91,8 +90,8 @@ val AppTypography =
             fontWeight = FontWeight.W800,
             letterSpacing = 0.sp,
             lineHeight = 64.sp,
-            fontSize = 57.sp,
-            fontStyle = FontStyle.Italic
+            fontSize = 57.sp
+
         ),
         displayMedium =
         TextStyle(
@@ -100,8 +99,8 @@ val AppTypography =
             fontWeight = FontWeight.W600,
             letterSpacing = 0.sp,
             lineHeight = 52.sp,
-            fontSize = 45.sp,
-            fontStyle = FontStyle.Italic
+            fontSize = 45.sp
+
         ),
         displaySmall =
         TextStyle(
@@ -109,8 +108,7 @@ val AppTypography =
             fontWeight = FontWeight.W400,
             letterSpacing = 0.sp,
             lineHeight = 44.sp,
-            fontSize = 36.sp,
-            fontStyle = FontStyle.Italic
+            fontSize = 36.sp
         ),
         titleLarge =
         TextStyle(

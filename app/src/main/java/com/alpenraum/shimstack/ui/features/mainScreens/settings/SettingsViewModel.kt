@@ -3,7 +3,7 @@ package com.alpenraum.shimstack.ui.features.mainScreens.settings
 import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.common.stores.ConfigDataStore
+import com.alpenraum.shimstack.common.stores.ShimstackDataStore
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +46,7 @@ constructor() : BaseViewModel(), SettingsContract {
                     listOf(
                         Pair(
                             SettingsContract.Settings.USE_DYNAMIC_THEME,
-                            ConfigDataStore.useDynamicTheme
+                            ShimstackDataStore.useDynamicTheme
                         )
                     )
                 )
@@ -60,7 +60,7 @@ constructor() : BaseViewModel(), SettingsContract {
     ) = iOScope.launch {
         when (settings) {
             SettingsContract.Settings.USE_DYNAMIC_THEME ->
-                ConfigDataStore.setUseDynamicTheme(
+                ShimstackDataStore.setUseDynamicTheme(
                     newSetting
                 )
         }

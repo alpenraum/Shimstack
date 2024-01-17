@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.alpenraum.shimstack.common.stores.ConfigDataStore
+import com.alpenraum.shimstack.common.stores.ShimstackDataStore
 
 private val LightColors =
     lightColorScheme(
@@ -93,7 +93,7 @@ fun AppTheme(
     () -> Unit
 ) {
     val useDynamicTheme =
-        ConfigDataStore.useDynamicTheme?.collectAsState(initial = false)?.value == true
+        ShimstackDataStore.useDynamicTheme?.collectAsState(initial = false)?.value == true
     val colors =
         if (!useDarkTheme) {
             if (supportsDynamic() && useDynamicTheme) {

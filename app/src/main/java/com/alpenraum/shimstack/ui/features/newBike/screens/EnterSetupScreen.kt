@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.TextInput
@@ -170,7 +171,7 @@ fun EnterSetupScreen(
             },
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
-            Text(text = stringResource(id = R.string.label_next_step))
+            ButtonText(R.string.label_next_step)
         }
     }
 }

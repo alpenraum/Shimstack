@@ -58,7 +58,7 @@ fun DecisionScreen(
             modifier = Modifier.padding(vertical = 16.dp)
         )
         buttons.forEach {
-            val label = @Composable { Text(text = stringResource(id = it.label)) }
+            val label = @Composable { ButtonText(it.label) }
             if (it.isPrimaryButton) {
                 LargeButton(onClick = it.onClick, modifier = Modifier.padding(bottom = 8.dp)) {
                     label()

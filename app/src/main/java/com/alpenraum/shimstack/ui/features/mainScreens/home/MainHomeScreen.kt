@@ -383,7 +383,7 @@ private fun AddNewBikeCardContent(
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview()
 @Composable
 private fun Preview() {
     AppTheme {

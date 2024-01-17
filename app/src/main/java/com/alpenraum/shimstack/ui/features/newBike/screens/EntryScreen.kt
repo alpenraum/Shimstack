@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
+import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.TextInput
@@ -115,7 +116,7 @@ fun EntryScreen(
                 LargeButton(onClick = {
                     intent(NewBikeContract.Intent.OnNextClicked())
                 }, modifier = Modifier.padding(vertical = 16.dp)) {
-                    Text(text = stringResource(id = R.string.label_next_step)) // todo: better label
+                    ButtonText(R.string.label_next_step)
                 }
             }
         }
