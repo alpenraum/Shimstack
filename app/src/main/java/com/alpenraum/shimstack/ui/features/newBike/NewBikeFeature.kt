@@ -44,9 +44,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
-@Destination(
-    navArgsDelegate = NewBikeNavArgs::class
-)
+@Destination()
 @Composable
 fun NewBikeFeature(
     navigator: DestinationsNavigator,

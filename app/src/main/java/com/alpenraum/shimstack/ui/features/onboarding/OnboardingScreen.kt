@@ -71,7 +71,7 @@ fun OnboardingScreen(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column {
+                Column(verticalArrangement = Arrangement.Top) {
                     Spacer(modifier = Modifier.height(16.dp))
                     LargeButton(
                         onClick = onAddBikeClicked,
@@ -85,7 +85,7 @@ fun OnboardingScreen(
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     LargeButton(
                         onClick = onSkipButtonClicked,
                         colors = ButtonDefaults.buttonColors(

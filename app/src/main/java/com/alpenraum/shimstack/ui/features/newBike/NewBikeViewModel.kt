@@ -15,7 +15,6 @@ import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
-import com.alpenraum.shimstack.ui.features.navArgs
 import com.alpenraum.shimstack.usecases.ValidateBikeDTOUseCase
 import com.alpenraum.shimstack.usecases.ValidateSetupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,7 +46,6 @@ constructor(
     private val validateBikeDTOUseCase: ValidateBikeDTOUseCase,
     private val validateSetupUseCase: ValidateSetupUseCase
 ) : BaseViewModel(), NewBikeContract {
-    private val navArgs: NewBikeNavArgs = savedStateHandle.navArgs() // todo: remove
 
     private val _state = MutableStateFlow(NewBikeContract.State())
     override val state: StateFlow<NewBikeContract.State>
@@ -548,10 +546,6 @@ interface NewBikeContract :
         data object OnFlowFinished : Intent()
     }
 }
-
-data class NewBikeNavArgs(
-    val id: String
-)
 
 data class DetailsInputData(
     val name: String? = null,
