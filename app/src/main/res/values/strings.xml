@@ -6,6 +6,8 @@
     <string name="label_yes">Yes</string>
     <string name="label_no">No</string>
     <string name="label_done">Done</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_delete">Delete</string>
 
 
     <string name="tire">Tire</string>

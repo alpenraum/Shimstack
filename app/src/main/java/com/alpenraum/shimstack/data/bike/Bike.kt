@@ -1,6 +1,7 @@
 package com.alpenraum.shimstack.data.bike
 
 import android.content.Context
+import android.os.Parcelable
 import androidx.annotation.StringRes
 import androidx.room.Embedded
 import androidx.room.Entity
@@ -10,6 +11,7 @@ import com.alpenraum.shimstack.data.db.AppDatabase
 import com.alpenraum.shimstack.ui.features.mainScreens.home.UIDataLabel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 
 @Entity(tableName = AppDatabase.TABLE_BIKE)
@@ -58,6 +60,7 @@ data class Bike(
     }
 }
 
+@Parcelize
 data class BikeDTO(
     val name: String,
     val type: Bike.Type,
@@ -66,7 +69,7 @@ data class BikeDTO(
     val frontTire: Tire,
     val rearTire: Tire,
     val isEBike: Boolean
-) {
+) : Parcelable {
     companion object {
         fun empty() =
             BikeDTO(

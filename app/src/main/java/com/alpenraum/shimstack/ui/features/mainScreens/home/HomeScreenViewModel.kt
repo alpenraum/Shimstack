@@ -51,6 +51,10 @@ constructor(private val bikeRepository: LocalBikeRepository) :
                     eventFlow.emit(HomeScreenContract.Event.NavigateToNewBikeFeature)
                 }
             }
+
+            is HomeScreenContract.Intent.OnBikeDetailsClicked -> viewModelScope.launch {
+                eventFlow.emit(HomeScreenContract.Event.ShowBikeDetails(intent.bike))
+            }
         }
     }
 
@@ -91,6 +95,8 @@ interface HomeScreenContract :
         data object NewPageSelected : Event()
 
         data object NavigateToNewBikeFeature : Event()
+
+        data class ShowBikeDetails(val bike: BikeDTO) : Event()
     }
 
     sealed class Intent {
@@ -99,6 +105,8 @@ interface HomeScreenContract :
         class OnViewPagerSelectionChanged(val page: Int) : Intent()
 
         data object OnAddNewBike : Intent()
+
+        data class OnBikeDetailsClicked(val bike: BikeDTO) : Intent()
     }
 }
 

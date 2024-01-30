@@ -71,6 +71,7 @@ import com.alpenraum.shimstack.ui.compose.ShockDetails
 import com.alpenraum.shimstack.ui.compose.TireDetails
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
+import com.alpenraum.shimstack.ui.features.destinations.BikeDetailsScreenDestination
 import com.alpenraum.shimstack.ui.features.destinations.NewBikeFeatureDestination
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -103,7 +104,13 @@ fun HomeScreen(
     HomeScreenContent(
         state = state,
         event = event,
-        intents = intents
+        intents = intents,
+        navigateToBikeDetails = {
+            navController.navigate(
+                BikeDetailsScreenDestination(it),
+                onlyIfResumed = true
+            )
+        }
     ) { navController.navigate(NewBikeFeatureDestination, onlyIfResumed = true) }
 }
 
@@ -113,6 +120,7 @@ private fun HomeScreenContent(
     state: HomeScreenContract.State,
     event: SharedFlow<HomeScreenContract.Event>,
     intents: (HomeScreenContract.Intent) -> Unit,
+    navigateToBikeDetails: (bike: BikeDTO) -> Unit,
     onNewBikeClicked: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
@@ -143,6 +151,10 @@ private fun HomeScreenContent(
 
                 HomeScreenContract.Event.NavigateToNewBikeFeature -> {
                     onNewBikeClicked()
+                }
+
+                is HomeScreenContract.Event.ShowBikeDetails -> {
+                    navigateToBikeDetails(it.bike)
                 }
             }
         }
@@ -320,6 +332,12 @@ private fun BikePager(
                             this.scaleX = scale
                             this.scaleY = scale
                         }
+                    }.clickable {
+                        bike?.let {
+                            intents(
+                                HomeScreenContract.Intent.OnBikeDetailsClicked(it)
+                            )
+                        }
                     },
                 showPlaceholder = showPlaceholder,
                 content = content
@@ -344,7 +362,7 @@ private fun calculatePagerItemPadding(itemWidth: Dp) =
     ).dp
 
 @Composable
-private fun BikeCard(
+fun BikeCard(
     modifier: Modifier = Modifier,
     showPlaceholder: Boolean,
     content: @Composable (modifier: Modifier) -> Unit
@@ -367,7 +385,7 @@ private fun BikeCard(
 }
 
 @Composable
-private fun BikeCardContent(
+fun BikeCardContent(
     bike: BikeDTO?,
     modifier: Modifier = Modifier
 ) {
@@ -419,7 +437,8 @@ private fun Preview() {
         HomeScreenContent(
             state = HomeScreenContract.State(persistentListOf(), persistentListOf()),
             event = MutableSharedFlow(),
-            intents = {}
+            intents = {},
+            {}
         ) {}
     }
 }
@@ -434,7 +453,8 @@ private fun PreviewData() {
                 CardSetup.defaultConfig()
             ),
             event = MutableSharedFlow(),
-            intents = {}
+            intents = {},
+            {}
         ) {}
     }
 }

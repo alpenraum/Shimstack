@@ -31,6 +31,7 @@ class OnboardingViewModel @Inject constructor() : BaseViewModel() {
 
     fun onSkipClicked() {
         viewModelScope.launch {
+            ShimstackDataStore.setIsOnboardingCompleted(true)
             _event.emit(Event.NavigateToHomeScreen)
         }
     }
