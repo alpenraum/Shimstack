@@ -2,13 +2,25 @@ package com.alpenraum.shimstack.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.alpenraum.shimstack.R
 
 // Replace with your font locations
 val Roboto = FontFamily.Default
 val serif = FontFamily.Serif
+
+val Surt = FontFamily(
+    Font(R.font.surt_regular, FontWeight.Normal),
+    Font(R.font.surt_regular_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.surt_bold, FontWeight.Bold),
+    Font(R.font.surt_bold_italic, FontWeight.Bold, FontStyle.Italic),
+    Font(R.font.surt_black, FontWeight.Black),
+    Font(R.font.surt_black_italic, FontWeight.Black, FontStyle.Italic),
+)
 
 val AppTypography =
     Typography(
@@ -62,24 +74,24 @@ val AppTypography =
         ),
         headlineLarge =
         TextStyle(
-            fontFamily = Roboto,
-            fontWeight = FontWeight.W400,
+            fontFamily = Surt,
+            fontWeight = FontWeight.Bold,
             letterSpacing = 0.sp,
             lineHeight = 40.sp,
             fontSize = 32.sp
         ),
         headlineMedium =
         TextStyle(
-            fontFamily = Roboto,
-            fontWeight = FontWeight.W400,
+            fontFamily = Surt,
+            fontWeight = FontWeight.Bold,
             letterSpacing = 0.sp,
             lineHeight = 36.sp,
             fontSize = 28.sp
         ),
         headlineSmall =
         TextStyle(
-            fontFamily = Roboto,
-            fontWeight = FontWeight.W400,
+            fontFamily = Surt,
+            fontWeight = FontWeight.Bold,
             letterSpacing = 0.sp,
             lineHeight = 32.sp,
             fontSize = 24.sp

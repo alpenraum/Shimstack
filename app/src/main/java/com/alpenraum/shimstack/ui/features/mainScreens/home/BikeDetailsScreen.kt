@@ -30,7 +30,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 @Composable
 fun BikeDetailsScreen(bike: BikeDTO, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.padding(top = 32.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
+        modifier = modifier
+            .padding(top = 32.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -40,7 +41,9 @@ fun BikeDetailsScreen(bike: BikeDTO, modifier: Modifier = Modifier) {
 
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(top = 8.dp).width(IntrinsicSize.Min)
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .width(IntrinsicSize.Min)
         ) {
             Button(
                 {}, // TODO
@@ -67,8 +70,8 @@ fun BikeDetailsScreen(bike: BikeDTO, modifier: Modifier = Modifier) {
 @Composable
 fun BikeInfo(bike: BikeDTO, modifier: Modifier = Modifier) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top)) {
+        Text(bike.name, style = MaterialTheme.typography.headlineSmall)
         // TODO: MAKE it nice
-        Text(bike.name)
         Text(stringResource(bike.type.labelRes))
         Text(bike.frontSuspension.toString())
         Text(bike.rearSuspension.toString())
@@ -81,6 +84,6 @@ fun BikeInfo(bike: BikeDTO, modifier: Modifier = Modifier) {
 @Composable
 private fun Preview() {
     AppTheme {
-        BikeDetailsScreen(bike = BikeDTO.empty())
+        BikeDetailsScreen(bike = BikeDTO.empty().copy(name = "Specialized Stumpjumper"))
     }
 }
