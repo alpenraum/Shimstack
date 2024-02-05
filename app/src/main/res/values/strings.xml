@@ -29,6 +29,7 @@
     <string name="bar" translatable="false">Bar</string>
     <string name="psi" translatable="false">PSI</string>
     <string name="mm" translatable="false">mm</string>
+    <string name="inch" translatable="false">"</string>
 
 
     <string name="copy_no_fork">This fork has no adjustable settings.</string>
