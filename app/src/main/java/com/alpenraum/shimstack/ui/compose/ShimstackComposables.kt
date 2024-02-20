@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -155,7 +156,8 @@ fun TextInput(
     suffix: String? = null,
     readOnly: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+    textStyle: TextStyle = LocalTextStyle.current
 ) = OutlinedTextField(
     shape = shape,
     singleLine = singleLine,
@@ -172,7 +174,8 @@ fun TextInput(
     keyboardActions = keyboardActions,
     readOnly = readOnly,
     trailingIcon = trailingIcon,
-    colors = colors
+    colors = colors,
+    textStyle = textStyle
 )
 
 @Composable

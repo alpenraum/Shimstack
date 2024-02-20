@@ -253,7 +253,7 @@ private fun ColumnScope.SuspensionInput(
         modifier = Modifier.padding(top = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = headline, style = MaterialTheme.typography.headlineSmall)
+        Text(text = headline, style = MaterialTheme.typography.titleLarge)
         Switch(
             checked = showSuspensionInput,
             onCheckedChange = {
@@ -310,7 +310,7 @@ private fun ColumnScope.TireInput(
 ) {
     Text(
         text = headline,
-        style = MaterialTheme.typography.headlineSmall,
+        style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(top = 16.dp)
     )
     Row(modifier = Modifier.padding(top = 8.dp)) {
