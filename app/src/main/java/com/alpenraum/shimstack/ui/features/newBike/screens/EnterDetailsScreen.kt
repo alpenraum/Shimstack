@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.Bike
+import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
@@ -123,7 +123,7 @@ fun EnterDetailsScreen(
             ) {
                 TextInput(
                     readOnly = true,
-                    value = stringResource(state.bikeType.labelRes),
+                    value = stringResource(state.bikeDTOType.labelRes),
                     onValueChange = {},
                     label = stringResource(id = R.string.label_type),
                     trailingIcon = {
@@ -138,8 +138,8 @@ fun EnterDetailsScreen(
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                     expanded = false
                 }) {
-                    Bike.Type.values().forEach { selectionOption ->
-                        if (selectionOption != Bike.Type.UNKNOWN) {
+                    BikeDTO.Type.values().forEach { selectionOption ->
+                        if (selectionOption != BikeDTO.Type.UNKNOWN) {
                             DropdownMenuItem(text = {
                                 Text(text = stringResource(selectionOption.labelRes))
                             }, onClick = {

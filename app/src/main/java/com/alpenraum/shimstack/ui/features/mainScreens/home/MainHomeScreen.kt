@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.BikeDTO
+import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.data.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
@@ -120,7 +120,7 @@ private fun HomeScreenContent(
     state: HomeScreenContract.State,
     event: SharedFlow<HomeScreenContract.Event>,
     intents: (HomeScreenContract.Intent) -> Unit,
-    navigateToBikeDetails: (bike: BikeDTO) -> Unit,
+    navigateToBikeDetails: (bike: Bike) -> Unit,
     onNewBikeClicked: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
@@ -238,7 +238,7 @@ private fun EmptyDetailsEyeCandy() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun BikeDetails(
-    bike: BikeDTO,
+    bike: Bike,
     cardSetup: ImmutableList<CardSetup>,
     intents: (HomeScreenContract.Intent) -> Unit,
     state: LazyGridState
@@ -386,7 +386,7 @@ fun BikeCard(
 
 @Composable
 fun BikeCardContent(
-    bike: BikeDTO?,
+    bike: Bike?,
     modifier: Modifier = Modifier
 ) {
     Text(
@@ -449,7 +449,7 @@ private fun PreviewData() {
     AppTheme {
         HomeScreenContent(
             state = HomeScreenContract.State(
-                persistentListOf(BikeDTO.empty()),
+                persistentListOf(Bike.empty()),
                 CardSetup.defaultConfig()
             ),
             event = MutableSharedFlow(),

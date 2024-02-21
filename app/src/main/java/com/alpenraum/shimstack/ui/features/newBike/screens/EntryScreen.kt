@@ -31,7 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.Bike
+import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
@@ -177,7 +177,7 @@ private fun EntryPreview() {
                         BikeTemplate(
                             id = i,
                             name = "bike $i",
-                            type = Bike.Type.ENDURO,
+                            type = BikeDTO.Type.ENDURO,
                             false,
                             150,
                             130,

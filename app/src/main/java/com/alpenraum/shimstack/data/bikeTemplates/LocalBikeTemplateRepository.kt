@@ -1,7 +1,7 @@
 package com.alpenraum.shimstack.data.bikeTemplates
 
 import android.content.Context
-import com.alpenraum.shimstack.data.bike.Bike
+import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
@@ -34,7 +34,7 @@ constructor(
                     BikeTemplate(
                         id = i,
                         name = "bike $i",
-                        type = Bike.Type.ENDURO,
+                        type = BikeDTO.Type.ENDURO,
                         false,
                         150,
                         130,

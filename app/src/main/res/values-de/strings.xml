@@ -11,6 +11,8 @@
     <string name="label_delete">Löschen</string>
     <string name="label_save">Speichern</string>
 
+    <string name="err_technical">Etwas ist schief gelaufen…uncool! (Entwickler ist schuld)</string>
+
     <string name="tire">Reifen</string>
     <string name="rear">Hinten</string>
     <string name="front">Vorne</string>

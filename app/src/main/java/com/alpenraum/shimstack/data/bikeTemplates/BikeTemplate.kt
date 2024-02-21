@@ -16,7 +16,7 @@ import com.alpenraum.shimstack.data.db.AppDatabase
 class BikeTemplate(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     val name: String,
-    val type: Bike.Type,
+    val type: BikeDTO.Type,
     val isEBike: Boolean,
     val frontSuspensionTravelInMM: Int,
     val rearSuspensionTravelInMM: Int,
@@ -25,8 +25,8 @@ class BikeTemplate(
     val rearTireWidthInMM: Double,
     val rearRimWidthInMM: Double
 ) {
-    fun toBikeDTO() =
-        BikeDTO(
+    fun toBike() =
+        Bike(
             name = name,
             type = type,
             frontSuspension =
@@ -60,7 +60,8 @@ class BikeTemplate(
                 rearTireWidthInMM,
                 rearRimWidthInMM
             ),
-            isEBike
+            isEBike = isEBike,
+            id = 0
         )
 
     companion object {
@@ -68,7 +69,7 @@ class BikeTemplate(
             BikeTemplate(
                 id = 0,
                 name = "Evil Offering V2",
-                type = Bike.Type.ALL_MTN,
+                type = BikeDTO.Type.ALL_MTN,
                 isEBike = false,
                 frontSuspensionTravelInMM = 140,
                 rearSuspensionTravelInMM = 140,

@@ -15,7 +15,7 @@ import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 
 @Entity(tableName = AppDatabase.TABLE_BIKE)
-data class Bike(
+data class BikeDTO(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     val name: String,
     val type: Type,
@@ -25,11 +25,12 @@ data class Bike(
     @Embedded(prefix = "rear_tire_") val rearTire: Tire,
     val isEBike: Boolean
 ) {
-    fun toDTO() = BikeDTO(name, type, frontSuspension, rearSuspension, frontTire, rearTire, isEBike)
+    fun toDTO() =
+        Bike(id ?: 0, name, type, frontSuspension, rearSuspension, frontTire, rearTire, isEBike)
 
     companion object {
         fun empty() =
-            Bike(
+            BikeDTO(
                 name = "",
                 type = Type.UNKNOWN,
                 isEBike = false,
@@ -61,9 +62,10 @@ data class Bike(
 }
 
 @Parcelize
-data class BikeDTO(
+data class Bike(
+    val id: Int,
     val name: String,
-    val type: Bike.Type,
+    val type: BikeDTO.Type,
     val frontSuspension: Suspension? = null,
     val rearSuspension: Suspension? = null,
     val frontTire: Tire,
@@ -72,14 +74,15 @@ data class BikeDTO(
 ) : Parcelable {
     companion object {
         fun empty() =
-            BikeDTO(
+            Bike(
                 name = "",
-                type = Bike.Type.UNKNOWN,
+                type = BikeDTO.Type.UNKNOWN,
                 isEBike = false,
                 frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
                 rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
                 frontSuspension = null,
-                rearSuspension = null
+                rearSuspension = null,
+                id = 0
             )
     }
 
@@ -148,7 +151,7 @@ data class BikeDTO(
     }
 
     fun isPopulated() =
-        name.isNotBlank() && type != Bike.Type.UNKNOWN && frontTire.widthInMM != 0.0 && rearTire.widthInMM != 0.0
+        name.isNotBlank() && type != BikeDTO.Type.UNKNOWN && frontTire.widthInMM != 0.0 && rearTire.widthInMM != 0.0
 
     fun hasSetup() =
         !frontTire.pressure.isEmpty() &&

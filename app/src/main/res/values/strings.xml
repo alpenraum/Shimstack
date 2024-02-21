@@ -10,6 +10,8 @@
     <string name="label_delete">Delete</string>
     <string name="label_save">Save</string>
 
+    <string name="err_technical">Something went wrong…uncool! (Blame the dev)</string>
+
 
     <string name="tire">Tire</string>
     <string name="rear">Rear</string>

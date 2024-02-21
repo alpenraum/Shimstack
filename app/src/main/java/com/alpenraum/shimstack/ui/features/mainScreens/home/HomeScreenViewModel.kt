@@ -2,7 +2,7 @@ package com.alpenraum.shimstack.ui.features.mainScreens.home
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
-import com.alpenraum.shimstack.data.bike.BikeDTO
+import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -79,7 +79,7 @@ interface HomeScreenContract :
     UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
     @Immutable
     data class State(
-        val bikes: ImmutableList<BikeDTO?>,
+        val bikes: ImmutableList<Bike?>,
         val detailCardsSetup: ImmutableList<CardSetup>
     ) {
         fun getBike(page: Int) = bikes.getOrNull(page)
@@ -96,7 +96,7 @@ interface HomeScreenContract :
 
         data object NavigateToNewBikeFeature : Event()
 
-        data class ShowBikeDetails(val bike: BikeDTO) : Event()
+        data class ShowBikeDetails(val bike: Bike) : Event()
     }
 
     sealed class Intent {
@@ -106,7 +106,7 @@ interface HomeScreenContract :
 
         data object OnAddNewBike : Intent()
 
-        data class OnBikeDetailsClicked(val bike: BikeDTO) : Intent()
+        data class OnBikeDetailsClicked(val bike: Bike) : Intent()
     }
 }
 

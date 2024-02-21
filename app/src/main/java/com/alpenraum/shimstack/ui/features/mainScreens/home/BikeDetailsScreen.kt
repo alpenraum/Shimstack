@@ -3,6 +3,7 @@
 package com.alpenraum.shimstack.ui.features.mainScreens.home
 
 import android.content.Context
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -73,10 +74,17 @@ fun BikeDetailsScreen(
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intent, event) = use(viewModel)
 
+    val context = LocalContext.current
+
     LaunchedEffect(key1 = Unit) {
         event.collectLatest {
             when (it) {
                 BikeDetailsContract.Event.NavigateBack -> navigator?.popBackStack()
+                is BikeDetailsContract.Event.ShowSnackbar -> Toast.makeText(
+                    context,
+                    it.message,
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -162,8 +170,8 @@ fun BikeInfo(
             Modifier
                 .fillMaxWidth()
         ) {
-            FrontTireBlock(state = state, context = context)
-            RearTireBlock(state = state, context = context)
+            FrontTireBlock(state = state, intents = intents, context = context)
+            RearTireBlock(state = state, intents = intents, context = context)
             FrontSuspensionBlock(state = state, context = context)
             RearSuspensionBlock(state = state, context)
         }
@@ -246,8 +254,8 @@ private fun EditBikeHeading(
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                 expanded = false
             }) {
-                Bike.Type.entries.forEach { selectionOption ->
-                    if (selectionOption != Bike.Type.UNKNOWN) {
+                BikeDTO.Type.entries.forEach { selectionOption ->
+                    if (selectionOption != BikeDTO.Type.UNKNOWN) {
                         DropdownMenuItem(text = {
                             Text(text = stringResource(selectionOption.labelRes))
                         }, onClick = {
@@ -262,43 +270,153 @@ private fun EditBikeHeading(
 }
 
 @Composable
-private fun FrontTireBlock(state: BikeDetailsContract.State, context: Context) {
-    TireBlock(tire = state.bike.frontTire, label = R.string.label_front_tire, context = context)
+private fun FrontTireBlock(
+    state: BikeDetailsContract.State,
+    intents: (BikeDetailsContract.Intent) -> Unit,
+    context: Context
+) {
+    TireBlock(
+        tire = state.bike.frontTire,
+        label = R.string.label_front_tire,
+        intents = intents,
+        context = context,
+        editMode = state.editMode,
+        isFront = true
+    )
 }
 
 @Composable
-private fun RearTireBlock(state: BikeDetailsContract.State, context: Context) {
-    TireBlock(tire = state.bike.rearTire, label = R.string.label_rear_tire, context = context)
+private fun RearTireBlock(
+    state: BikeDetailsContract.State,
+    intents: (BikeDetailsContract.Intent) -> Unit,
+    context: Context
+) {
+    TireBlock(
+        tire = state.bike.rearTire,
+        label = R.string.label_rear_tire,
+        intents = intents,
+        context = context,
+        editMode = state.editMode,
+        isFront = false
+    )
 }
 
 @Composable
-private fun TireBlock(tire: Tire, @StringRes label: Int, context: Context) {
-    Card(
-        Modifier
-            .height(IntrinsicSize.Min)
-            .padding(top = 16.dp)
-    ) {
-        Column(Modifier.padding(8.dp)) {
-            InfoText(label)
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(modifier = Modifier.weight(1.0f)) {
-                // rear tire
-                TextPair(
-                    R.string.label_tire_pressure,
-                    tire.getFormattedPressure(context),
-                    modifier = Modifier.weight(1.0f)
-                )
-                TextPair(
-                    R.string.label_tire_width,
-                    tire.getFormattedTireWidth(context),
-                    modifier = Modifier.weight(1.0f)
-                )
-                TextPair(
-                    R.string.label_internal_rim_width,
-                    tire.getFormattedInternalRimWidth(context),
-                    modifier = Modifier.weight(1.0f)
-                )
+private fun TireBlock(
+    tire: Tire,
+    @StringRes label: Int,
+    intents: (BikeDetailsContract.Intent) -> Unit,
+    context: Context,
+    editMode: Boolean,
+    isFront: Boolean
+) {
+    AnimatedContent(targetState = editMode, label = "") { edit ->
+        val content: @Composable () -> Unit = if (edit) {
+            {
+                Column(Modifier.padding(8.dp)) {
+                    InfoText(label)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        TextInput(
+                            value = tire.pressure.pressureInBar.toPlainString(),
+                            onValueChange = {
+                                intents(
+                                    if (isFront) {
+                                        BikeDetailsContract.Intent.Input.FrontTirePressure(
+                                            it
+                                        )
+                                    } else {
+                                        BikeDetailsContract.Intent.Input.RearTirePressure(it)
+                                    }
+                                )
+                            },
+                            label = stringResource(
+                                id = R.string.label_tire_pressure
+                            ),
+                            suffix = stringResource(id = R.string.bar),
+                            modifier = Modifier.weight(1.0f)
+                        )
+
+                        TextInput(
+                            value = tire.widthInMM.toString(),
+                            onValueChange = {
+                                intents(
+                                    if (isFront) {
+                                        BikeDetailsContract.Intent.Input.FrontTireWidth(
+                                            it
+                                        )
+                                    } else {
+                                        BikeDetailsContract.Intent.Input.RearTireWidth(it)
+                                    }
+                                )
+                            },
+                            label = stringResource(
+                                id = R.string.label_tire_width
+                            ),
+                            suffix = stringResource(id = R.string.mm),
+                            modifier = Modifier.weight(1.0f)
+                        )
+
+                        TextInput(
+                            value = tire.internalRimWidthInMM.toString(),
+                            onValueChange = {
+                                intents(
+                                    if (isFront) {
+                                        BikeDetailsContract.Intent.Input.FrontTireInternalRimWidth(
+                                            it
+                                        )
+                                    } else {
+                                        BikeDetailsContract.Intent.Input.RearTireInternalRimWidth(
+                                            it
+                                        )
+                                    }
+                                )
+                            },
+                            label = stringResource(
+                                id = R.string.label_internal_rim_width
+                            ),
+                            suffix = stringResource(id = R.string.mm),
+                            modifier = Modifier.weight(1.0f)
+                        )
+                    }
+                }
             }
+        } else {
+            {
+                Column(Modifier.padding(8.dp)) {
+                    InfoText(label)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(modifier = Modifier.weight(1.0f)) {
+                        // rear tire
+                        TextPair(
+                            R.string.label_tire_pressure,
+                            tire.getFormattedPressure(context),
+                            modifier = Modifier.weight(1.0f)
+                        )
+                        TextPair(
+                            R.string.label_tire_width,
+                            tire.getFormattedTireWidth(context),
+                            modifier = Modifier.weight(1.0f)
+                        )
+                        TextPair(
+                            R.string.label_internal_rim_width,
+                            tire.getFormattedInternalRimWidth(context),
+                            modifier = Modifier.weight(1.0f)
+                        )
+                    }
+                }
+            }
+        }
+
+        Card(
+            Modifier
+                .height(IntrinsicSize.Min)
+                .padding(top = 16.dp)
+        ) {
+            content()
         }
     }
 }
@@ -401,10 +519,10 @@ private fun Preview() {
     AppTheme {
         Content(
             state = BikeDetailsContract.State(
-                BikeDTO.empty()
+                Bike.empty()
                     .copy(
                         name = "Specialized Stumpjumper",
-                        type = Bike.Type.ALL_MTN,
+                        type = BikeDTO.Type.ALL_MTN,
                         frontSuspension = Suspension(150),
                         rearSuspension = Suspension(150)
                     )
@@ -420,10 +538,10 @@ private fun EditPreview() {
     AppTheme {
         Content(
             state = BikeDetailsContract.State(
-                BikeDTO.empty()
+                Bike.empty()
                     .copy(
                         name = "Specialized Stumpjumper",
-                        type = Bike.Type.ALL_MTN,
+                        type = BikeDTO.Type.ALL_MTN,
                         frontSuspension = Suspension(150),
                         rearSuspension = Suspension(150)
                     ),

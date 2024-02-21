@@ -8,30 +8,30 @@ import javax.inject.Inject
 class ValidateBikeDTOUseCase
 @Inject
 constructor() {
-    operator fun invoke(bikeDTO: BikeDTO): Result {
+    operator fun invoke(bike: Bike): Result {
         return fromResults(
-            validateName(bikeDTO.name),
-            validateType(bikeDTO.type),
-            validateTireWidth(bikeDTO.frontTire.widthInMM) &&
-                bikeDTO.frontTire.internalRimWidthInMM?.let {
+            validateName(bike.name),
+            validateType(bike.type),
+            validateTireWidth(bike.frontTire.widthInMM) &&
+                bike.frontTire.internalRimWidthInMM?.let {
                     validateInternalRimWidth(
                         it
                     )
                 } ?: true,
-            validateTireWidth(bikeDTO.rearTire.widthInMM) &&
-                bikeDTO.rearTire.internalRimWidthInMM?.let {
+            validateTireWidth(bike.rearTire.widthInMM) &&
+                bike.rearTire.internalRimWidthInMM?.let {
                     validateInternalRimWidth(
                         it
                     )
                 } ?: true,
-            bikeDTO.frontSuspension?.travel?.let { validateSuspensionTravel(it) } ?: true,
-            bikeDTO.rearSuspension?.travel?.let { validateSuspensionTravel(it) } ?: true
+            bike.frontSuspension?.travel?.let { validateSuspensionTravel(it) } ?: true,
+            bike.rearSuspension?.travel?.let { validateSuspensionTravel(it) } ?: true
         )
     }
 
     operator fun invoke(
         data: DetailsInputData,
-        type: Bike.Type?
+        type: BikeDTO.Type?
     ): Result {
         return fromResults(
             validateName(data.name),
@@ -57,8 +57,8 @@ constructor() {
         return name?.isNotBlank() ?: false
     }
 
-    private fun validateType(type: Bike.Type): Boolean {
-        return type != Bike.Type.UNKNOWN
+    private fun validateType(type: BikeDTO.Type): Boolean {
+        return type != BikeDTO.Type.UNKNOWN
     }
 
     private fun validateTireWidth(tireWidth: Double?): Boolean {
