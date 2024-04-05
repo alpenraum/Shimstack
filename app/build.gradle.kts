@@ -107,7 +107,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-material:0.33.2-alpha")
 
     // room
-    val roomVersion = "2.6.0"
+    val roomVersion = "2.6.1"
 
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
@@ -122,9 +122,9 @@ dependencies {
     implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
 
     // Moshi
-    implementation("com.squareup.moshi:moshi:1.14.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+    implementation("com.squareup.moshi:moshi:1.15.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
 
     implementation("com.google.accompanist:accompanist-pager:0.29.1-alpha")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.22.0-rc")
