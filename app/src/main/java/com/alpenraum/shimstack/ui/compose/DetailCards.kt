@@ -37,7 +37,7 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun TireDetails(
     bigCard: Boolean,
-    bike: BikeDTO,
+    bike: Bike,
     modifier: Modifier = Modifier
 ) {
     DetailsCard(title = R.string.tire, bigCard, modifier = modifier) {
@@ -99,7 +99,7 @@ private fun SimpleTextPair(
 @Composable
 fun ForkDetails(
     bigCard: Boolean,
-    bike: BikeDTO
+    bike: Bike
 ) {
     SuspensionDetails(
         bigCard = bigCard,
@@ -112,7 +112,7 @@ fun ForkDetails(
 @Composable
 fun ShockDetails(
     bigCard: Boolean,
-    bike: BikeDTO
+    bike: Bike
 ) {
     SuspensionDetails(
         bigCard = bigCard,
@@ -257,7 +257,7 @@ private fun DetailsCard(
 @Composable
 private fun PreviewTireData() {
     AppTheme {
-        TireDetails(bigCard = false, BikeDTO.empty())
+        TireDetails(bigCard = false, Bike.empty())
     }
 }
 
@@ -265,14 +265,14 @@ private fun PreviewTireData() {
 @Composable
 private fun PreviewTireDataBig() {
     AppTheme {
-        TireDetails(bigCard = true, BikeDTO.empty())
+        TireDetails(bigCard = true, Bike.empty())
     }
 }
 
 private val testBike =
-    BikeDTO(
+    Bike(
         name = "1",
-        type = Bike.Type.UNKNOWN,
+        type = BikeDTO.Type.UNKNOWN,
         frontSuspension = Suspension(Pressure(60.0), Damping(1), Damping(1), 3, 140),
         frontTire =
         Tire(
@@ -281,12 +281,13 @@ private val testBike =
             0.0
         ),
         rearTire = Tire(Pressure(20.0), 0.0, 0.0),
-        isEBike = false
+        isEBike = false,
+        id = 0
     )
 private val testBikeMax =
-    BikeDTO(
+    Bike(
         name = "1",
-        type = Bike.Type.UNKNOWN,
+        type = BikeDTO.Type.UNKNOWN,
         frontSuspension = Suspension(Pressure(60.0), Damping(1, 2), Damping(3, 4), 5, 420),
         frontTire =
         Tire(
@@ -295,7 +296,8 @@ private val testBikeMax =
             0.0
         ),
         rearTire = Tire(Pressure(20.0), 0.0, 0.0),
-        isEBike = false
+        isEBike = false,
+        id = 0
     )
 
 @Preview

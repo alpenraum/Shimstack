@@ -14,11 +14,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.alpenraum.shimstack.common.stores.ShimstackDataStore
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.fadeIn
 import com.alpenraum.shimstack.ui.compose.fadeOut
 import com.alpenraum.shimstack.ui.features.NavGraphs
+import com.alpenraum.shimstack.ui.features.destinations.OnboardingFeatureDestination
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -26,6 +28,8 @@ import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaul
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<MainViewModel>() {
@@ -35,6 +39,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 //    private val triggerBiometricsPromptUseCase = TriggerBiometricsPromptUseCase()
 
     override fun onViewModelBound() {
+        viewModel.onBound(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +68,18 @@ class MainActivity : BaseActivity<MainViewModel>() {
 //        }
     }
 
+    private val navGraph by lazy {
+        runBlocking {
+            if (ShimstackDataStore.isOnboardingCompleted?.firstOrNull() == true) {
+                NavGraphs.root
+            } else {
+                NavGraphs.root.copy(
+                    startRoute = OnboardingFeatureDestination
+                )
+            }
+        }
+    }
+
     @OptIn(
         ExperimentalMaterial3WindowSizeClassApi::class,
         ExperimentalMaterialNavigationApi::class,
@@ -87,7 +104,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                                 ),
                                 defaultAnimationsForNestedNavGraph =
                                 mapOf(
-                                    NavGraphs.root to
+                                    navGraph to
                                         NestedNavGraphDefaultAnimations(
                                             enterTransition = { slideInHorizontally() },
                                             exitTransition = { slideOutHorizontally() },
@@ -97,7 +114,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                                 )
                             )
                         DestinationsNavHost(
-                            navGraph = NavGraphs.root,
+                            navGraph = navGraph,
                             engine = navHostEngine
                         )
                     }

@@ -15,16 +15,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
@@ -33,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +47,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -54,7 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.BikeDTO
+import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.cardsetup.CardSetup
 import com.alpenraum.shimstack.data.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
@@ -65,6 +72,7 @@ import com.alpenraum.shimstack.ui.compose.ShockDetails
 import com.alpenraum.shimstack.ui.compose.TireDetails
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
+import com.alpenraum.shimstack.ui.features.destinations.BikeDetailsScreenDestination
 import com.alpenraum.shimstack.ui.features.destinations.NewBikeFeatureDestination
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -97,8 +105,14 @@ fun HomeScreen(
     HomeScreenContent(
         state = state,
         event = event,
-        intents = intents
-    ) { navController.navigate(NewBikeFeatureDestination.invoke("0"), onlyIfResumed = true) }
+        intents = intents,
+        navigateToBikeDetails = {
+            navController.navigate(
+                BikeDetailsScreenDestination(it),
+                onlyIfResumed = true
+            )
+        }
+    ) { navController.navigate(NewBikeFeatureDestination, onlyIfResumed = true) }
 }
 
 @Composable
@@ -107,6 +121,7 @@ private fun HomeScreenContent(
     state: HomeScreenContract.State,
     event: SharedFlow<HomeScreenContract.Event>,
     intents: (HomeScreenContract.Intent) -> Unit,
+    navigateToBikeDetails: (bike: Bike) -> Unit,
     onNewBikeClicked: () -> Unit
 ) {
     val isLoading = remember { mutableStateOf(false) }
@@ -120,29 +135,21 @@ private fun HomeScreenContent(
         event.collectLatest {
             when (it) {
                 HomeScreenContract.Event.Error -> scope.launch { snackState.showSnackbar("ERROR") }
-                HomeScreenContract.Event.FinishedLoading ->
-                    scope.launch {
-                        isLoading.value = false
-                    }
-
-                HomeScreenContract.Event.Loading ->
-                    scope.launch {
-                        isLoading.value = true
-                    }
-
-                HomeScreenContract.Event.NewPageSelected ->
-                    scope.launch {
-                        lastPagerPosition.intValue = pagerState.currentPage
-                    }
+                HomeScreenContract.Event.FinishedLoading -> isLoading.value = false
+                HomeScreenContract.Event.Loading -> isLoading.value = true
+                HomeScreenContract.Event.NewPageSelected -> {}
 
                 HomeScreenContract.Event.NavigateToNewBikeFeature -> {
                     onNewBikeClicked()
+                }
+
+                is HomeScreenContract.Event.ShowBikeDetails -> {
+                    navigateToBikeDetails(it.bike)
                 }
             }
         }
     }
     val windowSizeClass = LocalWindowSizeClass.current
-
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Top,
@@ -163,19 +170,24 @@ private fun HomeScreenContent(
             modifier = Modifier.fillMaxHeight(),
             label = "BikeDetails",
             transitionSpec = {
+
                 if (lastPagerPosition.intValue > pagerState.currentPage) {
                     // scroll to left
                     (slideInHorizontally { x -> -x } + fadeIn()).togetherWith(
                         slideOutHorizontally { x -> x } + fadeOut()
                     )
                 } else {
-                    (slideInHorizontally { height -> height } + fadeIn()).togetherWith(
-                        slideOutHorizontally { height -> -height } + fadeOut()
+                    (slideInHorizontally { x -> x } + fadeIn()).togetherWith(
+                        slideOutHorizontally { x -> -x } + fadeOut()
                     )
                 }
             }
         ) { bike ->
+            SideEffect {
+                lastPagerPosition.intValue = pagerState.currentPage
+            }
             bike?.let { bike1 ->
+                Spacer(modifier = Modifier.height(16.dp))
                 BikeDetails(
                     bike = bike1,
                     cardSetup = state.detailCardsSetup,
@@ -200,9 +212,12 @@ private fun EmptyDetailsEyeCandy() {
             painter = painterResource(id = R.drawable.il_empty_mountain),
             contentDescription = null,
             modifier =
-            Modifier.semantics {
-                invisibleToUser()
-            }.fillMaxSize(0.6f).padding(bottom = 8.dp)
+            Modifier
+                .semantics {
+                    invisibleToUser()
+                }
+                .fillMaxSize(0.6f)
+                .padding(bottom = 8.dp)
         )
         Text(
             text = stringResource(id = R.string.copy_add_new_bike),
@@ -216,26 +231,45 @@ private fun EmptyDetailsEyeCandy() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun BikeDetails(
-    bike: BikeDTO,
+    bike: Bike,
     cardSetup: ImmutableList<CardSetup>,
     intents: (HomeScreenContract.Intent) -> Unit,
     state: LazyGridState
 ) {
-    FlowRow(
-        modifier =
-        Modifier
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(CARD_MARGIN, alignment = Alignment.Start)
+            .verticalScroll(
+                rememberScrollState()
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        cardSetup.forEach {
-            when (it.type) {
-                CardType.TIRES -> TireDetails(bigCard = it.bigCard, bike = bike)
-                CardType.FORK -> ForkDetails(bigCard = it.bigCard, bike = bike)
-                CardType.SHOCK -> ShockDetails(bigCard = it.bigCard, bike = bike)
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(CARD_MARGIN, alignment = Alignment.Start)
+        ) {
+            cardSetup.forEach {
+                when (it.type) {
+                    CardType.TIRES -> TireDetails(bigCard = it.bigCard, bike = bike)
+                    CardType.FORK -> ForkDetails(bigCard = it.bigCard, bike = bike)
+                    CardType.SHOCK -> ShockDetails(bigCard = it.bigCard, bike = bike)
+                }
             }
         }
+        Divider(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .clip(RoundedCornerShape(100)),
+            thickness = 2.dp
+        )
+
+        Button(
+            onClick = {} // TODO
+        ) {
+            Text("Edit detail cards")
+        }
     }
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -291,6 +325,13 @@ private fun BikePager(
                             this.scaleX = scale
                             this.scaleY = scale
                         }
+                    }
+                    .clickable {
+                        bike?.let {
+                            intents(
+                                HomeScreenContract.Intent.OnBikeDetailsClicked(it)
+                            )
+                        }
                     },
                 showPlaceholder = showPlaceholder,
                 content = content
@@ -315,7 +356,7 @@ private fun calculatePagerItemPadding(itemWidth: Dp) =
     ).dp
 
 @Composable
-private fun BikeCard(
+fun BikeCard(
     modifier: Modifier = Modifier,
     showPlaceholder: Boolean,
     content: @Composable (modifier: Modifier) -> Unit
@@ -338,8 +379,8 @@ private fun BikeCard(
 }
 
 @Composable
-private fun BikeCardContent(
-    bike: BikeDTO?,
+fun BikeCardContent(
+    bike: Bike?,
     modifier: Modifier = Modifier
 ) {
     Text(
@@ -383,14 +424,31 @@ private fun AddNewBikeCardContent(
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showSystemUi = true)
 @Composable
 private fun Preview() {
     AppTheme {
         HomeScreenContent(
             state = HomeScreenContract.State(persistentListOf(), persistentListOf()),
             event = MutableSharedFlow(),
-            intents = {}
+            intents = {},
+            {}
+        ) {}
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun PreviewData() {
+    AppTheme {
+        HomeScreenContent(
+            state = HomeScreenContract.State(
+                persistentListOf(Bike.empty()),
+                CardSetup.defaultConfig()
+            ),
+            event = MutableSharedFlow(),
+            intents = {},
+            {}
         ) {}
     }
 }

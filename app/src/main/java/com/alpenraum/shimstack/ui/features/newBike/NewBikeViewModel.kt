@@ -15,8 +15,7 @@ import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
-import com.alpenraum.shimstack.ui.features.navArgs
-import com.alpenraum.shimstack.usecases.ValidateBikeDTOUseCase
+import com.alpenraum.shimstack.usecases.ValidateBikeUseCase
 import com.alpenraum.shimstack.usecases.ValidateSetupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -37,6 +36,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
+// FIXME: Really unhappy with the state management in this, needs to be done differently
 @HiltViewModel
 class NewBikeViewModel
 @Inject
@@ -44,10 +44,9 @@ constructor(
     savedStateHandle: SavedStateHandle,
     private val bikeTemplateRepository: LocalBikeTemplateRepository,
     private val bikeRepository: LocalBikeRepository,
-    private val validateBikeDTOUseCase: ValidateBikeDTOUseCase,
+    private val validateBikeUseCase: ValidateBikeUseCase,
     private val validateSetupUseCase: ValidateSetupUseCase
 ) : BaseViewModel(), NewBikeContract {
-    private val navArgs: NewBikeNavArgs = savedStateHandle.navArgs() // todo: remove
 
     private val _state = MutableStateFlow(NewBikeContract.State())
     override val state: StateFlow<NewBikeContract.State>
@@ -272,7 +271,7 @@ constructor(
         detailsInputData: DetailsInputData? = null,
         setupInputData: SetupInputData? = null,
         isEbike: Boolean? = null,
-        bikeType: Bike.Type? = null,
+        bikeType: BikeDTO.Type? = null,
         hasHSCFork: Boolean? = null,
         hasHSRFork: Boolean? = null,
         hasHSCShock: Boolean? = null,
@@ -283,9 +282,9 @@ constructor(
             val setupInput = setupInputData?.let { createNewInputSetup(it) }
             val detailsValidationResult =
                 detailsInput?.let {
-                    validateBikeDTOUseCase(
+                    validateBikeUseCase(
                         it,
-                        bikeType ?: state.value.bikeType
+                        bikeType ?: state.value.bikeDTOType
                     )
                 }
             val setupValidationResult = setupInput?.let { validateSetupUseCase(it) }
@@ -294,7 +293,7 @@ constructor(
                     detailsInput = detailsInput ?: state.value.detailsInput,
                     setupInput = setupInput ?: state.value.setupInput,
                     isEbike = isEbike ?: state.value.isEbike,
-                    bikeType = bikeType ?: state.value.bikeType,
+                    bikeDTOType = bikeType ?: state.value.bikeDTOType,
                     hasHSCFork = hasHSCFork ?: state.value.hasHSCFork,
                     hasHSRFork = hasHSRFork ?: state.value.hasHSRFork,
                     hasHSCShock = hasHSCShock ?: state.value.hasHSCShock,
@@ -303,7 +302,7 @@ constructor(
                     if (detailsValidationResult?.isSuccess()
                             ?.not() == true
                     ) {
-                        detailsValidationResult as ValidateBikeDTOUseCase.DetailsFailure
+                        detailsValidationResult as ValidateBikeUseCase.DetailsFailure
                     } else {
                         null
                     },
@@ -336,7 +335,9 @@ constructor(
     private fun goToEnterDetailsScreen(template: BikeTemplate?) =
         iOScope.launch {
             validateAndUpdateInput(
-                mapFromBikeDTO(template?.toBikeDTO() ?: BikeDTO.empty())
+                detailsInputData = mapFromBikeDTO(template?.toBike() ?: Bike.empty()),
+                isEbike = template?.isEBike,
+                bikeType = template?.type
             )
             _event.emit(NewBikeContract.Event.NavigateToNextStep)
         }
@@ -384,15 +385,15 @@ constructor(
 
         )
 
-    private fun mapFromBikeDTO(bikeDTO: BikeDTO) =
+    private fun mapFromBikeDTO(bike: Bike) =
         DetailsInputData(
-            bikeDTO.name,
-            bikeDTO.frontSuspension?.travel?.toString(),
-            bikeDTO.frontSuspension?.travel?.toString(),
-            bikeDTO.frontTire.widthInMM.toString(),
-            bikeDTO.rearTire.widthInMM.toString(),
-            bikeDTO.frontTire.internalRimWidthInMM?.toString(),
-            bikeDTO.rearTire.internalRimWidthInMM?.toString()
+            bike.name,
+            bike.frontSuspension?.travel?.toString(),
+            bike.frontSuspension?.travel?.toString(),
+            bike.frontTire.widthInMM.toString(),
+            bike.rearTire.widthInMM.toString(),
+            bike.frontTire.internalRimWidthInMM?.toString(),
+            bike.rearTire.internalRimWidthInMM?.toString()
         )
 }
 
@@ -401,11 +402,11 @@ interface NewBikeContract :
     @Immutable
     data class State(
         val bikeTemplates: ImmutableList<BikeTemplate> = persistentListOf(),
-        val detailsValidationErrors: ValidateBikeDTOUseCase.DetailsFailure? = null,
+        val detailsValidationErrors: ValidateBikeUseCase.DetailsFailure? = null,
         val setupValidationErrors: ValidateSetupUseCase.SetupFailure? = null,
         val showSetupOutlierHint: Boolean = false,
         val isEbike: Boolean = false,
-        val bikeType: Bike.Type = Bike.Type.UNKNOWN,
+        val bikeDTOType: BikeDTO.Type = BikeDTO.Type.UNKNOWN,
         val detailsInput: DetailsInputData = DetailsInputData(),
         val setupInput: SetupInputData = SetupInputData(),
         val hasHSCFork: Boolean = false,
@@ -416,7 +417,7 @@ interface NewBikeContract :
 
         fun hasFrontSuspension() = detailsInput.frontTravel?.isNotEmpty() == true
         fun hasRearSuspension() = detailsInput.rearTravel?.isNotEmpty() == true
-        fun toBike(): Bike {
+        fun toBike(): BikeDTO {
             val frontSuspension = if (hasFrontSuspension()) {
                 Suspension(
                     Pressure(setupInput.frontSuspensionPressure?.toDouble() ?: 0.0),
@@ -462,9 +463,9 @@ interface NewBikeContract :
                 detailsInput.rearInternalRimWidth?.toDoubleOrNull()
             )
 
-            return Bike(
+            return BikeDTO(
                 name = detailsInput.name ?: "",
-                type = bikeType,
+                type = bikeDTOType,
                 isEBike = isEbike,
                 frontSuspension = frontSuspension,
                 rearSuspension = rearSuspension,
@@ -495,7 +496,7 @@ interface NewBikeContract :
 
         class BikeNameInput(val name: String) : DataInput()
 
-        class BikeTypeInput(val type: Bike.Type) : DataInput()
+        class BikeTypeInput(val type: BikeDTO.Type) : DataInput()
 
         class EbikeInput(val isEbike: Boolean) : DataInput()
 
@@ -548,10 +549,6 @@ interface NewBikeContract :
         data object OnFlowFinished : Intent()
     }
 }
-
-data class NewBikeNavArgs(
-    val id: String
-)
 
 data class DetailsInputData(
     val name: String? = null,

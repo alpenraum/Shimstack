@@ -35,7 +35,8 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.Bike
+import com.alpenraum.shimstack.data.bike.BikeDTO
+import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.PhonePreview
@@ -46,7 +47,7 @@ import com.alpenraum.shimstack.ui.compose.number
 import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
-import com.alpenraum.shimstack.usecases.ValidateBikeDTOUseCase
+import com.alpenraum.shimstack.usecases.ValidateBikeUseCase
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -94,7 +95,9 @@ fun EnterDetailsScreen(
                     top = 16.dp
                 )
             } else {
-                Modifier.fillMaxWidth().padding(top = 16.dp)
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
             },
             label = stringResource(id = R.string.label_name),
             isError = state.detailsValidationErrors?.name == false,
@@ -122,7 +125,7 @@ fun EnterDetailsScreen(
             ) {
                 TextInput(
                     readOnly = true,
-                    value = stringResource(state.bikeType.labelRes),
+                    value = stringResource(state.bikeDTOType.labelRes),
                     onValueChange = {},
                     label = stringResource(id = R.string.label_type),
                     trailingIcon = {
@@ -137,8 +140,8 @@ fun EnterDetailsScreen(
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                     expanded = false
                 }) {
-                    Bike.Type.values().forEach { selectionOption ->
-                        if (selectionOption != Bike.Type.UNKNOWN) {
+                    BikeDTO.Type.values().forEach { selectionOption ->
+                        if (selectionOption != BikeDTO.Type.UNKNOWN) {
                             DropdownMenuItem(text = {
                                 Text(text = stringResource(selectionOption.labelRes))
                             }, onClick = {
@@ -226,7 +229,7 @@ fun EnterDetailsScreen(
             },
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
-            Text(text = stringResource(id = R.string.label_next_step))
+            ButtonText(textRes = R.string.label_next_step)
         }
     }
 }
@@ -252,7 +255,7 @@ private fun ColumnScope.SuspensionInput(
         modifier = Modifier.padding(top = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = headline, style = MaterialTheme.typography.headlineSmall)
+        Text(text = headline, style = MaterialTheme.typography.titleLarge)
         Switch(
             checked = showSuspensionInput,
             onCheckedChange = {
@@ -309,7 +312,7 @@ private fun ColumnScope.TireInput(
 ) {
     Text(
         text = headline,
-        style = MaterialTheme.typography.headlineSmall,
+        style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(top = 16.dp)
     )
     Row(modifier = Modifier.padding(top = 8.dp)) {
@@ -319,7 +322,9 @@ private fun ColumnScope.TireInput(
                 onTireWidthChanged(value)
             },
             suffix = stringResource(id = R.string.mm),
-            modifier = Modifier.weight(1.0f).padding(end = 16.dp),
+            modifier = Modifier
+                .weight(1.0f)
+                .padding(end = 16.dp),
             label = stringResource(id = R.string.label_tire_width),
             isError = isError,
             keyboardOptions = KeyboardOptions.number(ImeAction.Next)
@@ -379,7 +384,7 @@ private fun Error() {
             state =
             NewBikeContract.State(
                 detailsValidationErrors =
-                ValidateBikeDTOUseCase.DetailsFailure(
+                ValidateBikeUseCase.DetailsFailure(
                     name = false,
                     type = false,
                     frontTire = false,

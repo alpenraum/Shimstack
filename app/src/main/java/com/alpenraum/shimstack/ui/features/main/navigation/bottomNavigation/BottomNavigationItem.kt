@@ -15,13 +15,10 @@ sealed class BottomNavigationItem(
         R.drawable.home_24px
     )
 
-    object Test :
-        BottomNavigationItem("test", R.string.app_name, R.drawable.home_24px)
-
     object Settings :
         BottomNavigationItem("settings", R.string.settings, R.drawable.home_24px)
 
     companion object {
-        fun asList() = listOf(Home, Test, Settings)
+        fun asList() = listOf(Home, Settings)
     }
 }

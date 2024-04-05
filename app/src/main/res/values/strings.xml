@@ -6,6 +6,11 @@
     <string name="label_yes">Yes</string>
     <string name="label_no">No</string>
     <string name="label_done">Done</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_delete">Delete</string>
+    <string name="label_save">Save</string>
+
+    <string name="err_technical">Something went wrong…uncool! (Blame the dev)</string>
 
 
     <string name="tire">Tire</string>
@@ -27,6 +32,7 @@
     <string name="bar" translatable="false">Bar</string>
     <string name="psi" translatable="false">PSI</string>
     <string name="mm" translatable="false">mm</string>
+    <string name="inch" translatable="false">"</string>
 
 
     <string name="copy_no_fork">This fork has no adjustable settings.</string>

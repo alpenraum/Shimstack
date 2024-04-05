@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -29,7 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -153,7 +156,8 @@ fun TextInput(
     suffix: String? = null,
     readOnly: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+    textStyle: TextStyle = LocalTextStyle.current
 ) = OutlinedTextField(
     shape = shape,
     singleLine = singleLine,
@@ -170,5 +174,19 @@ fun TextInput(
     keyboardActions = keyboardActions,
     readOnly = readOnly,
     trailingIcon = trailingIcon,
-    colors = colors
+    colors = colors,
+    textStyle = textStyle
+)
+
+@Composable
+fun ButtonText(
+    @StringRes textRes: Int,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    weight: FontWeight = FontWeight.SemiBold
+) = Text(
+    text = stringResource(id = textRes),
+    modifier = modifier,
+    style = style,
+    fontWeight = weight
 )
