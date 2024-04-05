@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack.usecases
 
+import android.util.Log
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeRepository
 import javax.inject.Inject
@@ -22,6 +23,7 @@ class UpdateBikeUseCase @Inject constructor(private val bikeRepository: BikeRepo
 
             true
         } catch (e: Exception) {
+            Log.d("UpdateBikeUseCase", "invoke: $e")
             false
         }
     }

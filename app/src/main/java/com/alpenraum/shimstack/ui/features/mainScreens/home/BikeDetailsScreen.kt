@@ -10,7 +10,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -45,12 +45,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.BikeDTO
+import com.alpenraum.shimstack.data.bike.Damping
+import com.alpenraum.shimstack.data.bike.Pressure
 import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.ui.base.use
@@ -59,7 +62,9 @@ import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.CrossfadeTransition
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.TextInput
+import com.alpenraum.shimstack.ui.compose.number
 import com.alpenraum.shimstack.ui.theme.AppTheme
+import com.alpenraum.shimstack.usecases.ValidateBikeUseCase
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
@@ -125,10 +130,16 @@ private fun Content(
         ) {
             ExtendedFloatingActionButton(
                 onClick = {
-                    /*TODO*/
+                    if (state.validationFailure == null) {
+                        intents(BikeDetailsContract.Intent.OnSaveClicked)
+                    }
                 },
 
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = if (state.validationFailure == null) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                },
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_save),
@@ -172,8 +183,11 @@ fun BikeInfo(
         ) {
             FrontTireBlock(state = state, intents = intents, context = context)
             RearTireBlock(state = state, intents = intents, context = context)
-            FrontSuspensionBlock(state = state, context = context)
-            RearSuspensionBlock(state = state, context)
+            FrontSuspensionBlock(state = state, context = context, intents)
+            RearSuspensionBlock(state = state, context, intents)
+            if (state.editMode) {
+                Spacer(Modifier.height(64.dp))
+            }
         }
     }
 }
@@ -337,7 +351,8 @@ private fun TireBlock(
                                 id = R.string.label_tire_pressure
                             ),
                             suffix = stringResource(id = R.string.bar),
-                            modifier = Modifier.weight(1.0f)
+                            modifier = Modifier.weight(1.0f),
+                            keyboardOptions = KeyboardOptions.number(ImeAction.Next)
                         )
 
                         TextInput(
@@ -357,7 +372,8 @@ private fun TireBlock(
                                 id = R.string.label_tire_width
                             ),
                             suffix = stringResource(id = R.string.mm),
-                            modifier = Modifier.weight(1.0f)
+                            modifier = Modifier.weight(1.0f),
+                            keyboardOptions = KeyboardOptions.number(ImeAction.Next)
                         )
 
                         TextInput(
@@ -379,7 +395,8 @@ private fun TireBlock(
                                 id = R.string.label_internal_rim_width
                             ),
                             suffix = stringResource(id = R.string.mm),
-                            modifier = Modifier.weight(1.0f)
+                            modifier = Modifier.weight(1.0f),
+                            keyboardOptions = KeyboardOptions.number(ImeAction.Done)
                         )
                     }
                 }
@@ -422,7 +439,11 @@ private fun TireBlock(
 }
 
 @Composable
-private fun FrontSuspensionBlock(state: BikeDetailsContract.State, context: Context) {
+private fun FrontSuspensionBlock(
+    state: BikeDetailsContract.State,
+    context: Context,
+    intents: (BikeDetailsContract.Intent) -> Unit
+) {
     state.bike.frontSuspension?.let { suspension ->
         Card(
             Modifier
@@ -430,18 +451,28 @@ private fun FrontSuspensionBlock(state: BikeDetailsContract.State, context: Cont
                 .padding(top = 16.dp)
         ) {
             Column(Modifier.padding(8.dp)) {
+
                 SuspensionBlock(
                     label = R.string.label_front_suspension,
                     context = context,
-                    suspension = suspension
+                    suspension = suspension,
+                    editMode = state.editMode,
+                    intents = intents,
+                    isFront = true
                 )
+
             }
         }
     }
 }
 
+
 @Composable
-private fun RearSuspensionBlock(state: BikeDetailsContract.State, context: Context) {
+private fun RearSuspensionBlock(
+    state: BikeDetailsContract.State,
+    context: Context,
+    intents: (BikeDetailsContract.Intent) -> Unit
+) {
     state.bike.rearSuspension?.let { suspension ->
         Card(
             Modifier
@@ -452,7 +483,10 @@ private fun RearSuspensionBlock(state: BikeDetailsContract.State, context: Conte
                 SuspensionBlock(
                     label = R.string.label_rear_suspension,
                     context = context,
-                    suspension = suspension
+                    suspension = suspension,
+                    editMode = state.editMode,
+                    intents = intents,
+                    isFront = false
                 )
             }
         }
@@ -472,46 +506,128 @@ private fun TextPair(
 }
 
 @Composable
-private fun ColumnScope.SuspensionBlock(
+private fun SuspensionBlock(
     @StringRes label: Int,
     context: Context,
     suspension: Suspension,
-    modifier: Modifier = Modifier
+    editMode: Boolean,
+    isFront: Boolean,
+    modifier: Modifier = Modifier,
+    intents: (BikeDetailsContract.Intent) -> Unit
 ) {
-    InfoText(label)
-    Spacer(modifier = Modifier.height(4.dp))
-    Row(modifier = Modifier.weight(1.0f)) {
-        TextPair(
-            label = R.string.label_travel,
-            text = suspension.getFormattedTravel(context),
-            modifier = Modifier.weight(1.0f)
-        )
-        TextPair(
-            label = R.string.pressure,
-            text = suspension.getFormattedPressure(context),
-            modifier = Modifier.weight(1.0f)
-        )
-        TextPair(
-            label = R.string.tokens,
-            text = suspension.tokens.toString(),
-            modifier = Modifier.weight(1.0f)
-        )
-    }
-    Spacer(modifier = Modifier.height(8.dp))
-    Row(modifier = Modifier.weight(1.0f), horizontalArrangement = Arrangement.Center) {
-        TextPair(
-            label = R.string.rebound,
-            text = suspension.getFormattedRebound(context),
-            modifier = Modifier.weight(1.0f)
-        )
-        TextPair(
-            label = R.string.comp,
-            text = suspension.getFormattedCompression(context),
-            modifier = Modifier.weight(1.0f)
-        )
-        Spacer(modifier.weight(1.0f))
+    AnimatedContent(targetState = editMode, modifier = modifier) {
+
+        Column {
+
+
+            InfoText(label)
+            Spacer(modifier = Modifier.height(4.dp))
+            if (it) {
+                Row(
+                    modifier = Modifier.weight(1.0f),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TextInput(
+                        value = suspension.travel.toString(),
+                        onValueChange = {
+                            intents(
+                                if (isFront) {
+                                    BikeDetailsContract.Intent.Input.FrontSuspensionTravel(
+                                        it
+                                    )
+                                } else {
+                                    BikeDetailsContract.Intent.Input.RearSuspensionTravel(it)
+                                }
+                            )
+                        },
+                        label = stringResource(
+                            id = R.string.label_travel
+                        ),
+                        suffix = stringResource(id = R.string.mm),
+                        modifier = Modifier.weight(1.0f),
+                        keyboardOptions = KeyboardOptions.number(ImeAction.Next)
+                    )
+
+                    TextInput(
+                        value = suspension.pressure.pressureInBar.toPlainString(),
+                        onValueChange = {
+                            intents(
+                                if (isFront) {
+                                    BikeDetailsContract.Intent.Input.FrontSuspensionPressure(
+                                        it
+                                    )
+                                } else {
+                                    BikeDetailsContract.Intent.Input.RearSuspensionPressure(it)
+                                }
+                            )
+                        },
+                        label = stringResource(
+                            id = R.string.pressure
+                        ),
+                        suffix = stringResource(id = R.string.bar),
+                        modifier = Modifier.weight(1.0f),
+                        keyboardOptions = KeyboardOptions.number(ImeAction.Next)
+                    )
+
+                    TextInput(
+                        value = suspension.tokens.toString(),
+                        onValueChange = {
+                            intents(
+                                if (isFront) {
+                                    BikeDetailsContract.Intent.Input.FrontSuspensionTokens(
+                                        it
+                                    )
+                                } else {
+                                    BikeDetailsContract.Intent.Input.RearSuspensionTokens(
+                                        it
+                                    )
+                                }
+                            )
+                        },
+                        label = stringResource(
+                            id = R.string.tokens
+                        ),
+                        modifier = Modifier.weight(1.0f),
+                        keyboardOptions = KeyboardOptions.number(ImeAction.Done)
+                    )
+                }
+            } else {
+                Row(modifier = Modifier.weight(1.0f)) {
+                    TextPair(
+                        label = R.string.label_travel,
+                        text = suspension.getFormattedTravel(context),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                    TextPair(
+                        label = R.string.pressure,
+                        text = suspension.getFormattedPressure(context),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                    TextPair(
+                        label = R.string.tokens,
+                        text = suspension.tokens.toString(),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(modifier = Modifier.weight(1.0f), horizontalArrangement = Arrangement.Center) {
+                    TextPair(
+                        label = R.string.rebound,
+                        text = suspension.getFormattedRebound(context),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                    TextPair(
+                        label = R.string.comp,
+                        text = suspension.getFormattedCompression(context),
+                        modifier = Modifier.weight(1.0f)
+                    )
+                    Spacer(Modifier.weight(1.0f))
+                }
+            }
+        }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -523,7 +639,13 @@ private fun Preview() {
                     .copy(
                         name = "Specialized Stumpjumper",
                         type = BikeDTO.Type.ALL_MTN,
-                        frontSuspension = Suspension(150),
+                        frontSuspension = Suspension(
+                            pressure = Pressure(10.0),
+                            compression = Damping(0, 1),
+                            rebound = Damping(2, 3),
+                            travel = 150,
+                            tokens = 5
+                        ),
                         rearSuspension = Suspension(150)
                     )
             ),
@@ -542,9 +664,23 @@ private fun EditPreview() {
                     .copy(
                         name = "Specialized Stumpjumper",
                         type = BikeDTO.Type.ALL_MTN,
-                        frontSuspension = Suspension(150),
+                        frontSuspension = Suspension(
+                            pressure = Pressure(10.0),
+                            compression = Damping(0, 1),
+                            rebound = Damping(2, 3),
+                            travel = 150,
+                            tokens = 5
+                        ),
                         rearSuspension = Suspension(150)
                     ),
+                validationFailure = ValidateBikeUseCase.DetailsFailure(
+                    false,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false
+                ),
                 editMode = true
             ),
             intents = {}

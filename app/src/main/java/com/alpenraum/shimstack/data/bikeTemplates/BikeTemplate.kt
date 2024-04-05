@@ -10,7 +10,9 @@ import com.alpenraum.shimstack.data.bike.Pressure
 import com.alpenraum.shimstack.data.bike.Suspension
 import com.alpenraum.shimstack.data.bike.Tire
 import com.alpenraum.shimstack.data.db.AppDatabase
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 @Entity(tableName = AppDatabase.TABLE_BIKE_TEMPLATE)
 @Immutable
 class BikeTemplate(
@@ -20,10 +22,10 @@ class BikeTemplate(
     val isEBike: Boolean,
     val frontSuspensionTravelInMM: Int,
     val rearSuspensionTravelInMM: Int,
-    val frontTireWidthInMM: Double,
-    val frontRimWidthInMM: Double,
-    val rearTireWidthInMM: Double,
-    val rearRimWidthInMM: Double
+    val frontTireWidthInMM: Double = 0.0,
+    val frontRimWidthInMM: Double = 0.0,
+    val rearTireWidthInMM: Double = 0.0,
+    val rearRimWidthInMM: Double = 0.0
 ) {
     fun toBike() =
         Bike(

@@ -25,7 +25,7 @@ data class BikeDTO(
     @Embedded(prefix = "rear_tire_") val rearTire: Tire,
     val isEBike: Boolean
 ) {
-    fun toDTO() =
+    fun toDomain() =
         Bike(id ?: 0, name, type, frontSuspension, rearSuspension, frontTire, rearTire, isEBike)
 
     companion object {

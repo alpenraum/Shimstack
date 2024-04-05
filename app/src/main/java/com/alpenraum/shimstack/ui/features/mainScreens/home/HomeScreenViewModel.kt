@@ -68,7 +68,7 @@ constructor(private val bikeRepository: LocalBikeRepository) :
         }
     }
 
-    private suspend fun fetchBikes() = bikeRepository.getAllBikes().map { it.toDTO() }
+    private suspend fun fetchBikes() = bikeRepository.getAllBikes().map { it.toDomain() }
 
     private fun onViewPagerSelectionChanged(page: Int) {
         viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }

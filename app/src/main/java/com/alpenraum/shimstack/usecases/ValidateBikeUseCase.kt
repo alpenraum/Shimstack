@@ -5,7 +5,7 @@ import com.alpenraum.shimstack.data.bike.BikeDTO
 import com.alpenraum.shimstack.ui.features.newBike.DetailsInputData
 import javax.inject.Inject
 
-class ValidateBikeDTOUseCase
+class ValidateBikeUseCase
 @Inject
 constructor() {
     operator fun invoke(bike: Bike): Result {

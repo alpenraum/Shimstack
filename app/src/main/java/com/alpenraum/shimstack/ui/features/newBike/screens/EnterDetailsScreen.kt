@@ -47,7 +47,7 @@ import com.alpenraum.shimstack.ui.compose.number
 import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
-import com.alpenraum.shimstack.usecases.ValidateBikeDTOUseCase
+import com.alpenraum.shimstack.usecases.ValidateBikeUseCase
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -95,7 +95,9 @@ fun EnterDetailsScreen(
                     top = 16.dp
                 )
             } else {
-                Modifier.fillMaxWidth().padding(top = 16.dp)
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
             },
             label = stringResource(id = R.string.label_name),
             isError = state.detailsValidationErrors?.name == false,
@@ -320,7 +322,9 @@ private fun ColumnScope.TireInput(
                 onTireWidthChanged(value)
             },
             suffix = stringResource(id = R.string.mm),
-            modifier = Modifier.weight(1.0f).padding(end = 16.dp),
+            modifier = Modifier
+                .weight(1.0f)
+                .padding(end = 16.dp),
             label = stringResource(id = R.string.label_tire_width),
             isError = isError,
             keyboardOptions = KeyboardOptions.number(ImeAction.Next)
@@ -380,7 +384,7 @@ private fun Error() {
             state =
             NewBikeContract.State(
                 detailsValidationErrors =
-                ValidateBikeDTOUseCase.DetailsFailure(
+                ValidateBikeUseCase.DetailsFailure(
                     name = false,
                     type = false,
                     frontTire = false,

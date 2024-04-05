@@ -39,6 +39,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 //    private val triggerBiometricsPromptUseCase = TriggerBiometricsPromptUseCase()
 
     override fun onViewModelBound() {
+        viewModel.onBound(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

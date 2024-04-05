@@ -18,6 +18,6 @@ constructor(private val bikeDAO: BikeDAO) : BikeRepository {
     }
 
     override suspend fun updateBike(bikeDTO: BikeDTO) {
-        TODO("Not yet implemented")
+        return bikeDAO.updateBike(bikeDTO)
     }
 }

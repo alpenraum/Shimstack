@@ -29,9 +29,6 @@ fun BottomNavigationGraph(
         composable(BottomNavigationItem.Home.route) {
             HomeScreen(rootNavigator)
         }
-        composable(BottomNavigationItem.Test.route) {
-            SettingsScreen()
-        }
         composable(BottomNavigationItem.Settings.route) {
             SettingsScreen()
         }

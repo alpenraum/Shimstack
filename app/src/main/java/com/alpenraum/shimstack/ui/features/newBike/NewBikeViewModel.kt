@@ -15,7 +15,7 @@ import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
-import com.alpenraum.shimstack.usecases.ValidateBikeDTOUseCase
+import com.alpenraum.shimstack.usecases.ValidateBikeUseCase
 import com.alpenraum.shimstack.usecases.ValidateSetupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
+// FIXME: Really unhappy with the state management in this, needs to be done differently
 @HiltViewModel
 class NewBikeViewModel
 @Inject
@@ -43,7 +44,7 @@ constructor(
     savedStateHandle: SavedStateHandle,
     private val bikeTemplateRepository: LocalBikeTemplateRepository,
     private val bikeRepository: LocalBikeRepository,
-    private val validateBikeDTOUseCase: ValidateBikeDTOUseCase,
+    private val validateBikeUseCase: ValidateBikeUseCase,
     private val validateSetupUseCase: ValidateSetupUseCase
 ) : BaseViewModel(), NewBikeContract {
 
@@ -106,7 +107,7 @@ constructor(
 
                 is NewBikeContract.Intent.BikeTypeInput ->
                     validateAndUpdateInput(
-                        bikeDTOType = intent.type
+                        bikeType = intent.type
                     )
 
                 is NewBikeContract.Intent.EbikeInput ->
@@ -270,7 +271,7 @@ constructor(
         detailsInputData: DetailsInputData? = null,
         setupInputData: SetupInputData? = null,
         isEbike: Boolean? = null,
-        bikeDTOType: BikeDTO.Type? = null,
+        bikeType: BikeDTO.Type? = null,
         hasHSCFork: Boolean? = null,
         hasHSRFork: Boolean? = null,
         hasHSCShock: Boolean? = null,
@@ -281,9 +282,9 @@ constructor(
             val setupInput = setupInputData?.let { createNewInputSetup(it) }
             val detailsValidationResult =
                 detailsInput?.let {
-                    validateBikeDTOUseCase(
+                    validateBikeUseCase(
                         it,
-                        bikeDTOType ?: state.value.bikeDTOType
+                        bikeType ?: state.value.bikeDTOType
                     )
                 }
             val setupValidationResult = setupInput?.let { validateSetupUseCase(it) }
@@ -292,7 +293,7 @@ constructor(
                     detailsInput = detailsInput ?: state.value.detailsInput,
                     setupInput = setupInput ?: state.value.setupInput,
                     isEbike = isEbike ?: state.value.isEbike,
-                    bikeDTOType = bikeDTOType ?: state.value.bikeDTOType,
+                    bikeDTOType = bikeType ?: state.value.bikeDTOType,
                     hasHSCFork = hasHSCFork ?: state.value.hasHSCFork,
                     hasHSRFork = hasHSRFork ?: state.value.hasHSRFork,
                     hasHSCShock = hasHSCShock ?: state.value.hasHSCShock,
@@ -301,7 +302,7 @@ constructor(
                     if (detailsValidationResult?.isSuccess()
                             ?.not() == true
                     ) {
-                        detailsValidationResult as ValidateBikeDTOUseCase.DetailsFailure
+                        detailsValidationResult as ValidateBikeUseCase.DetailsFailure
                     } else {
                         null
                     },
@@ -334,7 +335,9 @@ constructor(
     private fun goToEnterDetailsScreen(template: BikeTemplate?) =
         iOScope.launch {
             validateAndUpdateInput(
-                mapFromBikeDTO(template?.toBike() ?: Bike.empty())
+                detailsInputData = mapFromBikeDTO(template?.toBike() ?: Bike.empty()),
+                isEbike = template?.isEBike,
+                bikeType = template?.type
             )
             _event.emit(NewBikeContract.Event.NavigateToNextStep)
         }
@@ -399,7 +402,7 @@ interface NewBikeContract :
     @Immutable
     data class State(
         val bikeTemplates: ImmutableList<BikeTemplate> = persistentListOf(),
-        val detailsValidationErrors: ValidateBikeDTOUseCase.DetailsFailure? = null,
+        val detailsValidationErrors: ValidateBikeUseCase.DetailsFailure? = null,
         val setupValidationErrors: ValidateSetupUseCase.SetupFailure? = null,
         val showSetupOutlierHint: Boolean = false,
         val isEbike: Boolean = false,
