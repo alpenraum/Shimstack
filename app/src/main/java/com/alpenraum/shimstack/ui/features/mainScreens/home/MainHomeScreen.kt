@@ -38,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -134,20 +135,9 @@ private fun HomeScreenContent(
         event.collectLatest {
             when (it) {
                 HomeScreenContract.Event.Error -> scope.launch { snackState.showSnackbar("ERROR") }
-                HomeScreenContract.Event.FinishedLoading ->
-                    scope.launch {
-                        isLoading.value = false
-                    }
-
-                HomeScreenContract.Event.Loading ->
-                    scope.launch {
-                        isLoading.value = true
-                    }
-
-                HomeScreenContract.Event.NewPageSelected ->
-                    scope.launch {
-                        lastPagerPosition.intValue = pagerState.currentPage
-                    }
+                HomeScreenContract.Event.FinishedLoading -> isLoading.value = false
+                HomeScreenContract.Event.Loading -> isLoading.value = true
+                HomeScreenContract.Event.NewPageSelected -> {}
 
                 HomeScreenContract.Event.NavigateToNewBikeFeature -> {
                     onNewBikeClicked()
@@ -160,7 +150,6 @@ private fun HomeScreenContent(
         }
     }
     val windowSizeClass = LocalWindowSizeClass.current
-
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Top,
@@ -181,18 +170,22 @@ private fun HomeScreenContent(
             modifier = Modifier.fillMaxHeight(),
             label = "BikeDetails",
             transitionSpec = {
+
                 if (lastPagerPosition.intValue > pagerState.currentPage) {
                     // scroll to left
                     (slideInHorizontally { x -> -x } + fadeIn()).togetherWith(
                         slideOutHorizontally { x -> x } + fadeOut()
                     )
                 } else {
-                    (slideInHorizontally { height -> height } + fadeIn()).togetherWith(
-                        slideOutHorizontally { height -> -height } + fadeOut()
+                    (slideInHorizontally { x -> x } + fadeIn()).togetherWith(
+                        slideOutHorizontally { x -> -x } + fadeOut()
                     )
                 }
             }
         ) { bike ->
+            SideEffect {
+                lastPagerPosition.intValue = pagerState.currentPage
+            }
             bike?.let { bike1 ->
                 Spacer(modifier = Modifier.height(16.dp))
                 BikeDetails(
@@ -332,7 +325,8 @@ private fun BikePager(
                             this.scaleX = scale
                             this.scaleY = scale
                         }
-                    }.clickable {
+                    }
+                    .clickable {
                         bike?.let {
                             intents(
                                 HomeScreenContract.Intent.OnBikeDetailsClicked(it)
