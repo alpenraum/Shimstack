@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -83,7 +83,10 @@ fun EntryScreen(
                 userInput = it
                 intent(NewBikeContract.Intent.Filter(it))
             },
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
             label = stringResource(id = R.string.label_new_bike_search)
         )
         AnimatedContent(
@@ -100,7 +103,9 @@ fun EntryScreen(
             if (it) {
                 Card(
                     modifier =
-                        Modifier.fillMaxWidth().weight(1.0f, fill = false)
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1.0f, fill = false)
                             .padding(vertical = 16.dp)
                 ) {
                     LazyColumn(
@@ -108,7 +113,7 @@ fun EntryScreen(
                     ) {
                         itemsIndexed(state.bikeTemplates) { index, item ->
                             ListItem(bike = item, intent)
-                            if (index < state.bikeTemplates.lastIndex) Divider()
+                            if (index < state.bikeTemplates.lastIndex) HorizontalDivider()
                         }
                     }
                 }
@@ -130,10 +135,13 @@ private fun ListItem(
 ) {
     Row(
         modifier =
-            Modifier.clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
+            Modifier
+                .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
                 .padding(
                     vertical = 8.dp
-                ).padding(horizontal = 16.dp).semantics(true) {},
+                )
+                .padding(horizontal = 16.dp)
+                .semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

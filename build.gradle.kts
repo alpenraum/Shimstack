@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.48.1")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.0")
+        classpath(libs.hilt.android.gradle.plugin)
+        classpath(libs.ktlint.gradle)
     }
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.

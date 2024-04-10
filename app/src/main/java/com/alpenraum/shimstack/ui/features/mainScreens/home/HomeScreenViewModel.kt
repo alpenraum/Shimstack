@@ -43,7 +43,7 @@ class HomeScreenViewModel
             when (intent) {
                 HomeScreenContract.Intent.OnRefresh -> {}
                 is HomeScreenContract.Intent.OnViewPagerSelectionChanged -> {
-                    onViewPagerSelectionChanged(intent.page)
+                    onViewPagerSelectionChanged()
                 }
 
                 HomeScreenContract.Intent.OnAddNewBike -> {
@@ -71,7 +71,7 @@ class HomeScreenViewModel
 
         private suspend fun fetchBikes() = bikeRepository.getAllBikes().map { Bike.fromDto(it) }
 
-        private fun onViewPagerSelectionChanged(page: Int) {
+        private fun onViewPagerSelectionChanged() {
             viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }
         }
     }
@@ -103,7 +103,7 @@ interface HomeScreenContract :
     sealed class Intent {
         data object OnRefresh : Intent()
 
-        class OnViewPagerSelectionChanged(val page: Int) : Intent()
+        data object OnViewPagerSelectionChanged : Intent()
 
         data object OnAddNewBike : Intent()
 

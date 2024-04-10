@@ -60,79 +60,48 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    // For loading and tinting drawables on older versions of the platform
-    implementation("androidx.appcompat:appcompat-resources:1.6.1")
-
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-
-    implementation(platform("androidx.compose:compose-bom:2024.03.00"))
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-util")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
-    implementation("com.google.android.material:material:1.11.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
-
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
-    implementation("com.google.dagger:hilt-android:2.48.1")
-    ksp("com.google.dagger:hilt-compiler:2.48.1")
-
-    // navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    implementation("io.github.raamcosta.compose-destinations:core:1.10.2")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.10.2")
-    implementation("io.github.raamcosta.compose-destinations:animations-core:1.9.55")
-
-    implementation("com.google.accompanist:accompanist-placeholder-material:0.24.13-rc")
-    implementation("com.google.accompanist:accompanist-navigation-material:0.33.2-alpha")
-
-    // room
-    val roomVersion = "2.6.1"
-
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-
-    ksp("androidx.room:room-compiler:$roomVersion")
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$roomVersion")
-
-    // security
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
-    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
-
-    // Moshi
-    implementation("com.squareup.moshi:moshi:1.15.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
-
-    implementation("com.google.accompanist:accompanist-pager:0.29.1-alpha")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.22.0-rc")
-
-    ktlintRuleset("io.nlopez.compose.rules:ktlint:0.3.8")
-
-    // animation
-    implementation("com.airbnb.android:lottie-compose:6.3.0")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.appcompat.resources)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.org.jetbrains.kotlinx.coroutines.android)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material3.window.size)
+    implementation(libs.com.google.android.material)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    implementation(libs.org.jetbrains.kotlinx.collections.immutable)
+    implementation(libs.com.squareup.retrofit2.retrofit)
+    implementation(libs.com.squareup.retrofit2.converter.gson)
+    implementation(libs.com.squareup.okhttp3.logging.interceptor)
+    implementation(libs.com.google.dagger.hilt.android)
+    ksp(libs.com.google.dagger.hilt.compiler)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.io.github.raamcosta.compose.destinations.core)
+    ksp(libs.io.github.raamcosta.compose.destinations.ksp)
+    implementation(libs.io.github.raamcosta.compose.destinations.animations.core)
+    implementation(libs.com.google.accompanist.placeholder.material)
+    implementation(libs.com.google.accompanist.navigation.material)
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.security.crypto.ktx)
+    implementation(libs.androidx.biometric.ktx)
+    implementation(libs.com.squareup.moshi)
+    implementation(libs.com.squareup.moshi.kotlin)
+    ksp(libs.com.squareup.moshi.kotlin.codegen)
+    implementation(libs.com.google.accompanist.pager.indicators)
+    ktlintRuleset(libs.io.nlopez.compose.rules.ktlint)
+    implementation(libs.com.airbnb.android.lottie.compose)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.ui.tooling.preview.android)
 }
 kapt {
     correctErrorTypes = true
