@@ -85,11 +85,12 @@ fun BikeDetailsScreen(
         event.collectLatest {
             when (it) {
                 BikeDetailsContract.Event.NavigateBack -> navigator?.popBackStack()
-                is BikeDetailsContract.Event.ShowSnackbar -> Toast.makeText(
-                    context,
-                    it.message,
-                    Toast.LENGTH_LONG
-                ).show()
+                is BikeDetailsContract.Event.ShowSnackbar ->
+                    Toast.makeText(
+                        context,
+                        it.message,
+                        Toast.LENGTH_LONG
+                    ).show()
             }
         }
     }
@@ -111,10 +112,10 @@ private fun Content(
         }
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp),
+                Modifier
+                    .fillMaxSize()
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BikeCard(showPlaceholder = false, modifier = Modifier.size(200.dp)) {
@@ -134,12 +135,12 @@ private fun Content(
                         intents(BikeDetailsContract.Intent.OnSaveClicked)
                     }
                 },
-
-                containerColor = if (state.validationFailure == null) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.surfaceVariant
-                },
+                containerColor =
+                    if (state.validationFailure == null) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    },
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_save),
@@ -164,9 +165,9 @@ fun BikeInfo(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
         modifier =
-        modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
     ) {
         AnimatedContent(targetState = state.editMode, label = "") {
             if (it) {
@@ -178,8 +179,8 @@ fun BikeInfo(
 
         Column(
             modifier =
-            Modifier
-                .fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
         ) {
             FrontTireBlock(state = state, intents = intents, context = context)
             RearTireBlock(state = state, intents = intents, context = context)
@@ -227,7 +228,6 @@ private fun EditBikeHeading(
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically
-
         ) {
             TextInput(
                 value = state.bike.name,
@@ -249,7 +249,6 @@ private fun EditBikeHeading(
                 expanded = !expanded
             },
             modifier = Modifier
-
         ) {
             TextInput(
                 readOnly = true,
@@ -262,8 +261,8 @@ private fun EditBikeHeading(
                     )
                 },
                 modifier = Modifier.menuAnchor(),
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
-                // TODO:  isError = state.detailsValidationErrors?.type == false
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                isError = state.validationFailure?.type == false
             )
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                 expanded = false
@@ -295,7 +294,8 @@ private fun FrontTireBlock(
         intents = intents,
         context = context,
         editMode = state.editMode,
-        isFront = true
+        isFront = true,
+        showError = state.validationFailure?.frontTire == false
     )
 }
 
@@ -311,7 +311,8 @@ private fun RearTireBlock(
         intents = intents,
         context = context,
         editMode = state.editMode,
-        isFront = false
+        isFront = false,
+        showError = state.validationFailure?.rearTire == false
     )
 }
 
@@ -322,111 +323,119 @@ private fun TireBlock(
     intents: (BikeDetailsContract.Intent) -> Unit,
     context: Context,
     editMode: Boolean,
-    isFront: Boolean
+    isFront: Boolean,
+    showError: Boolean
 ) {
     AnimatedContent(targetState = editMode, label = "") { edit ->
-        val content: @Composable () -> Unit = if (edit) {
-            {
-                Column(Modifier.padding(8.dp)) {
-                    InfoText(label)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier.weight(1.0f),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        TextInput(
-                            value = tire.pressure.pressureInBar.toPlainString(),
-                            onValueChange = {
-                                intents(
-                                    if (isFront) {
-                                        BikeDetailsContract.Intent.Input.FrontTirePressure(
-                                            it
-                                        )
-                                    } else {
-                                        BikeDetailsContract.Intent.Input.RearTirePressure(it)
-                                    }
-                                )
-                            },
-                            label = stringResource(
-                                id = R.string.label_tire_pressure
-                            ),
-                            suffix = stringResource(id = R.string.bar),
+        val content: @Composable () -> Unit =
+            if (edit) {
+                {
+                    Column(Modifier.padding(8.dp)) {
+                        InfoText(label)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
                             modifier = Modifier.weight(1.0f),
-                            keyboardOptions = KeyboardOptions.number(ImeAction.Next)
-                        )
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            TextInput(
+                                value = tire.pressure.pressureInBar.toPlainString(),
+                                onValueChange = {
+                                    intents(
+                                        if (isFront) {
+                                            BikeDetailsContract.Intent.Input.FrontTirePressure(
+                                                it
+                                            )
+                                        } else {
+                                            BikeDetailsContract.Intent.Input.RearTirePressure(it)
+                                        }
+                                    )
+                                },
+                                label =
+                                    stringResource(
+                                        id = R.string.label_tire_pressure
+                                    ),
+                                suffix = stringResource(id = R.string.bar),
+                                modifier = Modifier.weight(1.0f),
+                                keyboardOptions = KeyboardOptions.number(ImeAction.Next),
+                                isError = showError
+                            )
 
-                        TextInput(
-                            value = tire.widthInMM.toString(),
-                            onValueChange = {
-                                intents(
-                                    if (isFront) {
-                                        BikeDetailsContract.Intent.Input.FrontTireWidth(
-                                            it
-                                        )
-                                    } else {
-                                        BikeDetailsContract.Intent.Input.RearTireWidth(it)
-                                    }
-                                )
-                            },
-                            label = stringResource(
-                                id = R.string.label_tire_width
-                            ),
-                            suffix = stringResource(id = R.string.mm),
-                            modifier = Modifier.weight(1.0f),
-                            keyboardOptions = KeyboardOptions.number(ImeAction.Next)
-                        )
+                            TextInput(
+                                value = tire.widthInMM.toString(),
+                                onValueChange = {
+                                    intents(
+                                        if (isFront) {
+                                            BikeDetailsContract.Intent.Input.FrontTireWidth(
+                                                it
+                                            )
+                                        } else {
+                                            BikeDetailsContract.Intent.Input.RearTireWidth(it)
+                                        }
+                                    )
+                                },
+                                label =
+                                    stringResource(
+                                        id = R.string.label_tire_width
+                                    ),
+                                suffix = stringResource(id = R.string.mm),
+                                modifier = Modifier.weight(1.0f),
+                                keyboardOptions = KeyboardOptions.number(ImeAction.Next),
+                                isError = showError
+                            )
 
-                        TextInput(
-                            value = tire.internalRimWidthInMM.toString(),
-                            onValueChange = {
-                                intents(
-                                    if (isFront) {
-                                        BikeDetailsContract.Intent.Input.FrontTireInternalRimWidth(
-                                            it
-                                        )
-                                    } else {
-                                        BikeDetailsContract.Intent.Input.RearTireInternalRimWidth(
-                                            it
-                                        )
-                                    }
-                                )
-                            },
-                            label = stringResource(
-                                id = R.string.label_internal_rim_width
-                            ),
-                            suffix = stringResource(id = R.string.mm),
-                            modifier = Modifier.weight(1.0f),
-                            keyboardOptions = KeyboardOptions.number(ImeAction.Done)
-                        )
+                            TextInput(
+                                value = tire.internalRimWidthInMM.toString(),
+                                onValueChange = {
+                                    intents(
+                                        if (isFront) {
+                                            BikeDetailsContract.Intent.Input.FrontTireInternalRimWidth(
+                                                it
+                                            )
+                                        } else {
+                                            BikeDetailsContract.Intent.Input.RearTireInternalRimWidth(
+                                                it
+                                            )
+                                        }
+                                    )
+                                },
+                                label =
+                                    stringResource(
+                                        id = R.string.label_internal_rim_width
+                                    ),
+                                suffix = stringResource(id = R.string.mm),
+                                modifier = Modifier.weight(1.0f),
+                                keyboardOptions = KeyboardOptions.number(ImeAction.Done),
+                                isError = showError
+                            )
+                        }
+                    }
+                }
+            } else {
+                {
+                    Column(Modifier.padding(8.dp)) {
+                        InfoText(label)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(modifier = Modifier.weight(1.0f)) {
+                            // rear tire
+                            TextPair(
+                                R.string.label_tire_pressure,
+                                tire.getFormattedPressure(context),
+                                modifier = Modifier.weight(1.0f)
+                            )
+                            TextPair(
+                                R.string.label_tire_width,
+                                tire.getFormattedTireWidth(context),
+                                modifier = Modifier.weight(1.0f)
+                            )
+                            TextPair(
+                                R.string.label_internal_rim_width,
+                                tire.getFormattedInternalRimWidth(context),
+                                modifier = Modifier.weight(1.0f)
+                            )
+                        }
                     }
                 }
             }
-        } else {
-            {
-                Column(Modifier.padding(8.dp)) {
-                    InfoText(label)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(modifier = Modifier.weight(1.0f)) {
-                        // rear tire
-                        TextPair(
-                            R.string.label_tire_pressure,
-                            tire.getFormattedPressure(context),
-                            modifier = Modifier.weight(1.0f)
-                        )
-                        TextPair(
-                            R.string.label_tire_width,
-                            tire.getFormattedTireWidth(context),
-                            modifier = Modifier.weight(1.0f)
-                        )
-                        TextPair(
-                            R.string.label_internal_rim_width,
-                            tire.getFormattedInternalRimWidth(context),
-                            modifier = Modifier.weight(1.0f)
-                        )
-                    }
-                }
-            }
-        }
 
         Card(
             Modifier
@@ -451,21 +460,19 @@ private fun FrontSuspensionBlock(
                 .padding(top = 16.dp)
         ) {
             Column(Modifier.padding(8.dp)) {
-
                 SuspensionBlock(
                     label = R.string.label_front_suspension,
                     context = context,
                     suspension = suspension,
                     editMode = state.editMode,
                     intents = intents,
-                    isFront = true
+                    isFront = true,
+                    showError = state.validationFailure?.frontSuspension == false
                 )
-
             }
         }
     }
 }
-
 
 @Composable
 private fun RearSuspensionBlock(
@@ -486,7 +493,8 @@ private fun RearSuspensionBlock(
                     suspension = suspension,
                     editMode = state.editMode,
                     intents = intents,
-                    isFront = false
+                    isFront = false,
+                    showError = state.validationFailure?.rearSuspension == false
                 )
             }
         }
@@ -512,14 +520,12 @@ private fun SuspensionBlock(
     suspension: Suspension,
     editMode: Boolean,
     isFront: Boolean,
+    showError: Boolean,
     modifier: Modifier = Modifier,
     intents: (BikeDetailsContract.Intent) -> Unit
 ) {
     AnimatedContent(targetState = editMode, modifier = modifier) {
-
         Column {
-
-
             InfoText(label)
             Spacer(modifier = Modifier.height(4.dp))
             if (it) {
@@ -540,12 +546,14 @@ private fun SuspensionBlock(
                                 }
                             )
                         },
-                        label = stringResource(
-                            id = R.string.label_travel
-                        ),
+                        label =
+                            stringResource(
+                                id = R.string.label_travel
+                            ),
                         suffix = stringResource(id = R.string.mm),
                         modifier = Modifier.weight(1.0f),
-                        keyboardOptions = KeyboardOptions.number(ImeAction.Next)
+                        keyboardOptions = KeyboardOptions.number(ImeAction.Next),
+                        isError = showError
                     )
 
                     TextInput(
@@ -561,12 +569,14 @@ private fun SuspensionBlock(
                                 }
                             )
                         },
-                        label = stringResource(
-                            id = R.string.pressure
-                        ),
+                        label =
+                            stringResource(
+                                id = R.string.pressure
+                            ),
                         suffix = stringResource(id = R.string.bar),
                         modifier = Modifier.weight(1.0f),
-                        keyboardOptions = KeyboardOptions.number(ImeAction.Next)
+                        keyboardOptions = KeyboardOptions.number(ImeAction.Next),
+                        isError = showError
                     )
 
                     TextInput(
@@ -584,11 +594,13 @@ private fun SuspensionBlock(
                                 }
                             )
                         },
-                        label = stringResource(
-                            id = R.string.tokens
-                        ),
+                        label =
+                            stringResource(
+                                id = R.string.tokens
+                            ),
                         modifier = Modifier.weight(1.0f),
-                        keyboardOptions = KeyboardOptions.number(ImeAction.Done)
+                        keyboardOptions = KeyboardOptions.number(ImeAction.Done),
+                        isError = showError
                     )
                 }
             } else {
@@ -628,27 +640,28 @@ private fun SuspensionBlock(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
     AppTheme {
         Content(
-            state = BikeDetailsContract.State(
-                Bike.empty()
-                    .copy(
-                        name = "Specialized Stumpjumper",
-                        type = BikeDTO.Type.ALL_MTN,
-                        frontSuspension = Suspension(
-                            pressure = Pressure(10.0),
-                            compression = Damping(0, 1),
-                            rebound = Damping(2, 3),
-                            travel = 150,
-                            tokens = 5
-                        ),
-                        rearSuspension = Suspension(150)
-                    )
-            ),
+            state =
+                BikeDetailsContract.State(
+                    Bike.empty()
+                        .copy(
+                            name = "Specialized Stumpjumper",
+                            type = BikeDTO.Type.ALL_MTN,
+                            frontSuspension =
+                                Suspension(
+                                    pressure = Pressure(10.0),
+                                    compression = Damping(0, 1),
+                                    rebound = Damping(2, 3),
+                                    travel = 150,
+                                    tokens = 5
+                                ),
+                            rearSuspension = Suspension(150)
+                        )
+                ),
             intents = {}
         )
     }
@@ -659,30 +672,33 @@ private fun Preview() {
 private fun EditPreview() {
     AppTheme {
         Content(
-            state = BikeDetailsContract.State(
-                Bike.empty()
-                    .copy(
-                        name = "Specialized Stumpjumper",
-                        type = BikeDTO.Type.ALL_MTN,
-                        frontSuspension = Suspension(
-                            pressure = Pressure(10.0),
-                            compression = Damping(0, 1),
-                            rebound = Damping(2, 3),
-                            travel = 150,
-                            tokens = 5
+            state =
+                BikeDetailsContract.State(
+                    Bike.empty()
+                        .copy(
+                            name = "Specialized Stumpjumper",
+                            type = BikeDTO.Type.ALL_MTN,
+                            frontSuspension =
+                                Suspension(
+                                    pressure = Pressure(10.0),
+                                    compression = Damping(0, 1),
+                                    rebound = Damping(2, 3),
+                                    travel = 150,
+                                    tokens = 5
+                                ),
+                            rearSuspension = Suspension(150)
                         ),
-                        rearSuspension = Suspension(150)
-                    ),
-                validationFailure = ValidateBikeUseCase.DetailsFailure(
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false
+                    validationFailure =
+                        ValidateBikeUseCase.DetailsFailure(
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false
+                        ),
+                    editMode = true
                 ),
-                editMode = true
-            ),
             intents = {}
         )
     }
