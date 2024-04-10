@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.data.bike
+package com.alpenraum.shimstack.data.models.pressure
 
 import android.content.Context
 import android.os.Parcelable

@@ -61,9 +61,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.Bike
-import com.alpenraum.shimstack.data.cardsetup.CardSetup
-import com.alpenraum.shimstack.data.cardsetup.CardType
+import com.alpenraum.shimstack.data.models.bike.Bike
+import com.alpenraum.shimstack.data.models.cardsetup.CardSetup
+import com.alpenraum.shimstack.data.models.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.CARD_MARGIN
@@ -157,8 +157,8 @@ private fun HomeScreenContent(
     ) {
         BikePager(
             modifier =
-            Modifier
-                .padding(top = 32.dp, bottom = 16.dp),
+                Modifier
+                    .padding(top = 32.dp, bottom = 16.dp),
             showPlaceholder = isLoading.value,
             state = state,
             intents = intents,
@@ -170,7 +170,6 @@ private fun HomeScreenContent(
             modifier = Modifier.fillMaxHeight(),
             label = "BikeDetails",
             transitionSpec = {
-
                 if (lastPagerPosition.intValue > pagerState.currentPage) {
                     // scroll to left
                     (slideInHorizontally { x -> -x } + fadeIn()).togetherWith(
@@ -212,12 +211,12 @@ private fun EmptyDetailsEyeCandy() {
             painter = painterResource(id = R.drawable.il_empty_mountain),
             contentDescription = null,
             modifier =
-            Modifier
-                .semantics {
-                    invisibleToUser()
-                }
-                .fillMaxSize(0.6f)
-                .padding(bottom = 8.dp)
+                Modifier
+                    .semantics {
+                        invisibleToUser()
+                    }
+                    .fillMaxSize(0.6f)
+                    .padding(bottom = 8.dp)
         )
         Text(
             text = stringResource(id = R.string.copy_add_new_bike),
@@ -237,12 +236,13 @@ private fun BikeDetails(
     state: LazyGridState
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(
-                rememberScrollState()
-            ),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         FlowRow(
@@ -257,9 +257,10 @@ private fun BikeDetails(
             }
         }
         Divider(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .clip(RoundedCornerShape(100)),
+            modifier =
+                Modifier
+                    .padding(vertical = 8.dp)
+                    .clip(RoundedCornerShape(100)),
             thickness = 2.dp
         )
 
@@ -296,9 +297,9 @@ private fun BikePager(
             modifier = Modifier,
             pagerState,
             contentPadding =
-            PaddingValues(
-                horizontal = calculatePagerItemPadding(itemWidth = itemSize)
-            ),
+                PaddingValues(
+                    horizontal = calculatePagerItemPadding(itemWidth = itemSize)
+                ),
             verticalAlignment = Alignment.Top,
             userScrollEnabled = !showPlaceholder
         ) { page ->
@@ -313,26 +314,26 @@ private fun BikePager(
 
             BikeCard(
                 modifier =
-                Modifier
-                    .size(itemSize)
-                    .graphicsLayer {
-                        val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
-                        lerp(
-                            start = 0.8f,
-                            stop = 1f,
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        ).also { scale ->
-                            this.scaleX = scale
-                            this.scaleY = scale
+                    Modifier
+                        .size(itemSize)
+                        .graphicsLayer {
+                            val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                            lerp(
+                                start = 0.8f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            ).also { scale ->
+                                this.scaleX = scale
+                                this.scaleY = scale
+                            }
                         }
-                    }
-                    .clickable {
-                        bike?.let {
-                            intents(
-                                HomeScreenContract.Intent.OnBikeDetailsClicked(it)
-                            )
-                        }
-                    },
+                        .clickable {
+                            bike?.let {
+                                intents(
+                                    HomeScreenContract.Intent.OnBikeDetailsClicked(it)
+                                )
+                            }
+                        },
                 showPlaceholder = showPlaceholder,
                 content = content
             )
@@ -340,9 +341,9 @@ private fun BikePager(
         HorizontalPagerIndicator(
             pagerState = pagerState,
             modifier =
-            Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(16.dp),
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp),
             activeColor = MaterialTheme.colorScheme.primary
         )
     }
@@ -363,13 +364,13 @@ fun BikeCard(
 ) {
     Surface(
         modifier =
-        modifier
-            .placeholder(
-                visible = showPlaceholder,
-                highlight = PlaceholderHighlight.fade(),
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = shimstackRoundedCornerShape()
-            ),
+            modifier
+                .placeholder(
+                    visible = showPlaceholder,
+                    highlight = PlaceholderHighlight.fade(),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    shape = shimstackRoundedCornerShape()
+                ),
         shape = shimstackRoundedCornerShape(),
         tonalElevation = 10.dp,
         color = MaterialTheme.colorScheme.secondaryContainer
@@ -399,21 +400,21 @@ private fun AddNewBikeCardContent(
     Box(
         contentAlignment = Alignment.Center,
         modifier =
-        modifier
-            .fillMaxSize()
-            .clickable {
-                intents(HomeScreenContract.Intent.OnAddNewBike)
-            }
-            .semantics(mergeDescendants = true) {}
+            modifier
+                .fillMaxSize()
+                .clickable {
+                    intents(HomeScreenContract.Intent.OnAddNewBike)
+                }
+                .semantics(mergeDescendants = true) {}
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 Icons.Rounded.Add,
                 contentDescription = "",
                 modifier =
-                Modifier
-                    .size(100.dp)
-                    .semantics { invisibleToUser() },
+                    Modifier
+                        .size(100.dp)
+                        .semantics { invisibleToUser() },
                 tint = MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.8f)
             )
             Text(
@@ -442,10 +443,11 @@ private fun Preview() {
 private fun PreviewData() {
     AppTheme {
         HomeScreenContent(
-            state = HomeScreenContract.State(
-                persistentListOf(Bike.empty()),
-                CardSetup.defaultConfig()
-            ),
+            state =
+                HomeScreenContract.State(
+                    persistentListOf(Bike.empty()),
+                    CardSetup.defaultConfig()
+                ),
             event = MutableSharedFlow(),
             intents = {},
             {}

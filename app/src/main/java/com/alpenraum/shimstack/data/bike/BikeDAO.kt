@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.alpenraum.shimstack.data.db.AppDatabase
+import com.alpenraum.shimstack.data.models.bike.BikeDTO
 
 @Dao
 interface BikeDAO {

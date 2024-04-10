@@ -1,10 +1,11 @@
-package com.alpenraum.shimstack.data.bike
+package com.alpenraum.shimstack.data.models.tire
 
 import android.content.Context
 import android.os.Parcelable
 import androidx.room.Embedded
 import androidx.room.Ignore
 import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.data.models.pressure.Pressure
 import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 
@@ -29,6 +30,5 @@ data class Tire(
             "$widthInInches${context.getString(R.string.inch)}"
         }
 
-    fun getFormattedInternalRimWidth(context: Context) =
-        "$internalRimWidthInMM ${context.getString(R.string.mm)}"
+    fun getFormattedInternalRimWidth(context: Context) = "$internalRimWidthInMM ${context.getString(R.string.mm)}"
 }

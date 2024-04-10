@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.BikeDTO
+import com.alpenraum.shimstack.data.models.bike.BikeType
 import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
@@ -90,15 +90,15 @@ fun EnterDetailsScreen(
                 intent(NewBikeContract.Intent.BikeNameInput(it))
             },
             modifier =
-            if (!isCompactScreen) {
-                Modifier.padding(
-                    top = 16.dp
-                )
-            } else {
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-            },
+                if (!isCompactScreen) {
+                    Modifier.padding(
+                        top = 16.dp
+                    )
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                },
             label = stringResource(id = R.string.label_name),
             isError = state.detailsValidationErrors?.name == false,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
@@ -115,13 +115,13 @@ fun EnterDetailsScreen(
                     expanded = !expanded
                 },
                 modifier =
-                if (isCompactScreen) {
-                    Modifier.weight(1.0f)
-                } else {
-                    Modifier.padding(
-                        end = 32.dp
-                    )
-                }
+                    if (isCompactScreen) {
+                        Modifier.weight(1.0f)
+                    } else {
+                        Modifier.padding(
+                            end = 32.dp
+                        )
+                    }
             ) {
                 TextInput(
                     readOnly = true,
@@ -140,8 +140,8 @@ fun EnterDetailsScreen(
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                     expanded = false
                 }) {
-                    BikeDTO.Type.values().forEach { selectionOption ->
-                        if (selectionOption != BikeDTO.Type.UNKNOWN) {
+                    BikeType.values().forEach { selectionOption ->
+                        if (selectionOption != BikeType.UNKNOWN) {
                             DropdownMenuItem(text = {
                                 Text(text = stringResource(selectionOption.labelRes))
                             }, onClick = {
@@ -322,9 +322,10 @@ private fun ColumnScope.TireInput(
                 onTireWidthChanged(value)
             },
             suffix = stringResource(id = R.string.mm),
-            modifier = Modifier
-                .weight(1.0f)
-                .padding(end = 16.dp),
+            modifier =
+                Modifier
+                    .weight(1.0f)
+                    .padding(end = 16.dp),
             label = stringResource(id = R.string.label_tire_width),
             isError = isError,
             keyboardOptions = KeyboardOptions.number(ImeAction.Next)
@@ -342,10 +343,10 @@ private fun ColumnScope.TireInput(
                 label = stringResource(id = R.string.label_internal_rim_width),
                 isError = isError,
                 keyboardOptions =
-                KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Decimal,
-                    imeAction = lastInputImeAction
-                )
+                    KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = lastInputImeAction
+                    )
             )
             InfoText(R.string.copy_new_bike_internal_width_inf)
         }
@@ -382,17 +383,17 @@ private fun Error() {
     PhonePreview {
         EnterDetailsScreen(
             state =
-            NewBikeContract.State(
-                detailsValidationErrors =
-                ValidateBikeUseCase.DetailsFailure(
-                    name = false,
-                    type = false,
-                    frontTire = false,
-                    rearTire = false,
-                    frontSuspension = false,
-                    rearSuspension = false
-                )
-            ),
+                NewBikeContract.State(
+                    detailsValidationErrors =
+                        ValidateBikeUseCase.DetailsFailure(
+                            name = false,
+                            type = false,
+                            frontTire = false,
+                            rearTire = false,
+                            frontSuspension = false,
+                            rearSuspension = false
+                        )
+                ),
             intent = {},
             event = MutableSharedFlow()
         )

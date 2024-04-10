@@ -10,18 +10,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel
-@Inject
-constructor(
-    private val bikeTemplateRepository: LocalBikeTemplateRepository
-) : BaseViewModel() {
-
-    fun onBound(context: Context) {
-        iOScope.launch {
-            ShimstackDataStore.isOnboardingCompleted?.collect {
-                if (!it) {
-                    bikeTemplateRepository.prepopulateData(context)
+    @Inject
+    constructor(
+        private val bikeTemplateRepository: LocalBikeTemplateRepository
+    ) : BaseViewModel() {
+        fun onBound(context: Context) {
+            iOScope.launch {
+                ShimstackDataStore.isOnboardingCompleted?.collect {
+                    if (!it) {
+                        bikeTemplateRepository.prepopulateData(context)
+                    }
                 }
             }
         }
     }
-}

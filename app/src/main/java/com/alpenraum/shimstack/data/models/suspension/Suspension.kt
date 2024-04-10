@@ -1,10 +1,11 @@
-package com.alpenraum.shimstack.data.bike
+package com.alpenraum.shimstack.data.models.suspension
 
 import android.content.Context
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
 import androidx.room.Embedded
 import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.data.models.pressure.Pressure
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

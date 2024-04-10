@@ -1,71 +1,23 @@
-package com.alpenraum.shimstack.data.bike
+package com.alpenraum.shimstack.data.models.bike
 
 import android.content.Context
 import android.os.Parcelable
-import androidx.annotation.StringRes
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.db.AppDatabase
+import com.alpenraum.shimstack.data.models.pressure.Pressure
+import com.alpenraum.shimstack.data.models.suspension.Damping
+import com.alpenraum.shimstack.data.models.suspension.Suspension
+import com.alpenraum.shimstack.data.models.tire.Tire
 import com.alpenraum.shimstack.ui.features.mainScreens.home.UIDataLabel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 
-@Entity(tableName = AppDatabase.TABLE_BIKE)
-data class BikeDTO(
-    @PrimaryKey(autoGenerate = true) val id: Int? = null,
-    val name: String,
-    val type: Type,
-    @Embedded(prefix = "front_suspension_") val frontSuspension: Suspension? = null,
-    @Embedded(prefix = "rear_suspension_") val rearSuspension: Suspension? = null,
-    @Embedded(prefix = "front_tire_") val frontTire: Tire,
-    @Embedded(prefix = "rear_tire_") val rearTire: Tire,
-    val isEBike: Boolean
-) {
-    fun toDomain() =
-        Bike(id ?: 0, name, type, frontSuspension, rearSuspension, frontTire, rearTire, isEBike)
-
-    companion object {
-        fun empty() =
-            BikeDTO(
-                name = "",
-                type = Type.UNKNOWN,
-                isEBike = false,
-                frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
-                rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0)
-            )
-    }
-
-    enum class Type(
-        @StringRes val labelRes: Int
-    ) {
-        ROAD(R.string.label_road_type),
-        GRAVEL(R.string.label_gravel_type),
-        XC(
-            R.string.label_xc_type
-        ),
-        TRAIL(
-            R.string.label_trail_type
-        ),
-        ALL_MTN(R.string.label_all_mtn_type),
-        ENDURO(R.string.label_enduro_type),
-        DH(
-            R.string.label_dh_type
-        ),
-        UNKNOWN(
-            R.string.label_unknown_type
-        )
-    }
-}
-
 @Parcelize
 data class Bike(
     val id: Int,
     val name: String,
-    val type: BikeDTO.Type,
+    val type: BikeType,
     val frontSuspension: Suspension? = null,
     val rearSuspension: Suspension? = null,
     val frontTire: Tire,
@@ -73,10 +25,15 @@ data class Bike(
     val isEBike: Boolean
 ) : Parcelable {
     companion object {
+        fun fromDto(bikeDTO: BikeDTO) =
+            with(bikeDTO) {
+                Bike(id ?: 0, name, type, frontSuspension, rearSuspension, frontTire, rearTire, isEBike)
+            }
+
         fun empty() =
             Bike(
                 name = "",
-                type = BikeDTO.Type.UNKNOWN,
+                type = BikeType.UNKNOWN,
                 isEBike = false,
                 frontTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
                 rearTire = Tire(Pressure(BigDecimal.ZERO), 0.0, 0.0),
@@ -150,8 +107,7 @@ data class Bike(
         )
     }
 
-    fun isPopulated() =
-        name.isNotBlank() && type != BikeDTO.Type.UNKNOWN && frontTire.widthInMM != 0.0 && rearTire.widthInMM != 0.0
+    fun isPopulated() = name.isNotBlank() && type != BikeType.UNKNOWN && frontTire.widthInMM != 0.0 && rearTire.widthInMM != 0.0
 
     fun hasSetup() =
         !frontTire.pressure.isEmpty() &&

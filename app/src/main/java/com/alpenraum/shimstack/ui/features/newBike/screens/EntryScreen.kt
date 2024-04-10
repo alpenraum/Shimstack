@@ -31,8 +31,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.BikeDTO
-import com.alpenraum.shimstack.data.bikeTemplates.BikeTemplate
+import com.alpenraum.shimstack.data.models.bike.BikeType
+import com.alpenraum.shimstack.data.models.biketemplate.BikeTemplate
 import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
@@ -100,8 +100,8 @@ fun EntryScreen(
             if (it) {
                 Card(
                     modifier =
-                    Modifier.fillMaxWidth().weight(1.0f, fill = false)
-                        .padding(vertical = 16.dp)
+                        Modifier.fillMaxWidth().weight(1.0f, fill = false)
+                            .padding(vertical = 16.dp)
                 ) {
                     LazyColumn(
                         contentPadding = PaddingValues(vertical = 8.dp)
@@ -130,10 +130,10 @@ private fun ListItem(
 ) {
     Row(
         modifier =
-        Modifier.clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
-            .padding(
-                vertical = 8.dp
-            ).padding(horizontal = 16.dp).semantics(true) {},
+            Modifier.clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
+                .padding(
+                    vertical = 8.dp
+                ).padding(horizontal = 16.dp).semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -147,11 +147,11 @@ private fun ListItem(
         Column {
             Text(
                 text =
-                stringResource(
-                    id = R.string.label_new_bike_travel,
-                    bike.frontSuspensionTravelInMM,
-                    bike.rearSuspensionTravelInMM
-                ),
+                    stringResource(
+                        id = R.string.label_new_bike_travel,
+                        bike.frontSuspensionTravelInMM,
+                        bike.rearSuspensionTravelInMM
+                    ),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -177,7 +177,7 @@ private fun EntryPreview() {
                         BikeTemplate(
                             id = i,
                             name = "bike $i",
-                            type = BikeDTO.Type.ENDURO,
+                            type = BikeType.ENDURO,
                             false,
                             150,
                             130,

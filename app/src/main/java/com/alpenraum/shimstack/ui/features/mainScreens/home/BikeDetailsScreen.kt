@@ -50,12 +50,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.bike.Bike
-import com.alpenraum.shimstack.data.bike.BikeDTO
-import com.alpenraum.shimstack.data.bike.Damping
-import com.alpenraum.shimstack.data.bike.Pressure
-import com.alpenraum.shimstack.data.bike.Suspension
-import com.alpenraum.shimstack.data.bike.Tire
+import com.alpenraum.shimstack.data.models.bike.Bike
+import com.alpenraum.shimstack.data.models.bike.BikeType
+import com.alpenraum.shimstack.data.models.pressure.Pressure
+import com.alpenraum.shimstack.data.models.suspension.Damping
+import com.alpenraum.shimstack.data.models.suspension.Suspension
+import com.alpenraum.shimstack.data.models.tire.Tire
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.ButtonText
@@ -267,8 +267,8 @@ private fun EditBikeHeading(
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                 expanded = false
             }) {
-                BikeDTO.Type.entries.forEach { selectionOption ->
-                    if (selectionOption != BikeDTO.Type.UNKNOWN) {
+                BikeType.entries.forEach { selectionOption ->
+                    if (selectionOption != BikeType.UNKNOWN) {
                         DropdownMenuItem(text = {
                             Text(text = stringResource(selectionOption.labelRes))
                         }, onClick = {
@@ -650,7 +650,7 @@ private fun Preview() {
                     Bike.empty()
                         .copy(
                             name = "Specialized Stumpjumper",
-                            type = BikeDTO.Type.ALL_MTN,
+                            type = BikeType.ALL_MTN,
                             frontSuspension =
                                 Suspension(
                                     pressure = Pressure(10.0),
@@ -677,7 +677,7 @@ private fun EditPreview() {
                     Bike.empty()
                         .copy(
                             name = "Specialized Stumpjumper",
-                            type = BikeDTO.Type.ALL_MTN,
+                            type = BikeType.ALL_MTN,
                             frontSuspension =
                                 Suspension(
                                     pressure = Pressure(10.0),

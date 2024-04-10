@@ -2,9 +2,9 @@ package com.alpenraum.shimstack.ui.features.mainScreens.home
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
-import com.alpenraum.shimstack.data.bike.Bike
 import com.alpenraum.shimstack.data.bike.LocalBikeRepository
-import com.alpenraum.shimstack.data.cardsetup.CardSetup
+import com.alpenraum.shimstack.data.models.bike.Bike
+import com.alpenraum.shimstack.data.models.cardsetup.CardSetup
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,58 +22,59 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel
-@Inject
-constructor(private val bikeRepository: LocalBikeRepository) :
+    @Inject
+    constructor(private val bikeRepository: LocalBikeRepository) :
     BaseViewModel(), HomeScreenContract {
-    private val mutableState =
-        MutableStateFlow(
-            HomeScreenContract.State(
-                persistentListOf(null),
-                CardSetup.defaultConfig()
+        private val mutableState =
+            MutableStateFlow(
+                HomeScreenContract.State(
+                    persistentListOf(null),
+                    CardSetup.defaultConfig()
+                )
             )
-        )
-    override val state: StateFlow<HomeScreenContract.State> =
-        mutableState.asStateFlow()
+        override val state: StateFlow<HomeScreenContract.State> =
+            mutableState.asStateFlow()
 
-    private val eventFlow = MutableSharedFlow<HomeScreenContract.Event>()
-    override val event: SharedFlow<HomeScreenContract.Event> =
-        eventFlow.asSharedFlow()
+        private val eventFlow = MutableSharedFlow<HomeScreenContract.Event>()
+        override val event: SharedFlow<HomeScreenContract.Event> =
+            eventFlow.asSharedFlow()
 
-    override fun intent(intent: HomeScreenContract.Intent) {
-        when (intent) {
-            HomeScreenContract.Intent.OnRefresh -> {}
-            is HomeScreenContract.Intent.OnViewPagerSelectionChanged -> {
-                onViewPagerSelectionChanged(intent.page)
-            }
-
-            HomeScreenContract.Intent.OnAddNewBike -> {
-                viewModelScope.launch {
-                    eventFlow.emit(HomeScreenContract.Event.NavigateToNewBikeFeature)
+        override fun intent(intent: HomeScreenContract.Intent) {
+            when (intent) {
+                HomeScreenContract.Intent.OnRefresh -> {}
+                is HomeScreenContract.Intent.OnViewPagerSelectionChanged -> {
+                    onViewPagerSelectionChanged(intent.page)
                 }
-            }
 
-            is HomeScreenContract.Intent.OnBikeDetailsClicked -> viewModelScope.launch {
-                eventFlow.emit(HomeScreenContract.Event.ShowBikeDetails(intent.bike))
+                HomeScreenContract.Intent.OnAddNewBike -> {
+                    viewModelScope.launch {
+                        eventFlow.emit(HomeScreenContract.Event.NavigateToNewBikeFeature)
+                    }
+                }
+
+                is HomeScreenContract.Intent.OnBikeDetailsClicked ->
+                    viewModelScope.launch {
+                        eventFlow.emit(HomeScreenContract.Event.ShowBikeDetails(intent.bike))
+                    }
             }
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
-        iOScope.launch {
-            eventFlow.emit(HomeScreenContract.Event.Loading)
+        override fun onStart() {
+            super.onStart()
+            iOScope.launch {
+                eventFlow.emit(HomeScreenContract.Event.Loading)
 
-            mutableState.emit(state.value.copy(bikes = fetchBikes().toImmutableList()))
-            eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
+                mutableState.emit(state.value.copy(bikes = fetchBikes().toImmutableList()))
+                eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
+            }
+        }
+
+        private suspend fun fetchBikes() = bikeRepository.getAllBikes().map { Bike.fromDto(it) }
+
+        private fun onViewPagerSelectionChanged(page: Int) {
+            viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }
         }
     }
-
-    private suspend fun fetchBikes() = bikeRepository.getAllBikes().map { it.toDomain() }
-
-    private fun onViewPagerSelectionChanged(page: Int) {
-        viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }
-    }
-}
 
 interface HomeScreenContract :
     UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {

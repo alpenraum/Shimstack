@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.data.cardsetup
+package com.alpenraum.shimstack.data.models.cardsetup
 
 import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.persistentListOf
