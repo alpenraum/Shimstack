@@ -90,9 +90,9 @@ fun EnterSetupScreen(
                 },
                 suffix = stringResource(id = R.string.bar),
                 modifier =
-                Modifier
-                    .weight(1.0f)
-                    .padding(top = 8.dp),
+                    Modifier
+                        .weight(1.0f)
+                        .padding(top = 8.dp),
                 label = "${stringResource(id = R.string.front)} ${
                     stringResource(
                         id = R.string.label_tire_pressure
@@ -107,9 +107,9 @@ fun EnterSetupScreen(
                 },
                 suffix = stringResource(id = R.string.bar),
                 modifier =
-                Modifier
-                    .weight(1.0f)
-                    .padding(top = 8.dp),
+                    Modifier
+                        .weight(1.0f)
+                        .padding(top = 8.dp),
                 label = "${stringResource(id = R.string.rear)} ${
                     stringResource(
                         id = R.string.label_tire_pressure
@@ -266,9 +266,10 @@ private fun ColumnScope.DampingInput(
             value = lowSpeed ?: "",
             onValueChange = { onLowSpeedChanged(it) },
             modifier = Modifier.weight(1.0f),
-            keyboardOptions = KeyboardOptions.number(
-                if (isLastInput) ImeAction.Done else ImeAction.Next
-            ),
+            keyboardOptions =
+                KeyboardOptions.number(
+                    if (isLastInput) ImeAction.Done else ImeAction.Next
+                ),
             label = stringResource(id = R.string.label_entersetup_low_speed_clicks)
         )
         AnimatedVisibility(visible = showHighSpeed, modifier = Modifier.weight(1.0f)) {
@@ -288,17 +289,17 @@ private fun Preview() {
     AppTheme {
         EnterSetupScreen(
             state =
-            NewBikeContract.State(
-                detailsInput =
-                DetailsInputData(
-                    frontTravel = "1",
-                    rearTravel = "1"
+                NewBikeContract.State(
+                    detailsInput =
+                        DetailsInputData(
+                            frontTravel = "1",
+                            rearTravel = "1"
+                        ),
+                    hasHSCShock = true,
+                    hasHSRShock = true,
+                    hasHSCFork = true,
+                    hasHSRFork = true
                 ),
-                hasHSCShock = true,
-                hasHSRShock = true,
-                hasHSCFork = true,
-                hasHSRFork = true
-            ),
             intent = {},
             event = MutableSharedFlow(),
             null

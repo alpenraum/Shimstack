@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack
+package com.alpenraum.shimstack.di
 
 import android.app.Application
 import android.content.Context
