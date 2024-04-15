@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack.data.models.biketemplate
 
+import com.alpenraum.shimstack.core.database.models.BikeTemplateDTO
 import com.alpenraum.shimstack.data.models.bike.Bike
 import com.alpenraum.shimstack.data.models.bike.BikeType
 import com.alpenraum.shimstack.data.models.pressure.Pressure
@@ -39,7 +40,7 @@ data class BikeTemplate(
         BikeTemplateDTO(
             id,
             name,
-            type,
+            type.id,
             isEBike,
             frontSuspensionTravelInMM,
             rearSuspensionTravelInMM,

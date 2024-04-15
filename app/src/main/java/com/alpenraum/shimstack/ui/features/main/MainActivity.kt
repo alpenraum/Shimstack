@@ -98,20 +98,20 @@ class MainActivity : BaseActivity<MainViewModel>() {
                             rememberAnimatedNavHostEngine(
                                 navHostContentAlignment = Alignment.TopCenter,
                                 rootDefaultAnimations =
-                                RootNavGraphDefaultAnimations(
-                                    enterTransition = { fadeIn() },
-                                    exitTransition = { fadeOut() }
-                                ),
+                                    RootNavGraphDefaultAnimations(
+                                        enterTransition = { fadeIn() },
+                                        exitTransition = { fadeOut() }
+                                    ),
                                 defaultAnimationsForNestedNavGraph =
-                                mapOf(
-                                    navGraph to
-                                        NestedNavGraphDefaultAnimations(
-                                            enterTransition = { slideInHorizontally() },
-                                            exitTransition = { slideOutHorizontally() },
-                                            popEnterTransition = { slideInHorizontally() },
-                                            popExitTransition = { slideOutHorizontally() }
-                                        )
-                                )
+                                    mapOf(
+                                        navGraph to
+                                            NestedNavGraphDefaultAnimations(
+                                                enterTransition = { slideInHorizontally() },
+                                                exitTransition = { slideOutHorizontally() },
+                                                popEnterTransition = { slideInHorizontally() },
+                                                popExitTransition = { slideOutHorizontally() }
+                                            )
+                                    )
                             )
                         DestinationsNavHost(
                             navGraph = navGraph,

@@ -125,7 +125,7 @@ fun EnterDetailsScreen(
             ) {
                 TextInput(
                     readOnly = true,
-                    value = stringResource(state.bikeDTOType.labelRes),
+                    value = stringResource(state.bikeType.labelRes),
                     onValueChange = {},
                     label = stringResource(id = R.string.label_type),
                     trailingIcon = {

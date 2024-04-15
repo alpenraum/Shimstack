@@ -59,12 +59,14 @@ fun OnboardingScreen(
         Spacer(modifier = Modifier.height(32.dp))
         Card(
             shape = RoundedCornerShape(8.dp, 8.dp, 0.dp, 0.dp),
-            modifier = Modifier.weight(1.0f)
-                .fillMaxWidth(),
+            modifier =
+                Modifier.weight(1.0f)
+                    .fillMaxWidth(),
             elevation = CardDefaults.elevatedCardElevation(),
-            colors = CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.secondary
-            )
+            colors =
+                CardDefaults.elevatedCardColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
         ) {
             Column(
                 modifier = Modifier.fillMaxSize().padding(8.dp),
@@ -75,10 +77,11 @@ fun OnboardingScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     LargeButton(
                         onClick = onAddBikeClicked,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
                     ) {
                         Text(
                             "Add my first bike",
@@ -88,15 +91,15 @@ fun OnboardingScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     LargeButton(
                         onClick = onSkipButtonClicked,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
                     ) {
                         Text(
                             "Take me to the app",
                             style = MaterialTheme.typography.titleMedium
-
                         )
                     }
                 }
@@ -111,18 +114,19 @@ fun OnboardingScreen(
                         painter = painterResource(id = R.drawable.ic_hardtail),
                         contentDescription = null,
                         colorFilter = colorFilter,
-                        modifier = modifier
-                            .semantics { invisibleToUser() }
-                            .size(128.dp)
-
+                        modifier =
+                            Modifier
+                                .semantics { invisibleToUser() }
+                                .size(128.dp)
                     )
                     Image(
                         painter = painterResource(id = R.drawable.il_mtb_trail),
                         contentDescription = null,
                         colorFilter = colorFilter,
-                        modifier = modifier
-                            .semantics { invisibleToUser() }
-                            .scale(3.0f)
+                        modifier =
+                            Modifier
+                                .semantics { invisibleToUser() }
+                                .scale(3.0f)
                     )
                 }
             }

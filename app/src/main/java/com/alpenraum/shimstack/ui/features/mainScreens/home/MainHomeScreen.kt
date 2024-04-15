@@ -103,10 +103,12 @@ fun HomeScreen(
         event = event,
         intents = intents,
         navigateToBikeDetails = {
-            navController.navigate(
-                BikeDetailsScreenDestination(it),
-                onlyIfResumed = true
-            )
+            it.id?.let { id ->
+                navController.navigate(
+                    BikeDetailsScreenDestination(id),
+                    onlyIfResumed = true
+                )
+            } ?: intents(HomeScreenContract.Intent.OnTechnicalError)
         }
     ) { navController.navigate(NewBikeFeatureDestination, onlyIfResumed = true) }
 }

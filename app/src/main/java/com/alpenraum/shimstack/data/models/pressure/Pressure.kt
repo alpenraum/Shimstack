@@ -1,18 +1,13 @@
 package com.alpenraum.shimstack.data.models.pressure
 
 import android.content.Context
-import android.os.Parcelable
 import androidx.compose.runtime.Immutable
-import androidx.room.Ignore
 import com.alpenraum.shimstack.R
-import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-@Parcelize
 @Immutable
-data class Pressure(val pressureInBar: BigDecimal) : Parcelable {
-    @Ignore
+data class Pressure(val pressureInBar: BigDecimal) {
     constructor(pressureInBar: Double) : this(pressureInBar.toBigDecimal())
 
     companion object {

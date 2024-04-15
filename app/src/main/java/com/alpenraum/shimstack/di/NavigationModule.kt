@@ -1,6 +1,6 @@
 package com.alpenraum.shimstack.di
 
-import com.alpenraum.allaboutclubs.features.navigation.pub.StartDestinationRoute
+import com.alpenraum.shimstack.common.navigation.StartDestinationRoute
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

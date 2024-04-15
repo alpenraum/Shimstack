@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3.window.size)
     implementation(libs.com.google.android.material)
+    implementation(project(":core:database"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
@@ -88,20 +89,19 @@ dependencies {
     implementation(libs.io.github.raamcosta.compose.destinations.animations.core)
     implementation(libs.com.google.accompanist.placeholder.material)
     implementation(libs.com.google.accompanist.navigation.material)
-    implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
+
     implementation(libs.androidx.security.crypto.ktx)
     implementation(libs.androidx.biometric.ktx)
     implementation(libs.com.squareup.moshi)
     implementation(libs.com.squareup.moshi.kotlin)
     ksp(libs.com.squareup.moshi.kotlin.codegen)
     implementation(libs.com.google.accompanist.pager.indicators)
-    ktlintRuleset(libs.io.nlopez.compose.rules.ktlint)
+
     implementation(libs.com.airbnb.android.lottie.compose)
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.ui.tooling.preview.android)
+
+    //  ktlintRuleset(libs.io.nlopez.compose.rules.ktlint)
 }
 kapt {
     correctErrorTypes = true

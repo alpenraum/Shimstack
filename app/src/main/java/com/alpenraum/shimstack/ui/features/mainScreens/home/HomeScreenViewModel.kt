@@ -56,6 +56,11 @@ class HomeScreenViewModel
                     viewModelScope.launch {
                         eventFlow.emit(HomeScreenContract.Event.ShowBikeDetails(intent.bike))
                     }
+
+                HomeScreenContract.Intent.OnTechnicalError ->
+                    viewModelScope.launch {
+                        eventFlow.emit(HomeScreenContract.Event.Error)
+                    }
             }
         }
 
@@ -69,7 +74,7 @@ class HomeScreenViewModel
             }
         }
 
-        private suspend fun fetchBikes() = bikeRepository.getAllBikes().map { Bike.fromDto(it) }
+        private suspend fun fetchBikes() = bikeRepository.getAllBikes()
 
         private fun onViewPagerSelectionChanged() {
             viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }
@@ -108,6 +113,8 @@ interface HomeScreenContract :
         data object OnAddNewBike : Intent()
 
         data class OnBikeDetailsClicked(val bike: Bike) : Intent()
+
+        data object OnTechnicalError : Intent()
     }
 }
 

@@ -1,7 +1,8 @@
-package com.alpenraum.shimstack.data.db
+package com.alpenraum.shimstack.core.database
 
 import android.content.Context
 import androidx.room.Room
+import com.alpenraum.shimstack.core.database.db.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

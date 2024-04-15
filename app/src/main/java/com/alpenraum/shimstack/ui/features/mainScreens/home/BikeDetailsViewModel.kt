@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.data.bike.BikeRepository
 import com.alpenraum.shimstack.data.models.bike.Bike
 import com.alpenraum.shimstack.data.models.pressure.Pressure
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -30,14 +31,15 @@ class BikeDetailsViewModel
     constructor(
         savedStateHandle: SavedStateHandle,
         private val validateBikeUseCase: ValidateBikeUseCase,
-        private val updateBikeUseCase: UpdateBikeUseCase
+        private val updateBikeUseCase: UpdateBikeUseCase,
+        private val bikeRepository: BikeRepository
     ) :
     BaseViewModel(), BikeDetailsContract {
         private val navArgs = savedStateHandle.navArgs<BikeDetailsNavArgs>()
 
         private val _state: MutableStateFlow<BikeDetailsContract.State> =
             MutableStateFlow(
-                BikeDetailsContract.State(navArgs.bike)
+                BikeDetailsContract.State(Bike.empty())
             )
         override val state: StateFlow<BikeDetailsContract.State>
             get() = _state.asStateFlow()
@@ -45,6 +47,15 @@ class BikeDetailsViewModel
         private val _event: MutableSharedFlow<BikeDetailsContract.Event> = MutableSharedFlow()
         override val event: SharedFlow<BikeDetailsContract.Event>
             get() = _event.asSharedFlow()
+
+        override fun onStart() {
+            super.onStart()
+            viewModelScope.launch {
+                bikeRepository.getBike(navArgs.bikeId)?.let {
+                    _state.emit(BikeDetailsContract.State(it))
+                }
+            }
+        }
 
         override fun intent(intent: BikeDetailsContract.Intent) {
             viewModelScope.launch {
@@ -302,4 +313,4 @@ interface BikeDetailsContract :
     }
 }
 
-class BikeDetailsNavArgs(val bike: Bike)
+class BikeDetailsNavArgs(val bikeId: Int)

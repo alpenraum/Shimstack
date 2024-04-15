@@ -2,12 +2,10 @@ package com.alpenraum.shimstack.ui.features.newBike
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
-import androidx.lifecycle.SavedStateHandle
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.data.models.bike.Bike
-import com.alpenraum.shimstack.data.models.bike.BikeDTO
 import com.alpenraum.shimstack.data.models.bike.BikeType
 import com.alpenraum.shimstack.data.models.biketemplate.BikeTemplate
 import com.alpenraum.shimstack.data.models.pressure.Pressure
@@ -42,7 +40,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class NewBikeViewModel
     @Inject
     constructor(
-        savedStateHandle: SavedStateHandle,
         private val bikeTemplateRepository: LocalBikeTemplateRepository,
         private val bikeRepository: LocalBikeRepository,
         private val validateBikeUseCase: ValidateBikeUseCase,
@@ -284,7 +281,7 @@ class NewBikeViewModel
                     detailsInput?.let {
                         validateBikeUseCase(
                             it,
-                            bikeType ?: state.value.bikeDTOType
+                            bikeType ?: state.value.bikeType
                         )
                     }
                 val setupValidationResult = setupInput?.let { validateSetupUseCase(it) }
@@ -293,7 +290,7 @@ class NewBikeViewModel
                         detailsInput = detailsInput ?: state.value.detailsInput,
                         setupInput = setupInput ?: state.value.setupInput,
                         isEbike = isEbike ?: state.value.isEbike,
-                        bikeDTOType = bikeType ?: state.value.bikeDTOType,
+                        bikeType = bikeType ?: state.value.bikeType,
                         hasHSCFork = hasHSCFork ?: state.value.hasHSCFork,
                         hasHSRFork = hasHSRFork ?: state.value.hasHSRFork,
                         hasHSCShock = hasHSCShock ?: state.value.hasHSCShock,
@@ -335,7 +332,7 @@ class NewBikeViewModel
         private fun goToEnterDetailsScreen(template: BikeTemplate?) =
             iOScope.launch {
                 validateAndUpdateInput(
-                    detailsInputData = mapFromBikeDTO(template?.toBike() ?: Bike.empty()),
+                    detailsInputData = mapFromBike(template?.toBike() ?: Bike.empty()),
                     isEbike = template?.isEBike,
                     bikeType = template?.type
                 )
@@ -396,7 +393,7 @@ class NewBikeViewModel
                         ?: state.value.setupInput.rearSuspensionHSR
             )
 
-        private fun mapFromBikeDTO(bike: Bike) =
+        private fun mapFromBike(bike: Bike) =
             DetailsInputData(
                 bike.name,
                 bike.frontSuspension?.travel?.toString(),
@@ -417,7 +414,7 @@ interface NewBikeContract :
         val setupValidationErrors: ValidateSetupUseCase.SetupFailure? = null,
         val showSetupOutlierHint: Boolean = false,
         val isEbike: Boolean = false,
-        val bikeDTOType: BikeType = BikeType.UNKNOWN,
+        val bikeType: BikeType = BikeType.UNKNOWN,
         val detailsInput: DetailsInputData = DetailsInputData(),
         val setupInput: SetupInputData = SetupInputData(),
         val hasHSCFork: Boolean = false,
@@ -429,7 +426,7 @@ interface NewBikeContract :
 
         fun hasRearSuspension() = detailsInput.rearTravel?.isNotEmpty() == true
 
-        fun toBike(): BikeDTO {
+        fun toBike(): Bike {
             val frontSuspension =
                 if (hasFrontSuspension()) {
                     Suspension(
@@ -479,9 +476,9 @@ interface NewBikeContract :
                     detailsInput.rearInternalRimWidth?.toDoubleOrNull()
                 )
 
-            return BikeDTO(
+            return Bike(
                 name = detailsInput.name ?: "",
-                type = bikeDTOType,
+                type = bikeType,
                 isEBike = isEbike,
                 frontSuspension = frontSuspension,
                 rearSuspension = rearSuspension,

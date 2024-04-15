@@ -30,8 +30,8 @@ class DecisionButtonConfig(
 fun DecisionScreen(
     @DrawableRes imageRes: Int?,
     @StringRes contentRes: Int,
-    modifier: Modifier = Modifier,
-    vararg buttons: DecisionButtonConfig
+    vararg buttons: DecisionButtonConfig,
+    modifier: Modifier = Modifier
 ) {
     DecisionScreen(imageContent = {
         imageRes?.let { Image(painter = painterResource(id = it), contentDescription = null) }
@@ -82,7 +82,6 @@ private fun DecisionScreenPreview() {
         DecisionScreen(
             imageRes = R.drawable.ic_launcher_foreground,
             contentRes = R.string.copy_no_shock,
-            modifier = Modifier,
             DecisionButtonConfig(R.string.mm, true) {},
             DecisionButtonConfig(R.string.mm, false) {},
             DecisionButtonConfig(R.string.mm, false) {},

@@ -10,9 +10,10 @@ class UpdateBikeUseCase
     constructor(private val bikeRepository: BikeRepository) {
         suspend operator fun invoke(bike: Bike): Boolean {
             return try {
-                val bikeDto = bikeRepository.getBike(bike.id) ?: return false
+                val id = bike.id ?: return false
+                val currentBike = bikeRepository.getBike(id) ?: return false
                 val update =
-                    bikeDto.copy(
+                    currentBike.copy(
                         name = bike.name,
                         type = bike.type,
                         frontTire = bike.frontTire,

@@ -29,8 +29,7 @@ object ShimstackDataStore {
 
     suspend fun setIsOnboardingCompleted(value: Boolean) = PREF_IS_ONBOARDING_COMPLETED.set(value)
 
-    private fun <T> Preferences.Key<T>.get(defaultValue: T) =
-        dataStore?.data?.map { it[this] ?: defaultValue }
+    private fun <T> Preferences.Key<T>.get(defaultValue: T) = dataStore?.data?.map { it[this] ?: defaultValue }
 
     private suspend fun <T> Preferences.Key<T>.set(value: T) {
         dataStore?.edit { it[this] = value }

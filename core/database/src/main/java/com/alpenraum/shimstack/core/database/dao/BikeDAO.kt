@@ -1,11 +1,11 @@
-package com.alpenraum.shimstack.data.bike
+package com.alpenraum.shimstack.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.alpenraum.shimstack.data.db.AppDatabase
-import com.alpenraum.shimstack.data.models.bike.BikeDTO
+import com.alpenraum.shimstack.core.database.db.AppDatabase
+import com.alpenraum.shimstack.core.database.models.BikeDTO
 
 @Dao
 interface BikeDAO {

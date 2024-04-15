@@ -30,14 +30,15 @@ fun OnboardingFeature(
     LaunchedEffect(key1 = Unit) {
         viewModel.event().collectLatest {
             when (it) {
-                OnboardingViewModel.Event.NavigateToHomeScreen -> navigator.navigate(
-                    MainScreenFeatureDestination,
-                    onlyIfResumed = true
-                ) {
-                    popUpTo(OnboardingFeatureDestination) {
-                        inclusive = true
+                OnboardingViewModel.Event.NavigateToHomeScreen ->
+                    navigator.navigate(
+                        MainScreenFeatureDestination,
+                        onlyIfResumed = true
+                    ) {
+                        popUpTo(OnboardingFeatureDestination) {
+                            inclusive = true
+                        }
                     }
-                }
             }
         }
     }
@@ -48,7 +49,10 @@ fun OnboardingFeature(
     ) {
         OnboardingScreen(
             onSkipButtonClicked = viewModel::onSkipClicked,
-            modifier = Modifier.padding(it).padding(16.dp)
+            modifier =
+                Modifier
+                    .padding(it)
+                    .padding(16.dp)
         ) {
             // TODO
         }

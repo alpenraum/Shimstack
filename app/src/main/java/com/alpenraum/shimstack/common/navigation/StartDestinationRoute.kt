@@ -1,4 +1,4 @@
-package com.alpenraum.allaboutclubs.features.navigation.pub
+package com.alpenraum.shimstack.common.navigation
 
 import javax.inject.Qualifier
 

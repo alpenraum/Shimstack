@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.data.db.typeconverter
+package com.alpenraum.shimstack.core.database.db.typeconverter
 
 import androidx.room.TypeConverter
 import java.math.BigDecimal

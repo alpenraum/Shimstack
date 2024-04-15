@@ -11,28 +11,31 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor() : BaseViewModel() {
+class OnboardingViewModel
+    @Inject
+    constructor() : BaseViewModel() {
+        @Suppress("ktlint:standard:backing-property-naming")
+        private val _event = MutableSharedFlow<Event>()
 
-    private val _event = MutableSharedFlow<Event>()
-    fun event() = _event.asSharedFlow()
+        fun event() = _event.asSharedFlow()
 
-    sealed class Event {
-        data object NavigateToHomeScreen : Event()
-    }
+        sealed class Event {
+            data object NavigateToHomeScreen : Event()
+        }
 
-    override fun onStart() {
-        super.onStart()
-        viewModelScope.launch {
-            ShimstackDataStore.isOnboardingCompleted?.collectLatest {
-                if (it) _event.emit(Event.NavigateToHomeScreen)
+        override fun onStart() {
+            super.onStart()
+            viewModelScope.launch {
+                ShimstackDataStore.isOnboardingCompleted?.collectLatest {
+                    if (it) _event.emit(Event.NavigateToHomeScreen)
+                }
+            }
+        }
+
+        fun onSkipClicked() {
+            viewModelScope.launch {
+                ShimstackDataStore.setIsOnboardingCompleted(true)
+                _event.emit(Event.NavigateToHomeScreen)
             }
         }
     }
-
-    fun onSkipClicked() {
-        viewModelScope.launch {
-            ShimstackDataStore.setIsOnboardingCompleted(true)
-            _event.emit(Event.NavigateToHomeScreen)
-        }
-    }
-}

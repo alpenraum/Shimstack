@@ -1,21 +1,20 @@
 package com.alpenraum.shimstack.data.models.bike
 
 import android.content.Context
-import android.os.Parcelable
 import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.core.database.models.BikeDTO
 import com.alpenraum.shimstack.data.models.pressure.Pressure
 import com.alpenraum.shimstack.data.models.suspension.Damping
 import com.alpenraum.shimstack.data.models.suspension.Suspension
 import com.alpenraum.shimstack.data.models.tire.Tire
+import com.alpenraum.shimstack.data.toDomain
 import com.alpenraum.shimstack.ui.features.mainScreens.home.UIDataLabel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 
-@Parcelize
 data class Bike(
-    val id: Int,
+    val id: Int? = null,
     val name: String,
     val type: BikeType,
     val frontSuspension: Suspension? = null,
@@ -23,11 +22,20 @@ data class Bike(
     val frontTire: Tire,
     val rearTire: Tire,
     val isEBike: Boolean
-) : Parcelable {
+) {
     companion object {
         fun fromDto(bikeDTO: BikeDTO) =
             with(bikeDTO) {
-                Bike(id ?: 0, name, type, frontSuspension, rearSuspension, frontTire, rearTire, isEBike)
+                Bike(
+                    id ?: 0,
+                    name,
+                    BikeType.fromId(type),
+                    frontSuspension?.toDomain(),
+                    rearSuspension?.toDomain(),
+                    frontTire.toDomain(),
+                    rearTire.toDomain(),
+                    isEBike
+                )
             }
 
         fun empty() =

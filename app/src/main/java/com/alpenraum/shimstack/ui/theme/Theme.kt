@@ -89,8 +89,8 @@ fun supportsDynamic(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content:
-    @Composable()
-    () -> Unit
+        @Composable()
+        () -> Unit
 ) {
     val useDynamicTheme =
         ShimstackDataStore.useDynamicTheme?.collectAsState(initial = false)?.value == true

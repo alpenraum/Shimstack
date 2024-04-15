@@ -32,6 +32,8 @@ io-nlopez-compose-rules = "0.3.8"
 com-airbnb-android = "6.3.0"
 material3-android = "1.2.1"
 ui-tooling-preview-android = "1.6.5"
+agp = "8.3.0"
+kotlin = "1.9.10"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -79,3 +81,5 @@ androidx-material3-android = { group = "androidx.compose.material3", name = "mat
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "ui-tooling-preview-android" }
 
 [plugins]
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

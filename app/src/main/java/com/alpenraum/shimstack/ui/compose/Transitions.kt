@@ -12,7 +12,6 @@ fun fadeIn() = androidx.compose.animation.fadeIn(animationSpec = tween(400))
 fun fadeOut() = androidx.compose.animation.fadeOut(animationSpec = tween(400))
 
 object CrossfadeTransition : DestinationStyle.Animated {
-
     override fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition(): EnterTransition? {
         return fadeIn()
     }

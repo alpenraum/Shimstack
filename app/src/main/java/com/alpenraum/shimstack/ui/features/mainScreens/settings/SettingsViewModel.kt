@@ -19,53 +19,53 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel
-@Inject
-constructor() : BaseViewModel(), SettingsContract {
-    private val _state = MutableStateFlow(SettingsContract.State())
-    private val _event = MutableSharedFlow<SettingsContract.Event>()
-    override val state: StateFlow<SettingsContract.State>
-        get() = _state.asStateFlow()
-    override val event: SharedFlow<SettingsContract.Event>
-        get() = _event.asSharedFlow()
+    @Inject
+    constructor() : BaseViewModel(), SettingsContract {
+        private val _state = MutableStateFlow(SettingsContract.State())
+        private val _event = MutableSharedFlow<SettingsContract.Event>()
+        override val state: StateFlow<SettingsContract.State>
+            get() = _state.asStateFlow()
+        override val event: SharedFlow<SettingsContract.Event>
+            get() = _event.asSharedFlow()
 
-    override fun intent(intent: SettingsContract.Intent) {
-        when (intent) {
-            is SettingsContract.Intent.OnSettingsChanged ->
-                toggleSetting(
-                    intent.settings,
-                    intent.newSetting
-                )
+        override fun intent(intent: SettingsContract.Intent) {
+            when (intent) {
+                is SettingsContract.Intent.OnSettingsChanged ->
+                    toggleSetting(
+                        intent.settings,
+                        intent.newSetting
+                    )
+            }
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
-        viewModelScope.launch {
-            val state =
-                SettingsContract.State(
-                    listOf(
-                        Pair(
-                            SettingsContract.Settings.USE_DYNAMIC_THEME,
-                            ShimstackDataStore.useDynamicTheme
+        override fun onStart() {
+            super.onStart()
+            viewModelScope.launch {
+                val state =
+                    SettingsContract.State(
+                        listOf(
+                            Pair(
+                                SettingsContract.Settings.USE_DYNAMIC_THEME,
+                                ShimstackDataStore.useDynamicTheme
+                            )
                         )
                     )
-                )
-            _state.emit(state)
+                _state.emit(state)
+            }
         }
-    }
 
-    private fun toggleSetting(
-        settings: SettingsContract.Settings,
-        newSetting: Boolean
-    ) = iOScope.launch {
-        when (settings) {
-            SettingsContract.Settings.USE_DYNAMIC_THEME ->
-                ShimstackDataStore.setUseDynamicTheme(
-                    newSetting
-                )
+        private fun toggleSetting(
+            settings: SettingsContract.Settings,
+            newSetting: Boolean
+        ) = iOScope.launch {
+            when (settings) {
+                SettingsContract.Settings.USE_DYNAMIC_THEME ->
+                    ShimstackDataStore.setUseDynamicTheme(
+                        newSetting
+                    )
+            }
         }
     }
-}
 
 interface SettingsContract :
     UnidirectionalViewModel<SettingsContract.State, SettingsContract.Intent, SettingsContract.Event> {

@@ -1,24 +1,18 @@
 package com.alpenraum.shimstack.data.models.tire
 
 import android.content.Context
-import android.os.Parcelable
-import androidx.room.Embedded
-import androidx.room.Ignore
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.models.pressure.Pressure
-import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 
-@Parcelize
 data class Tire(
-    @Embedded(prefix = "pressure_") val pressure: Pressure,
+    val pressure: Pressure,
     val widthInMM: Double,
     val internalRimWidthInMM: Double?
-) : Parcelable {
+) {
     private val widthInInches: Double
         get() = widthInMM / 2.54
 
-    @Ignore
     constructor() : this(Pressure(BigDecimal.ZERO), 0.0, 0.0)
 
     fun getFormattedPressure(context: Context) = pressure.toFormattedString(context)

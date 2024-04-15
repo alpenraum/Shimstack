@@ -1,22 +1,18 @@
 package com.alpenraum.shimstack.data.models.suspension
 
 import android.content.Context
-import android.os.Parcelable
 import androidx.compose.runtime.Immutable
-import androidx.room.Embedded
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.models.pressure.Pressure
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 @Immutable
 data class Suspension(
-    @Embedded(prefix = "pressure_") val pressure: Pressure,
-    @Embedded(prefix = "compression_") val compression: Damping,
-    @Embedded(prefix = "rebound_") val rebound: Damping,
+    val pressure: Pressure,
+    val compression: Damping,
+    val rebound: Damping,
     val tokens: Int,
     val travel: Int
-) : Parcelable {
+) {
     constructor(travel: Int) : this(Pressure(0.0), Damping(0), Damping(0), 0, travel)
 
     fun getFormattedPressure(context: Context) = pressure.toFormattedString(context)
@@ -42,6 +38,5 @@ data class Suspension(
         }"
 }
 
-@Parcelize
 @Immutable
-data class Damping(val lowSpeedFromClosed: Int, val highSpeedFromClosed: Int? = null) : Parcelable
+data class Damping(val lowSpeedFromClosed: Int, val highSpeedFromClosed: Int? = null)

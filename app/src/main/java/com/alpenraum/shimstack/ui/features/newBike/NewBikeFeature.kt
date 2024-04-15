@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun NewBikeFeature(
     navigator: DestinationsNavigator,
+    modifier: Modifier = Modifier,
     viewModel: NewBikeViewModel = hiltViewModel()
 ) {
     AttachToLifeCycle(viewModel = viewModel)
@@ -59,18 +60,19 @@ fun NewBikeFeature(
         event.collectLatest {
             when (it) {
                 NewBikeContract.Event.NavigateToHomeScreen -> navigator.popBackStack()
-                is NewBikeContract.Event.ShowToast -> Toast.makeText(
-                    context,
-                    it.messageRes,
-                    Toast.LENGTH_LONG
-                ).show()
+                is NewBikeContract.Event.ShowToast ->
+                    Toast.makeText(
+                        context,
+                        it.messageRes,
+                        Toast.LENGTH_LONG
+                    ).show()
 
                 else -> {}
             }
         }
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = modifier.padding(16.dp)) {
         Text(
             text = stringResource(id = R.string.header_new_bike_entry),
             style = MaterialTheme.typography.headlineSmall,
@@ -82,20 +84,20 @@ fun NewBikeFeature(
             rememberAnimatedNavHostEngine(
                 navHostContentAlignment = Alignment.TopCenter,
                 rootDefaultAnimations =
-                RootNavGraphDefaultAnimations(
-                    enterTransition = { fadeIn() },
-                    exitTransition = { fadeOut() }
-                ),
+                    RootNavGraphDefaultAnimations(
+                        enterTransition = { fadeIn() },
+                        exitTransition = { fadeOut() }
+                    ),
                 defaultAnimationsForNestedNavGraph =
-                mapOf(
-                    NavGraphs.newBike to
-                        NestedNavGraphDefaultAnimations(
-                            enterTransition = { slideInHorizontally() },
-                            exitTransition = { slideOutHorizontally() },
-                            popEnterTransition = { slideInHorizontally() },
-                            popExitTransition = { slideOutHorizontally() }
-                        )
-                )
+                    mapOf(
+                        NavGraphs.newBike to
+                            NestedNavGraphDefaultAnimations(
+                                enterTransition = { slideInHorizontally() },
+                                exitTransition = { slideOutHorizontally() },
+                                popEnterTransition = { slideInHorizontally() },
+                                popExitTransition = { slideOutHorizontally() }
+                            )
+                    )
             )
 
         DestinationsNavHost(
