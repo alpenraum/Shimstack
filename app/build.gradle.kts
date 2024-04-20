@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview.android)
 
     //  ktlintRuleset(libs.io.nlopez.compose.rules.ktlint)
+    testImplementation(libs.konsist)
 }
 kapt {
     correctErrorTypes = true
