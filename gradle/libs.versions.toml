@@ -6,7 +6,7 @@ androidx-lifecycle = "2.7.0"
 hilt-android-gradle-plugin = "2.48.1"
 konsist = "0.15.1"
 ktlint-gradle = "12.1.0"
-org-jetbrains-kotlinx = "1.8.0"
+coroutines-version = "1.8.0"
 kotlinx-collections-immutable = "0.3.7"
 androidx-datastore = "1.0.0"
 androidx-compose = "2024.04.00"
@@ -46,7 +46,8 @@ androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-ru
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt-android-gradle-plugin" }
 konsist = { module = "com.lemonappdev:konsist", version.ref = "konsist" }
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint-gradle" }
-org-jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "org-jetbrains-kotlinx" }
+org-jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines-version" }
+org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-version" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }

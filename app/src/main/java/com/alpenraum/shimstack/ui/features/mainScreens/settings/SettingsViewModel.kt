@@ -1,8 +1,8 @@
 package com.alpenraum.shimstack.ui.features.mainScreens.settings
 
 import androidx.annotation.StringRes
-import androidx.lifecycle.viewModelScope
 import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.common.DispatchersProvider
 import com.alpenraum.shimstack.common.stores.ShimstackDataStore
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel
     @Inject
-    constructor() : BaseViewModel(), SettingsContract {
+    constructor(dispatchersProvider: DispatchersProvider) : BaseViewModel(dispatchersProvider), SettingsContract {
         private val _state = MutableStateFlow(SettingsContract.State())
         private val _event = MutableSharedFlow<SettingsContract.Event>()
         override val state: StateFlow<SettingsContract.State>

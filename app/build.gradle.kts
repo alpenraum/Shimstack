@@ -104,6 +104,8 @@ dependencies {
 
     //  ktlintRuleset(libs.io.nlopez.compose.rules.ktlint)
     testImplementation(libs.konsist)
+
+    testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
 }
 kapt {
     correctErrorTypes = true

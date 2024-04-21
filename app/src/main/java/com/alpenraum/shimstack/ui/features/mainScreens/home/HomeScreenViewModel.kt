@@ -1,7 +1,7 @@
 package com.alpenraum.shimstack.ui.features.mainScreens.home
 
 import androidx.compose.runtime.Immutable
-import androidx.lifecycle.viewModelScope
+import com.alpenraum.shimstack.common.DispatchersProvider
 import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.model.cardsetup.CardSetup
@@ -23,8 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeScreenViewModel
     @Inject
-    constructor(private val bikeRepository: LocalBikeRepository) :
-    BaseViewModel(), HomeScreenContract {
+    constructor(private val bikeRepository: LocalBikeRepository, dispatchersProvider: DispatchersProvider) :
+    BaseViewModel(dispatchersProvider), HomeScreenContract {
         private val mutableState =
             MutableStateFlow(
                 HomeScreenContract.State(
