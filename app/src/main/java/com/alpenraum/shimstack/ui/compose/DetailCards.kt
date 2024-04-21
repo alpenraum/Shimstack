@@ -24,13 +24,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.models.bike.Bike
-import com.alpenraum.shimstack.data.models.bike.BikeType
-import com.alpenraum.shimstack.data.models.pressure.Pressure
-import com.alpenraum.shimstack.data.models.suspension.Damping
-import com.alpenraum.shimstack.data.models.suspension.Suspension
-import com.alpenraum.shimstack.data.models.tire.Tire
+import com.alpenraum.shimstack.model.bike.Bike
+import com.alpenraum.shimstack.model.bike.BikeType
+import com.alpenraum.shimstack.model.pressure.Pressure
+import com.alpenraum.shimstack.model.suspension.Damping
+import com.alpenraum.shimstack.model.suspension.Suspension
+import com.alpenraum.shimstack.model.tire.Tire
 import com.alpenraum.shimstack.ui.features.mainScreens.home.UIDataLabel
+import com.alpenraum.shimstack.ui.getFrontSuspensionUIData
+import com.alpenraum.shimstack.ui.getRearSuspensionUIData
+import com.alpenraum.shimstack.ui.getTireUIData
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import kotlinx.collections.immutable.ImmutableList
 
@@ -273,7 +276,14 @@ private val testBike =
     Bike(
         name = "1",
         type = BikeType.UNKNOWN,
-        frontSuspension = Suspension(Pressure(60.0), Damping(1), Damping(1), 3, 140),
+        frontSuspension =
+            Suspension(
+                Pressure(60.0),
+                Damping(1),
+                Damping(1),
+                3,
+                140
+            ),
         frontTire =
             Tire(
                 Pressure(20.0),
@@ -288,7 +298,14 @@ private val testBikeMax =
     Bike(
         name = "1",
         type = BikeType.UNKNOWN,
-        frontSuspension = Suspension(Pressure(60.0), Damping(1, 2), Damping(3, 4), 5, 420),
+        frontSuspension =
+            Suspension(
+                Pressure(60.0),
+                Damping(1, 2),
+                Damping(3, 4),
+                5,
+                420
+            ),
         frontTire =
             Tire(
                 Pressure(20.0),

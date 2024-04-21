@@ -30,7 +30,7 @@ class DecisionButtonConfig(
 fun DecisionScreen(
     @DrawableRes imageRes: Int?,
     @StringRes contentRes: Int,
-    vararg buttons: DecisionButtonConfig,
+    buttons: List<DecisionButtonConfig>,
     modifier: Modifier = Modifier
 ) {
     DecisionScreen(imageContent = {
@@ -43,7 +43,7 @@ fun DecisionScreen(
     imageContent: @Composable () -> Unit,
     @StringRes contentRes: Int,
     modifier: Modifier = Modifier,
-    vararg buttons: DecisionButtonConfig
+    buttons: List<DecisionButtonConfig>
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -82,10 +82,12 @@ private fun DecisionScreenPreview() {
         DecisionScreen(
             imageRes = R.drawable.ic_launcher_foreground,
             contentRes = R.string.copy_no_shock,
-            DecisionButtonConfig(R.string.mm, true) {},
-            DecisionButtonConfig(R.string.mm, false) {},
-            DecisionButtonConfig(R.string.mm, false) {},
-            DecisionButtonConfig(R.string.mm, true) {}
+            listOf(
+                DecisionButtonConfig(R.string.mm, true) {},
+                DecisionButtonConfig(R.string.mm, false) {},
+                DecisionButtonConfig(R.string.mm, false) {},
+                DecisionButtonConfig(R.string.mm, true) {}
+            )
         )
     }
 }

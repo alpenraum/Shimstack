@@ -6,8 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.BikeRepository
-import com.alpenraum.shimstack.data.models.bike.Bike
-import com.alpenraum.shimstack.data.models.pressure.Pressure
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import com.alpenraum.shimstack.ui.features.navArgs
@@ -39,7 +37,7 @@ class BikeDetailsViewModel
 
         private val _state: MutableStateFlow<BikeDetailsContract.State> =
             MutableStateFlow(
-                BikeDetailsContract.State(Bike.empty())
+                BikeDetailsContract.State(com.alpenraum.shimstack.model.bike.Bike.empty())
             )
         override val state: StateFlow<BikeDetailsContract.State>
             get() = _state.asStateFlow()
@@ -115,7 +113,7 @@ class BikeDetailsViewModel
                         _state.value.bike.copy(
                             frontTire =
                                 _state.value.bike.frontTire.copy(
-                                    pressure = Pressure(pressure)
+                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(pressure)
                                 )
                         )
                     emitNewState(newBike)
@@ -151,7 +149,7 @@ class BikeDetailsViewModel
                         _state.value.bike.copy(
                             rearTire =
                                 _state.value.bike.rearTire.copy(
-                                    pressure = Pressure(pressure)
+                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(pressure)
                                 )
                         )
                     emitNewState(newBike)
@@ -175,7 +173,7 @@ class BikeDetailsViewModel
                         _state.value.bike.copy(
                             frontSuspension =
                                 _state.value.bike.frontSuspension?.copy(
-                                    pressure = Pressure(pressure)
+                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(pressure)
                                 )
                         )
                     emitNewState(newBike)
@@ -211,7 +209,7 @@ class BikeDetailsViewModel
                         _state.value.bike.copy(
                             rearSuspension =
                                 _state.value.bike.rearSuspension?.copy(
-                                    pressure = Pressure(pressure)
+                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(pressure)
                                 )
                         )
                     emitNewState(newBike)
@@ -244,7 +242,7 @@ class BikeDetailsViewModel
         }
 
         private suspend fun emitNewState(
-            bike: Bike,
+            bike: com.alpenraum.shimstack.model.bike.Bike,
             editMode: Boolean = true
         ) {
             _state.emit(
@@ -261,7 +259,7 @@ interface BikeDetailsContract :
     UnidirectionalViewModel<BikeDetailsContract.State, BikeDetailsContract.Intent, BikeDetailsContract.Event> {
     @Immutable
     data class State(
-        val bike: Bike,
+        val bike: com.alpenraum.shimstack.model.bike.Bike,
         val editMode: Boolean = false,
         val validationFailure: ValidateBikeUseCase.DetailsFailure? = null
     )
@@ -284,7 +282,7 @@ interface BikeDetailsContract :
         sealed class Input : Intent() {
             class BikeName(val name: String) : Input()
 
-            class BikeType(val type: com.alpenraum.shimstack.data.models.bike.BikeType) : Input()
+            class BikeType(val type: com.alpenraum.shimstack.model.bike.BikeType) : Input()
 
             class FrontTirePressure(val pressure: String) : Input()
 

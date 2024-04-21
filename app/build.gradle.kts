@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.androidx.compose.material3.window.size)
     implementation(libs.com.google.android.material)
     implementation(project(":core:database"))
+    implementation(project(":core:model"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

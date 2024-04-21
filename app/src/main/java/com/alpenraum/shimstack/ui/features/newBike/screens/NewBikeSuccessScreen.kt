@@ -38,14 +38,17 @@ fun NewBikeSuccessScreen(
         },
         contentRes = R.string.copy_new_bike_success,
         modifier = Modifier,
-        DecisionButtonConfig(R.string.label_done, true) {
-            intent(NewBikeContract.Intent.OnFlowFinished)
-        },
-        DecisionButtonConfig(R.string.label_add_another_bike, false) {
-            navigator?.navigate(EntryScreenDestination, onlyIfResumed = true) {
-                popUpTo(EntryScreenDestination)
-            }
-        }
+        buttons =
+            listOf(
+                DecisionButtonConfig(R.string.label_done, true) {
+                    intent(NewBikeContract.Intent.OnFlowFinished)
+                },
+                DecisionButtonConfig(R.string.label_add_another_bike, false) {
+                    navigator?.navigate(EntryScreenDestination, onlyIfResumed = true) {
+                        popUpTo(EntryScreenDestination)
+                    }
+                }
+            )
     )
 }
 

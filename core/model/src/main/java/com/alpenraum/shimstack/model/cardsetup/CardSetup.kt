@@ -1,9 +1,7 @@
-package com.alpenraum.shimstack.data.models.cardsetup
+package com.alpenraum.shimstack.model.cardsetup
 
-import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.persistentListOf
 
-@Immutable
 data class CardSetup(val type: CardType, val bigCard: Boolean) {
     companion object {
         fun defaultConfig() =

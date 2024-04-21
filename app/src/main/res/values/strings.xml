@@ -56,15 +56,6 @@
     <string name="copy_new_bike_existing_setup">Do you already have a suspension setup for your bike?</string>
 
 
-    <string name="label_road_type">Road bike</string>
-    <string name="label_gravel_type">Gravel</string>
-    <string name="label_dh_type">Downhill</string>
-    <string name="label_xc_type">Cross Country</string>
-    <string name="label_trail_type">Trail</string>
-    <string name="label_all_mtn_type">All Mountain</string>
-    <string name="label_enduro_type">Enduro</string>
-    <string name="label_unknown_type" />
-
     <string name="label_name">Name</string>
     <string name="label_type">Type</string>
     <string name="label_travel">Travel</string>

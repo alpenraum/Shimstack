@@ -50,12 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.models.bike.Bike
-import com.alpenraum.shimstack.data.models.bike.BikeType
-import com.alpenraum.shimstack.data.models.pressure.Pressure
-import com.alpenraum.shimstack.data.models.suspension.Damping
-import com.alpenraum.shimstack.data.models.suspension.Suspension
-import com.alpenraum.shimstack.data.models.tire.Tire
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.ButtonText
@@ -63,6 +57,12 @@ import com.alpenraum.shimstack.ui.compose.CrossfadeTransition
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.TextInput
 import com.alpenraum.shimstack.ui.compose.number
+import com.alpenraum.shimstack.ui.getFormattedCompression
+import com.alpenraum.shimstack.ui.getFormattedInternalRimWidth
+import com.alpenraum.shimstack.ui.getFormattedPressure
+import com.alpenraum.shimstack.ui.getFormattedRebound
+import com.alpenraum.shimstack.ui.getFormattedTireWidth
+import com.alpenraum.shimstack.ui.getFormattedTravel
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.alpenraum.shimstack.usecases.ValidateBikeUseCase
 import com.ramcosta.composedestinations.annotation.Destination
@@ -267,8 +267,8 @@ private fun EditBikeHeading(
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                 expanded = false
             }) {
-                BikeType.entries.forEach { selectionOption ->
-                    if (selectionOption != BikeType.UNKNOWN) {
+                com.alpenraum.shimstack.model.bike.BikeType.entries.forEach { selectionOption ->
+                    if (selectionOption != com.alpenraum.shimstack.model.bike.BikeType.UNKNOWN) {
                         DropdownMenuItem(text = {
                             Text(text = stringResource(selectionOption.labelRes))
                         }, onClick = {
@@ -318,7 +318,7 @@ private fun RearTireBlock(
 
 @Composable
 private fun TireBlock(
-    tire: Tire,
+    tire: com.alpenraum.shimstack.model.tire.Tire,
     @StringRes label: Int,
     intents: (BikeDetailsContract.Intent) -> Unit,
     context: Context,
@@ -517,7 +517,7 @@ private fun TextPair(
 private fun SuspensionBlock(
     @StringRes label: Int,
     context: Context,
-    suspension: Suspension,
+    suspension: com.alpenraum.shimstack.model.suspension.Suspension,
     editMode: Boolean,
     isFront: Boolean,
     showError: Boolean,
@@ -647,19 +647,19 @@ private fun Preview() {
         Content(
             state =
                 BikeDetailsContract.State(
-                    Bike.empty()
+                    com.alpenraum.shimstack.model.bike.Bike.empty()
                         .copy(
                             name = "Specialized Stumpjumper",
-                            type = BikeType.ALL_MTN,
+                            type = com.alpenraum.shimstack.model.bike.BikeType.ALL_MTN,
                             frontSuspension =
-                                Suspension(
-                                    pressure = Pressure(10.0),
-                                    compression = Damping(0, 1),
-                                    rebound = Damping(2, 3),
+                                com.alpenraum.shimstack.model.suspension.Suspension(
+                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(10.0),
+                                    compression = com.alpenraum.shimstack.model.suspension.Damping(0, 1),
+                                    rebound = com.alpenraum.shimstack.model.suspension.Damping(2, 3),
                                     travel = 150,
                                     tokens = 5
                                 ),
-                            rearSuspension = Suspension(150)
+                            rearSuspension = com.alpenraum.shimstack.model.suspension.Suspension(150)
                         )
                 ),
             intents = {}
@@ -674,19 +674,19 @@ private fun EditPreview() {
         Content(
             state =
                 BikeDetailsContract.State(
-                    Bike.empty()
+                    com.alpenraum.shimstack.model.bike.Bike.empty()
                         .copy(
                             name = "Specialized Stumpjumper",
-                            type = BikeType.ALL_MTN,
+                            type = com.alpenraum.shimstack.model.bike.BikeType.ALL_MTN,
                             frontSuspension =
-                                Suspension(
-                                    pressure = Pressure(10.0),
-                                    compression = Damping(0, 1),
-                                    rebound = Damping(2, 3),
+                                com.alpenraum.shimstack.model.suspension.Suspension(
+                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(10.0),
+                                    compression = com.alpenraum.shimstack.model.suspension.Damping(0, 1),
+                                    rebound = com.alpenraum.shimstack.model.suspension.Damping(2, 3),
                                     travel = 150,
                                     tokens = 5
                                 ),
-                            rearSuspension = Suspension(150)
+                            rearSuspension = com.alpenraum.shimstack.model.suspension.Suspension(150)
                         ),
                     validationFailure =
                         ValidateBikeUseCase.DetailsFailure(

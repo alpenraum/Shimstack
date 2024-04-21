@@ -1,7 +1,5 @@
-package com.bawagpsk.bawagpsk.codingConventions
+package com.alpenraum.shimstack.codingConventions
 
-import com.alpenraum.shimstack.codingConventions.scopeFromProjectWithoutTests
-import com.alpenraum.shimstack.codingConventions.withMemberVariables
 import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.api.ext.list.properties
 import com.lemonappdev.konsist.api.ext.list.withConstructors

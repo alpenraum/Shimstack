@@ -1,12 +1,11 @@
-package com.alpenraum.shimstack.data.models.biketemplate
+package com.alpenraum.shimstack.model.biketemplate
 
-import com.alpenraum.shimstack.core.database.models.BikeTemplateDTO
-import com.alpenraum.shimstack.data.models.bike.Bike
-import com.alpenraum.shimstack.data.models.bike.BikeType
-import com.alpenraum.shimstack.data.models.pressure.Pressure
-import com.alpenraum.shimstack.data.models.suspension.Damping
-import com.alpenraum.shimstack.data.models.suspension.Suspension
-import com.alpenraum.shimstack.data.models.tire.Tire
+import com.alpenraum.shimstack.model.bike.Bike
+import com.alpenraum.shimstack.model.bike.BikeType
+import com.alpenraum.shimstack.model.pressure.Pressure
+import com.alpenraum.shimstack.model.suspension.Damping
+import com.alpenraum.shimstack.model.suspension.Suspension
+import com.alpenraum.shimstack.model.tire.Tire
 
 data class BikeTemplate(
     val id: Int?,
@@ -35,19 +34,6 @@ data class BikeTemplate(
                 rearTireWidthInMM = 45.0
             )
     }
-
-    fun toDTO() =
-        BikeTemplateDTO(
-            id,
-            name,
-            type.id,
-            isEBike,
-            frontSuspensionTravelInMM,
-            rearSuspensionTravelInMM,
-            frontTireWidthInMM,
-            frontRimWidthInMM,
-            rearTireWidthInMM
-        )
 
     fun toBike() =
         Bike(

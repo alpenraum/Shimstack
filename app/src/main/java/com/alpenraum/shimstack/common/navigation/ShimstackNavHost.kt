@@ -1,6 +1,7 @@
 package com.alpenraum.shimstack.common.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -8,7 +9,7 @@ import androidx.navigation.compose.NavHost
 // TODO: everything here
 
 // @HiltViewModel
-internal class NavViewModel
+class NavViewModel
 //  @Inject
     constructor(
         @StartDestinationRoute val startDestinationRoute: String,

@@ -3,8 +3,8 @@ package com.alpenraum.shimstack.ui.features.mainScreens.home
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
 import com.alpenraum.shimstack.data.bike.LocalBikeRepository
-import com.alpenraum.shimstack.data.models.bike.Bike
-import com.alpenraum.shimstack.data.models.cardsetup.CardSetup
+import com.alpenraum.shimstack.model.bike.Bike
+import com.alpenraum.shimstack.model.cardsetup.CardSetup
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

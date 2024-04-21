@@ -62,9 +62,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.models.bike.Bike
-import com.alpenraum.shimstack.data.models.cardsetup.CardSetup
-import com.alpenraum.shimstack.data.models.cardsetup.CardType
+import com.alpenraum.shimstack.model.bike.Bike
+import com.alpenraum.shimstack.model.cardsetup.CardSetup
+import com.alpenraum.shimstack.model.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.CARD_MARGIN

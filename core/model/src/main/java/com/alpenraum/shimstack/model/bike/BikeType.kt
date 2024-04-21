@@ -1,7 +1,7 @@
-package com.alpenraum.shimstack.data.models.bike
+package com.alpenraum.shimstack.model.bike
 
 import androidx.annotation.StringRes
-import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.model.R
 
 enum class BikeType(
     val id: Int,

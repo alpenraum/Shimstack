@@ -3,8 +3,9 @@ package com.alpenraum.shimstack.data.bikeTemplates
 import android.content.Context
 import com.alpenraum.shimstack.core.database.dao.BikeTemplateDAO
 import com.alpenraum.shimstack.core.database.models.BikeTemplateDTO
-import com.alpenraum.shimstack.data.models.biketemplate.BikeTemplate
+import com.alpenraum.shimstack.data.toDTO
 import com.alpenraum.shimstack.data.toDomain
+import com.alpenraum.shimstack.model.biketemplate.BikeTemplate
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter

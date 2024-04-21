@@ -1,8 +1,9 @@
 package com.alpenraum.shimstack.data.bike
 
 import com.alpenraum.shimstack.core.database.dao.BikeDAO
-import com.alpenraum.shimstack.data.models.bike.Bike
 import com.alpenraum.shimstack.data.toDTO
+import com.alpenraum.shimstack.data.toDomain
+import com.alpenraum.shimstack.model.bike.Bike
 import javax.inject.Inject
 
 class LocalBikeRepository
@@ -13,11 +14,11 @@ class LocalBikeRepository
         }
 
         override suspend fun getAllBikes(): List<Bike> {
-            return bikeDAO.getAllBikes().map { Bike.fromDto(it) }
+            return bikeDAO.getAllBikes().map { it.toDomain() }
         }
 
         override suspend fun getBike(id: Int): Bike? {
-            return bikeDAO.getBike(id)?.let { Bike.fromDto(it) }
+            return bikeDAO.getBike(id)?.toDomain()
         }
 
         override suspend fun updateBike(bike: Bike) {

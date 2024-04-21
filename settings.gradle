@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Shimstack"
 include ':app'
 include ':core:database'
+include ':core:model'

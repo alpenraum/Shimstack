@@ -1,7 +1,7 @@
 package com.alpenraum.shimstack.usecases
 
-import com.alpenraum.shimstack.data.models.bike.Bike
-import com.alpenraum.shimstack.data.models.bike.BikeType
+import com.alpenraum.shimstack.model.bike.Bike
+import com.alpenraum.shimstack.model.bike.BikeType
 import com.alpenraum.shimstack.ui.features.newBike.DetailsInputData
 import javax.inject.Inject
 

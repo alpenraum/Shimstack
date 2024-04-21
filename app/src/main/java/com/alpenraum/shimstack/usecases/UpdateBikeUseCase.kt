@@ -2,7 +2,7 @@ package com.alpenraum.shimstack.usecases
 
 import android.util.Log
 import com.alpenraum.shimstack.data.bike.BikeRepository
-import com.alpenraum.shimstack.data.models.bike.Bike
+import com.alpenraum.shimstack.model.bike.Bike
 import javax.inject.Inject
 
 class UpdateBikeUseCase

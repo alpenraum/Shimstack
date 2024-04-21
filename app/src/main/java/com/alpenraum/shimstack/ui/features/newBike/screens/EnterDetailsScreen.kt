@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.data.models.bike.BikeType
+import com.alpenraum.shimstack.model.bike.BikeType
 import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
@@ -140,7 +140,7 @@ fun EnterDetailsScreen(
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                     expanded = false
                 }) {
-                    BikeType.values().forEach { selectionOption ->
+                    BikeType.entries.forEach { selectionOption ->
                         if (selectionOption != BikeType.UNKNOWN) {
                             DropdownMenuItem(text = {
                                 Text(text = stringResource(selectionOption.labelRes))
