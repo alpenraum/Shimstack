@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
@@ -74,6 +73,7 @@ dependencies {
     implementation(libs.com.google.android.material)
     implementation(project(":core:database"))
     implementation(project(":core:model"))
+    implementation(project(":core:data"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
@@ -91,11 +91,8 @@ dependencies {
     implementation(libs.com.google.accompanist.placeholder.material)
     implementation(libs.com.google.accompanist.navigation.material)
 
-    implementation(libs.androidx.security.crypto.ktx)
     implementation(libs.androidx.biometric.ktx)
-    implementation(libs.com.squareup.moshi)
-    implementation(libs.com.squareup.moshi.kotlin)
-    ksp(libs.com.squareup.moshi.kotlin.codegen)
+
     implementation(libs.com.google.accompanist.pager.indicators)
 
     implementation(libs.com.airbnb.android.lottie.compose)
@@ -106,7 +103,4 @@ dependencies {
     testImplementation(libs.konsist)
 
     testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
-}
-kapt {
-    correctErrorTypes = true
 }

@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.common.stores
+package com.alpenraum.shimstack.datastore
 
 import android.content.Context
 import android.os.Build
@@ -6,8 +6,8 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.alpenraum.shimstack.common.CryptoConstants.ANDROID_KEYSTORE
-import com.alpenraum.shimstack.common.CryptoConstants.ENCRYPTED_PREFERENCES_NAME
+import com.alpenraum.shimstack.datastore.DatastoreConstants.ANDROID_KEYSTORE
+import com.alpenraum.shimstack.datastore.DatastoreConstants.ENCRYPTED_PREFERENCES_NAME
 import com.squareup.moshi.Moshi
 import javax.inject.Inject
 import javax.inject.Singleton

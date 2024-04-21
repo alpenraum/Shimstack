@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.common.stores
+package com.alpenraum.shimstack.datastore
 
 interface KeyValueStore {
     fun getAll(): Map<String?, *>?

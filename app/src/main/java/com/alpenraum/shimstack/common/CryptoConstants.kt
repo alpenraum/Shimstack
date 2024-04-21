@@ -10,7 +10,4 @@ object CryptoConstants {
         } else {
             BiometricManager.Authenticators.BIOMETRIC_STRONG
         }
-    const val ANDROID_KEYSTORE = "AndroidKeyStore"
-
-    const val ENCRYPTED_PREFERENCES_NAME = "shimstack_secrets"
 }
