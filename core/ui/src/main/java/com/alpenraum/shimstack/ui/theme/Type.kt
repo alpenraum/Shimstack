@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.ui.R
 
 // Replace with your font locations
 val Roboto = FontFamily.Default

@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.ui.theme.AppTheme
 
 class DecisionButtonConfig(
@@ -80,13 +79,13 @@ fun DecisionScreen(
 private fun DecisionScreenPreview() {
     AppTheme {
         DecisionScreen(
-            imageRes = R.drawable.ic_launcher_foreground,
-            contentRes = R.string.copy_no_shock,
+            imageRes = com.google.android.material.R.drawable.abc_btn_check_to_on_mtrl_000,
+            contentRes = androidx.appcompat.R.string.abc_action_bar_home_description,
             listOf(
-                DecisionButtonConfig(R.string.mm, true) {},
-                DecisionButtonConfig(R.string.mm, false) {},
-                DecisionButtonConfig(R.string.mm, false) {},
-                DecisionButtonConfig(R.string.mm, true) {}
+                DecisionButtonConfig(androidx.appcompat.R.string.abc_action_bar_home_description, true) {},
+                DecisionButtonConfig(androidx.appcompat.R.string.abc_action_bar_home_description, false) {},
+                DecisionButtonConfig(androidx.appcompat.R.string.abc_action_bar_home_description, false) {},
+                DecisionButtonConfig(androidx.appcompat.R.string.abc_action_bar_home_description, true) {}
             )
         )
     }

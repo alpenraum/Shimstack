@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.alpenraum.shimstack.model"
-    compileSdk = GradleConstants.TARGET_SDK
+    namespace = "com.alpenraum.shimstack.ui"
+    compileSdk = 34
 
     defaultConfig {
-        minSdk = GradleConstants.MIN_SDK
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -27,6 +27,13 @@ android {
     kotlinOptions {
         jvmTarget = GradleConstants.JVM_TARGET
     }
+
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = GradleConstants.COMPOSE_COMPILER_VERSION
+    }
 }
 
 dependencies {
@@ -34,9 +41,20 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.com.google.android.material)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(project(":core:common"))
+    implementation(libs.ui.tooling.preview.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
 
-    implementation(libs.org.jetbrains.kotlinx.collections.immutable)
+    implementation(libs.com.google.accompanist.placeholder.material)
+    implementation(libs.com.google.accompanist.navigation.material)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material3.window.size)
+    implementation(libs.com.google.android.material)
+    implementation(libs.androidx.material3.android)
+
+    implementation(libs.io.github.raamcosta.compose.destinations.animations.core)
 }

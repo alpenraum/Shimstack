@@ -3,7 +3,6 @@ package com.alpenraum.shimstack.ui.features.newBike
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.common.DispatchersProvider
 import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.model.bike.Bike
@@ -45,7 +44,7 @@ class NewBikeViewModel
         private val bikeRepository: LocalBikeRepository,
         private val validateBikeUseCase: ValidateBikeUseCase,
         private val validateSetupUseCase: ValidateSetupUseCase,
-        dispatchersProvider: DispatchersProvider
+        dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
     ) : BaseViewModel(dispatchersProvider), NewBikeContract {
         private val _state = MutableStateFlow(NewBikeContract.State())
         override val state: StateFlow<NewBikeContract.State>

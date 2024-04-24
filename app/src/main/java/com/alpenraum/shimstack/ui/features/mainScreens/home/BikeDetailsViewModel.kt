@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.common.DispatchersProvider
 import com.alpenraum.shimstack.data.bike.BikeRepository
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
@@ -31,7 +30,7 @@ class BikeDetailsViewModel
         private val validateBikeUseCase: ValidateBikeUseCase,
         private val updateBikeUseCase: UpdateBikeUseCase,
         private val bikeRepository: BikeRepository,
-        dispatchersProvider: DispatchersProvider
+        dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
     ) :
     BaseViewModel(dispatchersProvider), BikeDetailsContract {
         private val navArgs = savedStateHandle.navArgs<BikeDetailsNavArgs>()

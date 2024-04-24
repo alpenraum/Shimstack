@@ -11,6 +11,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -88,9 +89,10 @@ class MainActivity : BaseActivity<MainViewModel>() {
     private fun initializeContent() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(activity = this)
+            val useDynamicTheme = ShimstackDataStore.useDynamicTheme?.collectAsState(false)
 
             CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
-                AppTheme {
+                AppTheme(useDynamicTheme = useDynamicTheme?.value == true) {
                     CompositionLocalProvider(
                         LocalContentColor provides MaterialTheme.colorScheme.onSurface
                     ) {
@@ -127,5 +129,5 @@ class MainActivity : BaseActivity<MainViewModel>() {
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
-    AppTheme {}
+    AppTheme(useDynamicTheme = false) {}
 }

@@ -8,20 +8,20 @@ plugins {
 
 android {
     namespace = "com.alpenraum.shimstack"
-    compileSdk = 34
+    compileSdk = GradleConstants.TARGET_SDK
 
     defaultConfig {
         applicationId = "com.alpenraum.shimstack"
-        minSdk = 26
-        targetSdk = 34
+        minSdk = GradleConstants.MIN_SDK
+        targetSdk = GradleConstants.TARGET_SDK
         versionCode = 1
         versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = GradleConstants.JAVA_TARGET
+            targetCompatibility = GradleConstants.JAVA_TARGET
         }
     }
 
@@ -42,14 +42,14 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = GradleConstants.JVM_TARGET
     }
 
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = GradleConstants.COMPOSE_COMPILER_VERSION
     }
     packaging {
         resources {
@@ -67,13 +67,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.org.jetbrains.kotlinx.coroutines.android)
     implementation(libs.androidx.datastore.preferences)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3.window.size)
-    implementation(libs.com.google.android.material)
+
     implementation(project(":core:database"))
     implementation(project(":core:model"))
     implementation(project(":core:data"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:common"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
@@ -88,15 +87,21 @@ dependencies {
     implementation(libs.io.github.raamcosta.compose.destinations.core)
     ksp(libs.io.github.raamcosta.compose.destinations.ksp)
     implementation(libs.io.github.raamcosta.compose.destinations.animations.core)
+
     implementation(libs.com.google.accompanist.placeholder.material)
     implementation(libs.com.google.accompanist.navigation.material)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material3.window.size)
+    implementation(libs.com.google.android.material)
+    implementation(libs.androidx.material3.android)
 
     implementation(libs.androidx.biometric.ktx)
 
     implementation(libs.com.google.accompanist.pager.indicators)
 
     implementation(libs.com.airbnb.android.lottie.compose)
-    implementation(libs.androidx.material3.android)
+
     implementation(libs.androidx.ui.tooling.preview.android)
 
     //  ktlintRuleset(libs.io.nlopez.compose.rules.ktlint)

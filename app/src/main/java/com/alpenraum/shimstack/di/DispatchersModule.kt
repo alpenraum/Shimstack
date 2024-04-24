@@ -1,7 +1,5 @@
 package com.alpenraum.shimstack.di
 
-import com.alpenraum.shimstack.common.DefaultDispatchersProvider
-import com.alpenraum.shimstack.common.DispatchersProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,12 +12,13 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DispatchersModule {
     @Provides
-    fun provideAppCoroutineScope(dispatchersProvider: DispatchersProvider): CoroutineScope =
+    fun provideAppCoroutineScope(dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider): CoroutineScope =
         CoroutineScope(
             dispatchersProvider.main + SupervisorJob(null)
         )
 
     @Singleton
     @Provides
-    fun provideDispatchersProvider(): DispatchersProvider = DefaultDispatchersProvider()
+    fun provideDispatchersProvider(): com.alpenraum.shimstack.common.DispatchersProvider =
+        com.alpenraum.shimstack.common.DefaultDispatchersProvider()
 }

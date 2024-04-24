@@ -3,8 +3,10 @@ androidx-appcompat = "1.6.1"
 androidx-core = "1.12.0"
 androidx-splashscreen = "1.0.1"
 androidx-lifecycle = "2.7.0"
+benchmark-macro-junit4 = "1.2.4"
 hilt-android-gradle-plugin = "2.48.1"
 konsist = "0.15.1"
+kotlin-bom = "1.9.20"
 ktlint-gradle = "12.1.0"
 coroutines-version = "1.8.0"
 kotlinx-collections-immutable = "0.3.7"
@@ -35,16 +37,21 @@ material3-android = "1.2.1"
 ui-tooling-preview-android = "1.6.5"
 agp = "8.3.0"
 kotlin = "1.9.10"
+androidx-ui-tooling-preview-android = "1.6.6"
+uiautomator = "2.2.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
+androidx-benchmark-macro-junit4 = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "benchmark-macro-junit4" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-splashscreen" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt-android-gradle-plugin" }
 konsist = { module = "com.lemonappdev:konsist", version.ref = "konsist" }
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin-bom" }
 ktlint-gradle = { module = "org.jlleitschuh.gradle:ktlint-gradle", version.ref = "ktlint-gradle" }
 org-jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines-version" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-version" }
@@ -82,6 +89,7 @@ io-nlopez-compose-rules-ktlint = { module = "io.nlopez.compose.rules:ktlint", ve
 com-airbnb-android-lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "com-airbnb-android" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3-android" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "ui-tooling-preview-android" }
+ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "androidx-ui-tooling-preview-android" }
 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

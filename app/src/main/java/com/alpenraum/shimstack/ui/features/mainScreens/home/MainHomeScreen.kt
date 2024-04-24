@@ -68,9 +68,6 @@ import com.alpenraum.shimstack.model.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.CARD_MARGIN
-import com.alpenraum.shimstack.ui.compose.ForkDetails
-import com.alpenraum.shimstack.ui.compose.ShockDetails
-import com.alpenraum.shimstack.ui.compose.TireDetails
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.features.destinations.BikeDetailsScreenDestination

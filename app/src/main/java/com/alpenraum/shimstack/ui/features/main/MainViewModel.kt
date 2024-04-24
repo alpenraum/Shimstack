@@ -1,7 +1,6 @@
 package com.alpenraum.shimstack.ui.features.main
 
 import android.content.Context
-import com.alpenraum.shimstack.common.DispatchersProvider
 import com.alpenraum.shimstack.common.stores.ShimstackDataStore
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -14,7 +13,7 @@ class MainViewModel
     @Inject
     constructor(
         private val bikeTemplateRepository: LocalBikeTemplateRepository,
-        dispatchersProvider: DispatchersProvider
+        dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
     ) : BaseViewModel(dispatchersProvider) {
         fun onBound(context: Context) {
             iOScope.launch {

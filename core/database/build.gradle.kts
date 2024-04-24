@@ -10,10 +10,10 @@ plugins {
 
 android {
     namespace = "com.alpenraum.shimstack.core.database"
-    compileSdk = 34
+    compileSdk = GradleConstants.TARGET_SDK
 
     defaultConfig {
-        minSdk = 24
+        minSdk = GradleConstants.MIN_SDK
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -26,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = GradleConstants.JAVA_TARGET
+        targetCompatibility = GradleConstants.JAVA_TARGET
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = GradleConstants.JVM_TARGET
     }
 }
 

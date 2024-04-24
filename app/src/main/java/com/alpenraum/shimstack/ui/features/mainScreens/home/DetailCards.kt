@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.compose
+package com.alpenraum.shimstack.ui.features.mainScreens.home
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +30,10 @@ import com.alpenraum.shimstack.model.pressure.Pressure
 import com.alpenraum.shimstack.model.suspension.Damping
 import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.model.tire.Tire
-import com.alpenraum.shimstack.ui.features.mainScreens.home.UIDataLabel
+import com.alpenraum.shimstack.ui.compose.AdaptiveSizeText
+import com.alpenraum.shimstack.ui.compose.CARD_DIMENSION
+import com.alpenraum.shimstack.ui.compose.CARD_MARGIN
+import com.alpenraum.shimstack.ui.compose.VerticalDivider
 import com.alpenraum.shimstack.ui.getFrontSuspensionUIData
 import com.alpenraum.shimstack.ui.getRearSuspensionUIData
 import com.alpenraum.shimstack.ui.getTireUIData

@@ -5,8 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.alpenraum.shimstack.ui.compose.fadeIn
-import com.alpenraum.shimstack.ui.compose.fadeOut
 import com.alpenraum.shimstack.ui.features.mainScreens.home.HomeScreen
 import com.alpenraum.shimstack.ui.features.mainScreens.settings.SettingsScreen
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -21,10 +19,10 @@ fun BottomNavigationGraph(
         navController,
         startDestination = BottomNavigationItem.Home.route,
         modifier = modifier,
-        enterTransition = { fadeIn() },
-        exitTransition = { fadeOut() },
-        popExitTransition = { fadeOut() },
-        popEnterTransition = { fadeIn() }
+        enterTransition = { com.alpenraum.shimstack.ui.compose.fadeIn() },
+        exitTransition = { com.alpenraum.shimstack.ui.compose.fadeOut() },
+        popExitTransition = { com.alpenraum.shimstack.ui.compose.fadeOut() },
+        popEnterTransition = { com.alpenraum.shimstack.ui.compose.fadeIn() }
     ) {
         composable(BottomNavigationItem.Home.route) {
             HomeScreen(rootNavigator)

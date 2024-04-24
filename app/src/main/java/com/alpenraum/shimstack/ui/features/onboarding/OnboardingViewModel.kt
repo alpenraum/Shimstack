@@ -1,6 +1,5 @@
 package com.alpenraum.shimstack.ui.features.onboarding
 
-import com.alpenraum.shimstack.common.DispatchersProvider
 import com.alpenraum.shimstack.common.stores.ShimstackDataStore
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel
     @Inject
-    constructor(dispatchersProvider: DispatchersProvider) : BaseViewModel(dispatchersProvider) {
+    constructor(dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider) : BaseViewModel(dispatchersProvider) {
         @Suppress("ktlint:standard:backing-property-naming")
         private val _event = MutableSharedFlow<Event>()
 

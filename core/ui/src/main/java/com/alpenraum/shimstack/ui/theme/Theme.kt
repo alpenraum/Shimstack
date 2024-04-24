@@ -2,6 +2,7 @@ package com.alpenraum.shimstack.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -10,12 +11,10 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.alpenraum.shimstack.common.stores.ShimstackDataStore
 
 private val LightColors =
     lightColorScheme(
@@ -83,17 +82,17 @@ private val DarkColors =
         scrim = md_theme_dark_scrim
     )
 
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
 fun supportsDynamic(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
 @Composable
 fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
+    useDynamicTheme: Boolean = false,
     content:
         @Composable()
         () -> Unit
 ) {
-    val useDynamicTheme =
-        ShimstackDataStore.useDynamicTheme?.collectAsState(initial = false)?.value == true
     val colors =
         if (!useDarkTheme) {
             if (supportsDynamic() && useDynamicTheme) {
