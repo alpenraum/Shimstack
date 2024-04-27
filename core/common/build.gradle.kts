@@ -1,10 +1,8 @@
 plugins {
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
-
-    id("dagger.hilt.android.plugin")
-
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin)
+    alias(libs.plugins.google.dagger.hilt)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
