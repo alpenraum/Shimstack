@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.features.onboarding
+package com.alpenraum.shimstack.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.theme.AppTheme
 
@@ -60,7 +59,8 @@ fun OnboardingScreen(
         Card(
             shape = RoundedCornerShape(8.dp, 8.dp, 0.dp, 0.dp),
             modifier =
-                Modifier.weight(1.0f)
+                Modifier
+                    .weight(1.0f)
                     .fillMaxWidth(),
             elevation = CardDefaults.elevatedCardElevation(),
             colors =
@@ -69,7 +69,10 @@ fun OnboardingScreen(
                 )
         ) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

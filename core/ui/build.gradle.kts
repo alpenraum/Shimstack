@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = "com.alpenraum.shimstack.ui"
-    compileSdk = 34
+    compileSdk = GradleConstants.TARGET_SDK
 
     defaultConfig {
-        minSdk = 24
+        minSdk = GradleConstants.MIN_SDK
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

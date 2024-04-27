@@ -36,9 +36,13 @@ com-airbnb-android = "6.3.0"
 material3-android = "1.2.1"
 ui-tooling-preview-android = "1.6.5"
 agp = "8.3.0"
-kotlin = "1.9.10"
+kotlin = "1.9.23"
 androidx-ui-tooling-preview-android = "1.6.6"
 uiautomator = "2.2.0"
+navigation-common-ktx = "2.7.7"
+navigation-runtime-ktx = "2.7.7"
+datastore-core-android = "1.1.0"
+datastore-preferences-core-jvm = "1.1.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -90,6 +94,9 @@ com-airbnb-android-lottie-compose = { module = "com.airbnb.android:lottie-compos
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3-android" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "ui-tooling-preview-android" }
 ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "androidx-ui-tooling-preview-android" }
+androidx-navigation-common-ktx = { group = "androidx.navigation", name = "navigation-common-ktx", version.ref = "navigation-common-ktx" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation-runtime-ktx" }
+androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastore-core-android" }
 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

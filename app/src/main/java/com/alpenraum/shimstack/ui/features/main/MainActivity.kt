@@ -15,13 +15,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.alpenraum.shimstack.common.stores.ShimstackDataStore
+import com.alpenraum.shimstack.datastore.ShimstackDatastore
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.fadeIn
 import com.alpenraum.shimstack.ui.compose.fadeOut
 import com.alpenraum.shimstack.ui.features.NavGraphs
-import com.alpenraum.shimstack.ui.features.destinations.OnboardingFeatureDestination
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -29,12 +28,14 @@ import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaul
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<MainViewModel>() {
     override val viewModelClass: Class<MainViewModel> = MainViewModel::class.java
+
+    @Inject
+    lateinit var datastore: ShimstackDatastore
 
 //    private val isBiometricAuthenticationAvailableUseCase = IsBiometricAuthenticationAvailableUseCase()
 //    private val triggerBiometricsPromptUseCase = TriggerBiometricsPromptUseCase()
@@ -69,17 +70,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 //        }
     }
 
-    private val navGraph by lazy {
-        runBlocking {
-            if (ShimstackDataStore.isOnboardingCompleted?.firstOrNull() == true) {
-                NavGraphs.root
-            } else {
-                NavGraphs.root.copy(
-                    startRoute = OnboardingFeatureDestination
-                )
-            }
-        }
-    }
+    private val navGraph = NavGraphs.root
 
     @OptIn(
         ExperimentalMaterial3WindowSizeClassApi::class,
@@ -89,10 +80,10 @@ class MainActivity : BaseActivity<MainViewModel>() {
     private fun initializeContent() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(activity = this)
-            val useDynamicTheme = ShimstackDataStore.useDynamicTheme?.collectAsState(false)
+            val useDynamicTheme = datastore.useDynamicTheme.collectAsState(false)
 
             CompositionLocalProvider(LocalWindowSizeClass provides windowSizeClass) {
-                AppTheme(useDynamicTheme = useDynamicTheme?.value == true) {
+                AppTheme(useDynamicTheme = useDynamicTheme.value) {
                     CompositionLocalProvider(
                         LocalContentColor provides MaterialTheme.colorScheme.onSurface
                     ) {
@@ -119,6 +110,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                             navGraph = navGraph,
                             engine = navHostEngine
                         )
+                        // TODO: ShimstackNavHost()
                     }
                 }
             }

@@ -1,6 +1,7 @@
-package com.alpenraum.shimstack.ui.features.onboarding
+package com.alpenraum.shimstack.onboarding
 
-import com.alpenraum.shimstack.common.stores.ShimstackDataStore
+import com.alpenraum.shimstack.common.DispatchersProvider
+import com.alpenraum.shimstack.datastore.ShimstackDatastore
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,7 +13,10 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel
     @Inject
-    constructor(dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider) : BaseViewModel(dispatchersProvider) {
+    constructor(
+        dispatchersProvider: DispatchersProvider,
+        private val dataStore: ShimstackDatastore
+    ) : BaseViewModel(dispatchersProvider) {
         @Suppress("ktlint:standard:backing-property-naming")
         private val _event = MutableSharedFlow<Event>()
 
@@ -25,7 +29,7 @@ class OnboardingViewModel
         override fun onStart() {
             super.onStart()
             viewModelScope.launch {
-                ShimstackDataStore.isOnboardingCompleted?.collectLatest {
+                dataStore.isOnboardingCompleted.collectLatest {
                     if (it) _event.emit(Event.NavigateToHomeScreen)
                 }
             }
@@ -33,7 +37,7 @@ class OnboardingViewModel
 
         fun onSkipClicked() {
             viewModelScope.launch {
-                ShimstackDataStore.setIsOnboardingCompleted(true)
+                dataStore.setIsOnboardingCompleted(true)
                 _event.emit(Event.NavigateToHomeScreen)
             }
         }

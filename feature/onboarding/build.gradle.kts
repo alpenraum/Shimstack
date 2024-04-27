@@ -3,12 +3,12 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
     id("dagger.hilt.android.plugin")
-
+    id("kotlin-parcelize")
     id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.alpenraum.shimstack.datastore"
+    namespace = "com.alpenraum.shimstack.onboarding"
     compileSdk = GradleConstants.TARGET_SDK
 
     defaultConfig {
@@ -31,6 +31,13 @@ android {
     kotlinOptions {
         jvmTarget = GradleConstants.JVM_TARGET
     }
+
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = GradleConstants.COMPOSE_COMPILER_VERSION
+    }
 }
 
 dependencies {
@@ -38,20 +45,22 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.com.google.android.material)
-    implementation(libs.androidx.datastore.core.android)
-    implementation(libs.androidx.datastore.preferences)
+    implementation(project(":core:navigation"))
+    implementation(project(":core:ui"))
+    implementation(libs.androidx.material3.android)
+    implementation(libs.ui.tooling.preview.android)
+    implementation(project(":core:common"))
+    implementation(project(":core:datastore"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
 
-    implementation(libs.androidx.security.crypto.ktx)
+    implementation(libs.com.google.accompanist.placeholder.material)
+    implementation(libs.com.google.accompanist.navigation.material)
+    implementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.com.google.dagger.hilt.android)
     ksp(libs.com.google.dagger.hilt.compiler)
-
-    implementation(libs.com.squareup.moshi)
-    implementation(libs.com.squareup.moshi.kotlin)
-    ksp(libs.com.squareup.moshi.kotlin.codegen)
-
-    implementation(project(":core:common"))
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

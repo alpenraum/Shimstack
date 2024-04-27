@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack.datastore
 
+@Deprecated("use ShimstackDatastore instead")
 interface KeyValueStore {
     fun getAll(): Map<String?, *>?
 

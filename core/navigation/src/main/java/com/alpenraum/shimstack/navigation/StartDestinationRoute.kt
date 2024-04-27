@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.common.navigation
+package com.alpenraum.shimstack.navigation
 
 import javax.inject.Qualifier
 

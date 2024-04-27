@@ -2,7 +2,7 @@ package com.alpenraum.shimstack.ui.features.mainScreens.settings
 
 import androidx.annotation.StringRes
 import com.alpenraum.shimstack.R
-import com.alpenraum.shimstack.common.stores.ShimstackDataStore
+import com.alpenraum.shimstack.datastore.ShimstackDatastore
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +20,7 @@ import javax.inject.Inject
 class SettingsViewModel
     @Inject
     constructor(
+        private val datastore: ShimstackDatastore,
         dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
     ) : BaseViewModel(dispatchersProvider), SettingsContract {
         private val _state = MutableStateFlow(SettingsContract.State())
@@ -47,7 +48,7 @@ class SettingsViewModel
                         listOf(
                             Pair(
                                 SettingsContract.Settings.USE_DYNAMIC_THEME,
-                                ShimstackDataStore.useDynamicTheme
+                                datastore.useDynamicTheme
                             )
                         )
                     )
@@ -61,7 +62,7 @@ class SettingsViewModel
         ) = iOScope.launch {
             when (settings) {
                 SettingsContract.Settings.USE_DYNAMIC_THEME ->
-                    ShimstackDataStore.setUseDynamicTheme(
+                    datastore.setUseDynamicTheme(
                         newSetting
                     )
             }

@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.common.navigation
+package com.alpenraum.shimstack.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
