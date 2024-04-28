@@ -1,8 +1,8 @@
 package com.alpenraum.shimstack.base
 
+import com.alpenraum.shimstack.common.DispatchersProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -20,14 +20,14 @@ abstract class BaseTest {
 class CoroutineTestRule(
     private var testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
 ) : TestWatcher() {
-    val testDispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider = TestDispatchersProvider(testDispatcher)
+    val testDispatchersProvider: DispatchersProvider = TestDispatchersProvider(testDispatcher)
 
     override fun starting(description: Description) {
         super.starting(description)
         try {
             Dispatchers.setMain(testDispatcher)
         } catch (e: Exception) {
-            testDispatcher = TestCoroutineDispatcher()
+            testDispatcher = UnconfinedTestDispatcher()
             Dispatchers.setMain(testDispatcher)
         }
     }

@@ -60,13 +60,10 @@ android {
 
 dependencies {
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.appcompat.resources)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.org.jetbrains.kotlinx.coroutines.android)
-    implementation(libs.androidx.datastore.preferences)
 
     implementation(project(":core:database"))
     implementation(project(":core:model"))
@@ -78,11 +75,8 @@ dependencies {
     implementation(project(":feature:onboarding"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
     implementation(libs.org.jetbrains.kotlinx.collections.immutable)
-    implementation(libs.com.squareup.retrofit2.retrofit)
-    implementation(libs.com.squareup.retrofit2.converter.gson)
-    implementation(libs.com.squareup.okhttp3.logging.interceptor)
+
     implementation(libs.com.google.dagger.hilt.android)
     ksp(libs.com.google.dagger.hilt.compiler)
     implementation(libs.androidx.navigation.compose)

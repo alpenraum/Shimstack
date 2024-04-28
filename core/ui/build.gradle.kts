@@ -44,17 +44,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(project(":core:common"))
     implementation(libs.ui.tooling.preview.android)
+    implementation(libs.androidx.navigation.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
 
     implementation(libs.com.google.accompanist.placeholder.material)
-    implementation(libs.com.google.accompanist.navigation.material)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3.window.size)
     implementation(libs.com.google.android.material)
     implementation(libs.androidx.material3.android)
-
-    implementation(libs.io.github.raamcosta.compose.destinations.animations.core)
 }

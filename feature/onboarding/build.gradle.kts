@@ -42,21 +42,17 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.com.google.android.material)
     implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
-    implementation(libs.androidx.material3.android)
-    implementation(libs.ui.tooling.preview.android)
     implementation(project(":core:common"))
     implementation(project(":core:datastore"))
+
+    implementation(libs.androidx.material3.android)
+    implementation(libs.ui.tooling.preview.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
 
-    implementation(libs.com.google.accompanist.placeholder.material)
-    implementation(libs.com.google.accompanist.navigation.material)
     implementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.com.google.dagger.hilt.android)

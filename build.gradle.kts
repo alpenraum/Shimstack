@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.android.kotlin) apply false
     alias(libs.plugins.google.dagger.hilt) apply false
     alias(libs.plugins.google.ksp) apply false
+
+    alias(libs.plugins.gradle.dependency.analysis)
 }
 allprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
@@ -26,5 +28,11 @@ allprojects {
             exclude("**/generated/**")
             include("**/kotlin/**")
         }
+    }
+}
+
+dependencyAnalysis {
+    structure {
+        ignoreKtx(true) // default is false
     }
 }

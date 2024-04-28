@@ -35,14 +35,10 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.com.google.android.material)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
 
     implementation(libs.androidx.security.crypto.ktx)
 
@@ -50,7 +46,6 @@ dependencies {
     ksp(libs.com.google.dagger.hilt.compiler)
 
     implementation(libs.com.squareup.moshi)
-    implementation(libs.com.squareup.moshi.kotlin)
     ksp(libs.com.squareup.moshi.kotlin.codegen)
 
     implementation(project(":core:common"))

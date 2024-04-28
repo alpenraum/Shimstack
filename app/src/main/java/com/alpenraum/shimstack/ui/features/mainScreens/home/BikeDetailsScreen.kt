@@ -58,7 +58,6 @@ import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.ButtonText
-import com.alpenraum.shimstack.ui.compose.CrossfadeTransition
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.TextInput
 import com.alpenraum.shimstack.ui.compose.number
@@ -74,7 +73,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 
-@Destination(style = CrossfadeTransition::class, navArgsDelegate = BikeDetailsNavArgs::class)
+@Destination(navArgsDelegate = BikeDetailsNavArgs::class)
 @Composable
 fun BikeDetailsScreen(
     modifier: Modifier = Modifier,
