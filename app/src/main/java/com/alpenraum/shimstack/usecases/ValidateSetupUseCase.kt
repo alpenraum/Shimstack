@@ -1,6 +1,6 @@
 package com.alpenraum.shimstack.usecases
 
-import com.alpenraum.shimstack.ui.features.newBike.SetupInputData
+import com.alpenraum.shimstack.model.bikesetup.SetupInputData
 import javax.inject.Inject
 
 class ValidateSetupUseCase

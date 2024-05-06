@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fab_add_bike">Neues Fahrrad hinzufügen</string>
+    <string name="copy_add_new_bike">Füge dein erstes Fahrrrad hinzu!</string>
+
+    <string name="title_home">Home</string>
+    <string name="label_continue">Weiter</string>
+    <string name="label_next_step">Nächster Schritt</string>
+    <string name="label_yes">Ja</string>
+    <string name="label_no">Nein</string>
+    <string name="label_done">Fertig</string>
+    <string name="label_edit">Ändern</string>
+    <string name="label_delete">Löschen</string>
+    <string name="label_save">Speichern</string>
+
+    <string name="settings">Einstellungen</string>
+    <string name="settings_dynamic_theme">Android Farben verwenden</string>
+
+    <string name="copy_no_fork">Die Gabel hat keine Einstellungenmöglichkeiten.</string>
+    <string name="copy_no_shock">Der Dämpfer hat keine Einstellungenmöglichkeiten.</string>
+</resources>

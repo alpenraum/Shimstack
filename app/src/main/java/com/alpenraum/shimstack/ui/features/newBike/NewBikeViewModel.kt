@@ -2,11 +2,15 @@ package com.alpenraum.shimstack.ui.features.newBike
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
+import androidx.navigation.NavController
 import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
+import com.alpenraum.shimstack.home.usecases.ValidateBikeUseCase
 import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.model.bike.BikeType
+import com.alpenraum.shimstack.model.bikesetup.DetailsInputData
+import com.alpenraum.shimstack.model.bikesetup.SetupInputData
 import com.alpenraum.shimstack.model.biketemplate.BikeTemplate
 import com.alpenraum.shimstack.model.pressure.Pressure
 import com.alpenraum.shimstack.model.suspension.Damping
@@ -14,7 +18,6 @@ import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.model.tire.Tire
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
-import com.alpenraum.shimstack.usecases.ValidateBikeUseCase
 import com.alpenraum.shimstack.usecases.ValidateSetupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -81,7 +84,10 @@ class NewBikeViewModel
             filterJob?.cancel()
         }
 
-        override fun intent(intent: NewBikeContract.Intent) {
+        override fun intent(
+            intent: NewBikeContract.Intent,
+            navController: NavController
+        ) {
             iOScope.launch {
                 when (intent) {
                     is NewBikeContract.Intent.Filter -> {
@@ -297,13 +303,7 @@ class NewBikeViewModel
                         hasHSCShock = hasHSCShock ?: state.value.hasHSCShock,
                         hasHSRShock = hasHSRShock ?: state.value.hasHSRShock,
                         detailsValidationErrors =
-                            if (detailsValidationResult?.isSuccess()
-                                    ?.not() == true
-                            ) {
-                                detailsValidationResult as ValidateBikeUseCase.DetailsFailure
-                            } else {
-                                null
-                            },
+                            detailsValidationResult?.getOrNull(),
                         setupValidationErrors =
                             if (setupValidationResult?.isSuccess()?.not() == true) {
                                 setupValidationResult as ValidateSetupUseCase.SetupFailure
@@ -565,30 +565,3 @@ interface NewBikeContract :
         data object OnFlowFinished : Intent()
     }
 }
-
-data class DetailsInputData(
-    val name: String? = null,
-    val frontTravel: String? = null,
-    val rearTravel: String? = null,
-    val frontTireWidth: String? = null,
-    val rearTireWidth: String? = null,
-    val frontInternalRimWidth: String? = null,
-    val rearInternalRimWidth: String? = null
-)
-
-data class SetupInputData(
-    val frontTirePressure: String? = null,
-    val rearTirePressure: String? = null,
-    val frontSuspensionPressure: String? = null,
-    val rearSuspensionPressure: String? = null,
-    val frontSuspensionTokens: String? = null,
-    val rearSuspensionTokens: String? = null,
-    val frontSuspensionLSC: String? = null,
-    val frontSuspensionHSC: String? = null,
-    val frontSuspensionLSR: String? = null,
-    val frontSuspensionHSR: String? = null,
-    val rearSuspensionLSC: String? = null,
-    val rearSuspensionHSC: String? = null,
-    val rearSuspensionLSR: String? = null,
-    val rearSuspensionHSR: String? = null
-)

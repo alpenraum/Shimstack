@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.google.ksp) apply false
 
     alias(libs.plugins.gradle.dependency.analysis)
+    alias(libs.plugins.jetbrainsKotlinJvm) apply false
 }
 allprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")

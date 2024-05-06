@@ -45,6 +45,7 @@ navigation-runtime-ktx = "2.7.7"
 datastore-core-android = "1.1.0"
 dependency-analysis = "1.31.0"
 annotation-jvm = "1.7.1"
+jetbrains-kotlin-jvm = "1.9.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -108,3 +109,4 @@ android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 gradle-dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependency-analysis" }
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrains-kotlin-jvm" }

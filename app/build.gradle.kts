@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:datastore"))
     implementation(project(":feature:onboarding"))
+    implementation(project(":feature:bikeservice"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     implementation(libs.org.jetbrains.kotlinx.collections.immutable)
@@ -81,8 +82,6 @@ dependencies {
     ksp(libs.com.google.dagger.hilt.compiler)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.io.github.raamcosta.compose.destinations.core)
-    ksp(libs.io.github.raamcosta.compose.destinations.ksp)
     implementation(libs.io.github.raamcosta.compose.destinations.animations.core)
 
     implementation(libs.com.google.accompanist.placeholder.material)
@@ -94,8 +93,6 @@ dependencies {
     implementation(libs.androidx.material3.android)
 
     implementation(libs.androidx.biometric.ktx)
-
-    implementation(libs.com.google.accompanist.pager.indicators)
 
     implementation(libs.com.airbnb.android.lottie.compose)
 

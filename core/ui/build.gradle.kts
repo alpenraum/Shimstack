@@ -45,6 +45,8 @@ dependencies {
     implementation(project(":core:common"))
     implementation(libs.ui.tooling.preview.android)
     implementation(libs.androidx.navigation.common.ktx)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(project(":core:model"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="label_continue">Weiter</string>
+    <string name="label_next_step">Nächster Schritt</string>
+    <string name="label_yes">Ja</string>
+    <string name="label_no">Nein</string>
+    <string name="label_done">Fertig</string>
+    <string name="label_edit">Ändern</string>
+    <string name="label_delete">Löschen</string>
+    <string name="label_save">Speichern</string>
+
+    <string name="err_technical">Etwas ist schief gelaufen…uncool! (Entwickler ist schuld)</string>
+
+    <string name="label_name">Name</string>
+    <string name="label_type">Typ</string>
+    <string name="label_travel">Federweg</string>
+    <string name="label_front_suspension">Vordere Federung</string>
+    <string name="label_rear_suspension">Hintere Federung</string>
+    <string name="label_rear_tire">Hinterer Reifen</string>
+    <string name="label_front_tire">Vorderer Reifen</string>
+    <string name="label_tire_width">Reifenbreite</string>
+    <string name="label_internal_rim_width">Interne Felgenbreite</string>
+    <string name="label_tire_pressure">Reifendruck</string>
+
+    <string name="tire">Reifen</string>
+    <string name="rear">Hinten</string>
+    <string name="front">Vorne</string>
+
+    <string name="fork">Gabel</string>
+    <string name="shock">Dämpfer</string>
+
+    <string name="pressure">Druck</string>
+    <string name="comp">Comp</string>
+    <string name="rebound">Rebound</string>
+    <string name="tokens">Tokens</string>
+</resources>

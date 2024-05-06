@@ -47,7 +47,6 @@ import com.alpenraum.shimstack.ui.compose.number
 import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
 import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
-import com.alpenraum.shimstack.usecases.ValidateBikeUseCase
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -385,7 +384,7 @@ private fun Error() {
             state =
                 NewBikeContract.State(
                     detailsValidationErrors =
-                        ValidateBikeUseCase.DetailsFailure(
+                        com.alpenraum.shimstack.home.usecases.ValidateBikeUseCase.DetailsFailure(
                             name = false,
                             type = false,
                             frontTire = false,
