@@ -96,7 +96,7 @@ dependencies {
 
     implementation(libs.com.airbnb.android.lottie.compose)
 
-    implementation(libs.androidx.ui.tooling.preview.android)
+    implementation(libs.ui.tooling.preview.android)
 
     //  ktlintRuleset(libs.io.nlopez.compose.rules.ktlint)
     testImplementation(libs.konsist)
