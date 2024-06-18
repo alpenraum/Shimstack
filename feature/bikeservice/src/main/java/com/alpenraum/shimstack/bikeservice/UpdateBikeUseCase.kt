@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.home.usecases
+package com.alpenraum.shimstack.bikeservice
 
 import android.util.Log
 import com.alpenraum.shimstack.data.bike.BikeRepository
@@ -7,7 +7,9 @@ import javax.inject.Inject
 
 class UpdateBikeUseCase
     @Inject
-    constructor(private val bikeRepository: BikeRepository) {
+    constructor(
+        private val bikeRepository: BikeRepository
+    ) {
         suspend operator fun invoke(bike: Bike): Boolean {
             return try {
                 val id = bike.id ?: return false

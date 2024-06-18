@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.usecases
+package com.alpenraum.shimstack.bikeservice
 
 sealed class Result {
     open class Success : Result()

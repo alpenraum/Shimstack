@@ -1,9 +1,9 @@
-package com.alpenraum.shimstack.ui.features.newBike
+package com.alpenraum.shimstack.newbike
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.navigation.NavController
-import com.alpenraum.shimstack.R
+import com.alpenraum.shimstack.bikeservice.ValidateSetupUseCase
 import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.home.usecases.ValidateBikeUseCase
@@ -18,7 +18,6 @@ import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.model.tire.Tire
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
-import com.alpenraum.shimstack.usecases.ValidateSetupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -38,7 +37,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
-// FIXME: Really unhappy with the state management in this, needs to be done differently
+// FIXME: Really unhappy with the state management in this, needs to be done differently. Needs to be split up into separate screens and VMs
 @HiltViewModel
 class NewBikeViewModel
     @Inject
@@ -48,7 +47,8 @@ class NewBikeViewModel
         private val validateBikeUseCase: ValidateBikeUseCase,
         private val validateSetupUseCase: ValidateSetupUseCase,
         dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
-    ) : BaseViewModel(dispatchersProvider), NewBikeContract {
+    ) : BaseViewModel(dispatchersProvider),
+        NewBikeContract {
         private val _state = MutableStateFlow(NewBikeContract.State())
         override val state: StateFlow<NewBikeContract.State>
             get() = _state.asStateFlow()
@@ -64,9 +64,10 @@ class NewBikeViewModel
             iOScope.launch {
                 _state.emit(
                     NewBikeContract.State(
-                        bikeTemplateRepository.getBikeTemplatesFilteredByName(
-                            ""
-                        ).toImmutableList()
+                        bikeTemplateRepository
+                            .getBikeTemplatesFilteredByName(
+                                ""
+                            ).toImmutableList()
                     )
                 )
             }
@@ -406,8 +407,7 @@ class NewBikeViewModel
             )
     }
 
-interface NewBikeContract :
-    UnidirectionalViewModel<NewBikeContract.State, NewBikeContract.Intent, NewBikeContract.Event> {
+interface NewBikeContract : UnidirectionalViewModel<NewBikeContract.State, NewBikeContract.Intent, NewBikeContract.Event> {
     @Immutable
     data class State(
         val bikeTemplates: ImmutableList<BikeTemplate> = persistentListOf(),
@@ -502,65 +502,123 @@ interface NewBikeContract :
     }
 
     sealed class Intent {
-        class Filter(val filter: String) : Intent()
+        class Filter(
+            val filter: String
+        ) : Intent()
 
-        class BikeTemplateSelected(val bike: BikeTemplate) : Intent()
+        class BikeTemplateSelected(
+            val bike: BikeTemplate
+        ) : Intent()
 
-        class OnNextClicked(val flowFinished: Boolean = false) : Intent()
+        class OnNextClicked(
+            val flowFinished: Boolean = false
+        ) : Intent()
 
         sealed class DataInput : Intent()
 
-        class BikeNameInput(val name: String) : DataInput()
+        class BikeNameInput(
+            val name: String
+        ) : DataInput()
 
-        class BikeTypeInput(val type: BikeType) : DataInput()
+        class BikeTypeInput(
+            val type: BikeType
+        ) : DataInput()
 
-        class EbikeInput(val isEbike: Boolean) : DataInput()
+        class EbikeInput(
+            val isEbike: Boolean
+        ) : DataInput()
 
-        class HSCInput(val hasHsc: Boolean, val isFork: Boolean) : DataInput()
+        class HSCInput(
+            val hasHsc: Boolean,
+            val isFork: Boolean
+        ) : DataInput()
 
-        class HSRInput(val hasHsr: Boolean, val isFork: Boolean) : DataInput()
+        class HSRInput(
+            val hasHsr: Boolean,
+            val isFork: Boolean
+        ) : DataInput()
 
-        class FrontSuspensionInput(val travel: String?) : DataInput()
+        class FrontSuspensionInput(
+            val travel: String?
+        ) : DataInput()
 
-        class RearSuspensionInput(val travel: String?) : DataInput()
+        class RearSuspensionInput(
+            val travel: String?
+        ) : DataInput()
 
-        class FrontTireWidthInput(val width: String) : DataInput()
+        class FrontTireWidthInput(
+            val width: String
+        ) : DataInput()
 
-        class RearTireWidthInput(val width: String) : DataInput()
+        class RearTireWidthInput(
+            val width: String
+        ) : DataInput()
 
-        class FrontInternalRimWidthInput(val width: String?) : DataInput()
+        class FrontInternalRimWidthInput(
+            val width: String?
+        ) : DataInput()
 
-        class RearInternalRimWidthInput(val width: String?) : DataInput()
+        class RearInternalRimWidthInput(
+            val width: String?
+        ) : DataInput()
 
         sealed class SetupInput : Intent()
 
-        class FrontTirePressureInput(val pressure: String?) : SetupInput()
+        class FrontTirePressureInput(
+            val pressure: String?
+        ) : SetupInput()
 
-        class RearTirePressureInput(val pressure: String?) : SetupInput()
+        class RearTirePressureInput(
+            val pressure: String?
+        ) : SetupInput()
 
-        class FrontSuspensionPressure(val pressure: String?) : SetupInput()
+        class FrontSuspensionPressure(
+            val pressure: String?
+        ) : SetupInput()
 
-        class FrontSuspensionTokens(val tokens: String?) : SetupInput()
+        class FrontSuspensionTokens(
+            val tokens: String?
+        ) : SetupInput()
 
-        class RearSuspensionPressure(val pressure: String?) : SetupInput()
+        class RearSuspensionPressure(
+            val pressure: String?
+        ) : SetupInput()
 
-        class RearSuspensionTokens(val tokens: String?) : SetupInput()
+        class RearSuspensionTokens(
+            val tokens: String?
+        ) : SetupInput()
 
-        class FrontSuspensionLSC(val clicks: String?) : SetupInput()
+        class FrontSuspensionLSC(
+            val clicks: String?
+        ) : SetupInput()
 
-        class FrontSuspensionHSC(val clicks: String?) : SetupInput()
+        class FrontSuspensionHSC(
+            val clicks: String?
+        ) : SetupInput()
 
-        class FrontSuspensionLSR(val clicks: String?) : SetupInput()
+        class FrontSuspensionLSR(
+            val clicks: String?
+        ) : SetupInput()
 
-        class FrontSuspensionHSR(val clicks: String?) : SetupInput()
+        class FrontSuspensionHSR(
+            val clicks: String?
+        ) : SetupInput()
 
-        class RearSuspensionLSC(val clicks: String?) : SetupInput()
+        class RearSuspensionLSC(
+            val clicks: String?
+        ) : SetupInput()
 
-        class RearSuspensionHSC(val clicks: String?) : SetupInput()
+        class RearSuspensionHSC(
+            val clicks: String?
+        ) : SetupInput()
 
-        class RearSuspensionLSR(val clicks: String?) : SetupInput()
+        class RearSuspensionLSR(
+            val clicks: String?
+        ) : SetupInput()
 
-        class RearSuspensionHSR(val clicks: String?) : SetupInput()
+        class RearSuspensionHSR(
+            val clicks: String?
+        ) : SetupInput()
 
         data object OnFlowFinished : Intent()
     }

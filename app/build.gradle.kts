@@ -73,7 +73,7 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:datastore"))
     implementation(project(":feature:onboarding"))
-    implementation(project(":feature:bikeservice"))
+    implementation(project(":feature:bikeService"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     implementation(libs.org.jetbrains.kotlinx.collections.immutable)

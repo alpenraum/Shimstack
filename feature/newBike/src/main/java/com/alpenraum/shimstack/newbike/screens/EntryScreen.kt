@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.features.newBike.screens
+package com.alpenraum.shimstack.newbike.screens
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -30,29 +30,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alpenraum.shimstack.R
+import androidx.navigation.NavController
 import com.alpenraum.shimstack.model.bike.BikeType
 import com.alpenraum.shimstack.model.biketemplate.BikeTemplate
+import com.alpenraum.shimstack.newbike.NewBikeContract
+import com.alpenraum.shimstack.newbike.NewBikeDestinations
+import com.alpenraum.shimstack.newbike.R
 import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.TextInput
-import com.alpenraum.shimstack.ui.features.destinations.EnterDetailsScreenDestination
-import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
-import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
 import com.alpenraum.shimstack.ui.theme.AppTheme
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import com.alpenraum.shimstack.ui.R as CommonR
 
 @Composable
-@Destination
-@NewBikeNavGraph(start = true)
 fun EntryScreen(
-    navigator: DestinationsNavigator? = null,
+    navigator: NavController? = null,
     state: NewBikeContract.State,
     intent: (NewBikeContract.Intent) -> Unit,
     event: SharedFlow<NewBikeContract.Event>
@@ -62,8 +59,7 @@ fun EntryScreen(
             when (it) {
                 NewBikeContract.Event.NavigateToNextStep ->
                     navigator?.navigate(
-                        EnterDetailsScreenDestination,
-                        onlyIfResumed = true
+                        NewBikeDestinations.ENTER_DETAILS.route
                     )
 
                 else -> {}
@@ -121,7 +117,7 @@ fun EntryScreen(
                 LargeButton(onClick = {
                     intent(NewBikeContract.Intent.OnNextClicked())
                 }, modifier = Modifier.padding(vertical = 16.dp)) {
-                    ButtonText(R.string.label_next_step)
+                    ButtonText(CommonR.string.label_next_step)
                 }
             }
         }
@@ -139,9 +135,8 @@ private fun ListItem(
                 .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
                 .padding(
                     vertical = 8.dp
-                )
-                .padding(horizontal = 16.dp)
-                .semantics(true) {},
+                ).padding(horizontal = 16.dp)
+            .semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

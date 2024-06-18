@@ -52,7 +52,7 @@ dependencies {
     implementation(libs.ui.tooling.preview.android)
     implementation(project(":core:data"))
     implementation(project(":core:model"))
-    implementation(project(":feature:bikeservice"))
+    implementation(project(":feature:bikeService"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
 

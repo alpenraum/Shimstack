@@ -1,23 +1,20 @@
-package com.alpenraum.shimstack.ui.features.newBike.screens
+package com.alpenraum.shimstack.newbike.screens
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.alpenraum.shimstack.R
+import androidx.navigation.NavController
+import com.alpenraum.shimstack.newbike.NewBikeDestinations
+import com.alpenraum.shimstack.newbike.R
 import com.alpenraum.shimstack.ui.compose.DecisionButtonConfig
 import com.alpenraum.shimstack.ui.compose.DecisionScreen
-import com.alpenraum.shimstack.ui.features.destinations.EnterSetupScreenDestination
-import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
 import com.alpenraum.shimstack.ui.theme.AppTheme
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.alpenraum.shimstack.ui.R as CommonR
 
 @Composable
-@Destination
-@NewBikeNavGraph
-fun SetupDecisionScreen(navigator: DestinationsNavigator? = null) {
+fun SetupDecisionScreen(navController: NavController? = null) {
     val context = LocalContext.current
     DecisionScreen(
         imageRes = null,
@@ -25,10 +22,10 @@ fun SetupDecisionScreen(navigator: DestinationsNavigator? = null) {
         modifier = Modifier,
         buttons =
             listOf(
-                DecisionButtonConfig(R.string.label_yes, true) {
-                    navigator?.navigate(EnterSetupScreenDestination, onlyIfResumed = true)
+                DecisionButtonConfig(CommonR.string.label_yes, true) {
+                    navController?.navigate(NewBikeDestinations.ENTER_SETUP.route)
                 },
-                DecisionButtonConfig(R.string.label_no, false) {
+                DecisionButtonConfig(CommonR.string.label_no, false) {
                     Toast.makeText(context, "TODO: Insert Setup Wizard here", Toast.LENGTH_LONG).show()
                 }
             )

@@ -1,10 +1,10 @@
 package com.alpenraum.shimstack.ui.compose
 
 import android.content.Context
-import com.alpenraum.shimstack.R
 import com.alpenraum.shimstack.model.pressure.Pressure
 import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.model.tire.Tire
+import com.alpenraum.shimstack.ui.R
 
 // TOOD: EXTRACT TO USE CASES
 // region Tire
@@ -47,13 +47,12 @@ fun Suspension.getFormattedTravel(context: Context) = "$travel ${context.getStri
 
 // Region Pressure
 
-fun Pressure.toFormattedString(context: Context): String {
-    return if (true) { // TODO
+fun Pressure.toFormattedString(context: Context): String =
+    if (true) { // TODO
         "$pressureInBar ${context.getString(R.string.bar)}"
     } else {
         "$pressureInPSI ${context.getString(R.string.psi)}"
     }
-}
 
 // endRegion
 

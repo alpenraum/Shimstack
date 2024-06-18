@@ -4,9 +4,9 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
+import com.alpenraum.shimstack.bikeservice.UpdateBikeUseCase
 import com.alpenraum.shimstack.data.bike.BikeRepository
 import com.alpenraum.shimstack.home.navigation.HomeNavGraph
-import com.alpenraum.shimstack.home.usecases.UpdateBikeUseCase
 import com.alpenraum.shimstack.home.usecases.ValidateBikeUseCase
 import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.ui.base.BaseViewModel
@@ -33,8 +33,8 @@ class BikeDetailsViewModel
         private val updateBikeUseCase: UpdateBikeUseCase,
         private val bikeRepository: BikeRepository,
         dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
-    ) :
-    BaseViewModel(dispatchersProvider), BikeDetailsContract {
+    ) : BaseViewModel(dispatchersProvider),
+        BikeDetailsContract {
         private val selectedBikeId: Int = savedStateHandle[HomeNavGraph.BikeDetails.ARGUMENT_ID] ?: -1
 
         private val _state: MutableStateFlow<BikeDetailsContract.State> =
@@ -116,7 +116,9 @@ class BikeDetailsViewModel
                         _state.value.bike.copy(
                             frontTire =
                                 _state.value.bike.frontTire.copy(
-                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(pressure)
+                                    pressure =
+                                        com.alpenraum.shimstack.model.pressure
+                                            .Pressure(pressure)
                                 )
                         )
                     emitNewState(newBike)
@@ -152,7 +154,9 @@ class BikeDetailsViewModel
                         _state.value.bike.copy(
                             rearTire =
                                 _state.value.bike.rearTire.copy(
-                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(pressure)
+                                    pressure =
+                                        com.alpenraum.shimstack.model.pressure
+                                            .Pressure(pressure)
                                 )
                         )
                     emitNewState(newBike)
@@ -176,7 +180,9 @@ class BikeDetailsViewModel
                         _state.value.bike.copy(
                             frontSuspension =
                                 _state.value.bike.frontSuspension?.copy(
-                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(pressure)
+                                    pressure =
+                                        com.alpenraum.shimstack.model.pressure
+                                            .Pressure(pressure)
                                 )
                         )
                     emitNewState(newBike)
@@ -212,7 +218,9 @@ class BikeDetailsViewModel
                         _state.value.bike.copy(
                             rearSuspension =
                                 _state.value.bike.rearSuspension?.copy(
-                                    pressure = com.alpenraum.shimstack.model.pressure.Pressure(pressure)
+                                    pressure =
+                                        com.alpenraum.shimstack.model.pressure
+                                            .Pressure(pressure)
                                 )
                         )
                     emitNewState(newBike)
@@ -281,33 +289,61 @@ interface BikeDetailsContract :
         data object OnSaveClicked : Intent()
 
         sealed class Input : Intent() {
-            class BikeName(val name: String) : Input()
+            class BikeName(
+                val name: String
+            ) : Input()
 
-            class BikeType(val type: com.alpenraum.shimstack.model.bike.BikeType) : Input()
+            class BikeType(
+                val type: com.alpenraum.shimstack.model.bike.BikeType
+            ) : Input()
 
-            class FrontTirePressure(val pressure: String) : Input()
+            class FrontTirePressure(
+                val pressure: String
+            ) : Input()
 
-            class FrontTireWidth(val width: String) : Input()
+            class FrontTireWidth(
+                val width: String
+            ) : Input()
 
-            class FrontTireInternalRimWidth(val width: String) : Input()
+            class FrontTireInternalRimWidth(
+                val width: String
+            ) : Input()
 
-            class RearTirePressure(val pressure: String) : Input()
+            class RearTirePressure(
+                val pressure: String
+            ) : Input()
 
-            class RearTireWidth(val width: String) : Input()
+            class RearTireWidth(
+                val width: String
+            ) : Input()
 
-            class RearTireInternalRimWidth(val width: String) : Input()
+            class RearTireInternalRimWidth(
+                val width: String
+            ) : Input()
 
-            class FrontSuspensionTravel(val travel: String) : Input()
+            class FrontSuspensionTravel(
+                val travel: String
+            ) : Input()
 
-            class RearSuspensionTravel(val travel: String) : Input()
+            class RearSuspensionTravel(
+                val travel: String
+            ) : Input()
 
-            class FrontSuspensionPressure(val pressure: String) : Input()
+            class FrontSuspensionPressure(
+                val pressure: String
+            ) : Input()
 
-            class RearSuspensionPressure(val pressure: String) : Input()
+            class RearSuspensionPressure(
+                val pressure: String
+            ) : Input()
 
-            class FrontSuspensionTokens(val tokens: String) : Input()
+            class FrontSuspensionTokens(
+                val tokens: String
+            ) : Input()
 
-            class RearSuspensionTokens(val tokens: String) : Input()
+            class RearSuspensionTokens(
+                val tokens: String
+            ) : Input()
         }
     }
 }

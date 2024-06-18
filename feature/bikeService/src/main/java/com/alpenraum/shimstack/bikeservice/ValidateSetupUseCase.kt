@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.usecases
+package com.alpenraum.shimstack.bikeservice
 
 import com.alpenraum.shimstack.model.bikesetup.SetupInputData
 import javax.inject.Inject
@@ -10,21 +10,25 @@ class ValidateSetupUseCase
             val results =
                 buildList {
                     add(
-                        setupInputData.frontTirePressure?.toDoubleOrNull()
+                        setupInputData.frontTirePressure
+                            ?.toDoubleOrNull()
                             ?.let { validateTirePressure(it) }
                             ?: SubResult.FAILURE
                     )
                     add(
-                        setupInputData.rearTirePressure?.toDoubleOrNull()
+                        setupInputData.rearTirePressure
+                            ?.toDoubleOrNull()
                             ?.let { validateTirePressure(it) }
                             ?: SubResult.FAILURE
                     )
                     add(
-                        setupInputData.frontSuspensionPressure?.toDoubleOrNull()
+                        setupInputData.frontSuspensionPressure
+                            ?.toDoubleOrNull()
                             ?.let { validateSuspensionPressure(it, true) } ?: SubResult.FAILURE
                     )
                     add(
-                        setupInputData.rearSuspensionPressure?.toDoubleOrNull()
+                        setupInputData.rearSuspensionPressure
+                            ?.toDoubleOrNull()
                             ?.let { validateSuspensionPressure(it, false) } ?: SubResult.FAILURE
                     )
                     add(
@@ -86,9 +90,7 @@ class ValidateSetupUseCase
             }
         }
 
-        private fun validateClicks(clicks: Int): Boolean {
-            return clicks in 1..29
-        }
+        private fun validateClicks(clicks: Int): Boolean = clicks in 1..29
 
         object SetupFailure : Result.Failure()
 

@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.features.newBike.screens
+package com.alpenraum.shimstack.newbike.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -34,8 +34,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alpenraum.shimstack.R
+import androidx.navigation.NavController
 import com.alpenraum.shimstack.model.bike.BikeType
+import com.alpenraum.shimstack.newbike.NewBikeContract
+import com.alpenraum.shimstack.newbike.NewBikeDestinations
+import com.alpenraum.shimstack.newbike.R
 import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
@@ -44,21 +47,15 @@ import com.alpenraum.shimstack.ui.compose.TabletPreview
 import com.alpenraum.shimstack.ui.compose.TextInput
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.number
-import com.alpenraum.shimstack.ui.features.destinations.SetupDecisionScreenDestination
-import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
-import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import com.alpenraum.shimstack.ui.R as CommonR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Destination
-@NewBikeNavGraph
 fun EnterDetailsScreen(
-    navigator: DestinationsNavigator? = null,
+    navigator: NavController? = null,
     state: NewBikeContract.State,
     intent: (NewBikeContract.Intent) -> Unit,
     event: SharedFlow<NewBikeContract.Event>
@@ -67,7 +64,7 @@ fun EnterDetailsScreen(
         event.collectLatest {
             when (it) {
                 NewBikeContract.Event.NavigateToNextStep -> {
-                    navigator?.navigate(SetupDecisionScreenDestination, onlyIfResumed = true)
+                    navigator?.navigate(NewBikeDestinations.SETUP_DECISION.route)
                 }
 
                 else -> {}
@@ -98,7 +95,7 @@ fun EnterDetailsScreen(
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                 },
-            label = stringResource(id = R.string.label_name),
+            label = stringResource(id = CommonR.string.label_name),
             isError = state.detailsValidationErrors?.name == false,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
         )
@@ -126,7 +123,7 @@ fun EnterDetailsScreen(
                     readOnly = true,
                     value = stringResource(state.bikeType.labelRes),
                     onValueChange = {},
-                    label = stringResource(id = R.string.label_type),
+                    label = stringResource(id = CommonR.string.label_type),
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
                             expanded = expanded
@@ -164,7 +161,7 @@ fun EnterDetailsScreen(
         }
         val frontSuspensionTravel = state.detailsInput.frontTravel
         SuspensionInput(
-            headline = stringResource(id = R.string.label_front_suspension),
+            headline = stringResource(id = CommonR.string.label_front_suspension),
             travel = frontSuspensionTravel ?: "",
             isError = state.detailsValidationErrors?.frontSuspension == false,
             initialState = frontSuspensionTravel != null,
@@ -181,7 +178,7 @@ fun EnterDetailsScreen(
         )
         val rearSuspensionTravel = state.detailsInput.rearTravel
         SuspensionInput(
-            headline = stringResource(id = R.string.label_rear_suspension),
+            headline = stringResource(id = CommonR.string.label_rear_suspension),
             travel = rearSuspensionTravel ?: "",
             isError = state.detailsValidationErrors?.rearSuspension == false,
             initialState = rearSuspensionTravel != null,
@@ -197,7 +194,7 @@ fun EnterDetailsScreen(
             onHSRSwitchToggle = { intent(NewBikeContract.Intent.HSRInput(it, false)) }
         )
         TireInput(
-            headline = stringResource(id = R.string.label_front_tire),
+            headline = stringResource(id = CommonR.string.label_front_tire),
             tireWidth = state.detailsInput.frontTireWidth,
             internalRimWidth = state.detailsInput.frontInternalRimWidth,
             isError = state.detailsValidationErrors?.frontTire == false,
@@ -210,7 +207,7 @@ fun EnterDetailsScreen(
             }
         )
         TireInput(
-            headline = stringResource(id = R.string.label_rear_tire),
+            headline = stringResource(id = CommonR.string.label_rear_tire),
             tireWidth = state.detailsInput.rearTireWidth,
             internalRimWidth = state.detailsInput.rearInternalRimWidth,
             isError = state.detailsValidationErrors?.rearTire == false,
@@ -228,7 +225,7 @@ fun EnterDetailsScreen(
             },
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
-            ButtonText(textRes = R.string.label_next_step)
+            ButtonText(textRes = CommonR.string.label_next_step)
         }
     }
 }
@@ -271,9 +268,9 @@ private fun ColumnScope.SuspensionInput(
                 onValueChange = { value ->
                     onValueChange(value)
                 },
-                suffix = stringResource(id = R.string.mm),
+                suffix = stringResource(id = CommonR.string.mm),
                 modifier = Modifier.padding(top = 8.dp),
-                label = stringResource(id = R.string.label_travel),
+                label = stringResource(id = CommonR.string.label_travel),
                 isError = isError,
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
             )
@@ -320,12 +317,12 @@ private fun ColumnScope.TireInput(
             onValueChange = { value ->
                 onTireWidthChanged(value)
             },
-            suffix = stringResource(id = R.string.mm),
+            suffix = stringResource(id = CommonR.string.mm),
             modifier =
-                Modifier
-                    .weight(1.0f)
-                    .padding(end = 16.dp),
-            label = stringResource(id = R.string.label_tire_width),
+            Modifier
+                .weight(1.0f)
+                .padding(end = 16.dp),
+            label = stringResource(id = CommonR.string.label_tire_width),
             isError = isError,
             keyboardOptions = KeyboardOptions.number(ImeAction.Next)
         )
@@ -338,8 +335,8 @@ private fun ColumnScope.TireInput(
                 onValueChange = { value ->
                     onRimWidthChanged(value)
                 },
-                suffix = stringResource(id = R.string.mm),
-                label = stringResource(id = R.string.label_internal_rim_width),
+                suffix = stringResource(id = CommonR.string.mm),
+                label = stringResource(id = CommonR.string.label_internal_rim_width),
                 isError = isError,
                 keyboardOptions =
                     KeyboardOptions.Default.copy(

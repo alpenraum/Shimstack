@@ -3,8 +3,6 @@ package com.alpenraum.shimstack.ui.features.main
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -12,21 +10,15 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.rememberNavController
 import com.alpenraum.shimstack.datastore.ShimstackDatastore
+import com.alpenraum.shimstack.navigation.ShimstackNavHost
 import com.alpenraum.shimstack.ui.base.BaseActivity
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
-import com.alpenraum.shimstack.ui.compose.fadeIn
-import com.alpenraum.shimstack.ui.compose.fadeOut
-import com.alpenraum.shimstack.ui.features.NavGraphs
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaultAnimations
-import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
-import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -70,7 +62,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 //        }
     }
 
-    private val navGraph = NavGraphs.root
+    // private val navGraph = NavGraphs.root
 
     @OptIn(
         ExperimentalMaterial3WindowSizeClassApi::class,
@@ -87,30 +79,8 @@ class MainActivity : BaseActivity<MainViewModel>() {
                     CompositionLocalProvider(
                         LocalContentColor provides MaterialTheme.colorScheme.onSurface
                     ) {
-                        val navHostEngine =
-                            rememberAnimatedNavHostEngine(
-                                navHostContentAlignment = Alignment.TopCenter,
-                                rootDefaultAnimations =
-                                    RootNavGraphDefaultAnimations(
-                                        enterTransition = { fadeIn() },
-                                        exitTransition = { fadeOut() }
-                                    ),
-                                defaultAnimationsForNestedNavGraph =
-                                    mapOf(
-                                        navGraph to
-                                            NestedNavGraphDefaultAnimations(
-                                                enterTransition = { slideInHorizontally() },
-                                                exitTransition = { slideOutHorizontally() },
-                                                popEnterTransition = { slideInHorizontally() },
-                                                popExitTransition = { slideOutHorizontally() }
-                                            )
-                                    )
-                            )
-                        DestinationsNavHost(
-                            navGraph = navGraph,
-                            engine = navHostEngine
-                        )
-                        // TODO: ShimstackNavHost()
+                        val navController = rememberNavController()
+                        ShimstackNavHost(navController)
                     }
                 }
             }

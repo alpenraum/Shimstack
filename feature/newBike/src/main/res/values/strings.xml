@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_create_bike">Something went wrong while creating the bike. Please try again later.</string>
+
+    <string name="header_new_bike_entry">Add your Bike</string>
+    <string name="copy_new_bike_entry">Search for your bike by make and model. Don\'t worry if it isn\'t in the list, you will just have to enter some things manually.</string>
+    <string name="placeholder_new_bike_entry" translatable="false">Santa Cruz Session</string>
+    <string name="label_new_bike_search">Search bike</string>
+    <string name="label_new_bike_travel" translatable="false">%1smm / %2smm</string>
+
+    <string name="copy_new_bike_details">Enter or modify the data of your bike.</string>
+    <string name="copy_new_bike_internal_width_inf">Leave it empty if you are unsure.</string>
+    <string name="copy_new_bike_ebike">E-Bike?</string>
+    <string name="copy_new_bike_existing_setup">Do you already have a suspension setup for your bike?</string>
+
+    <string name="copy_setup_outlier_hint">Some values seem out of the ordinary. Double check if you entered everything correctly.</string>
+    <string name="label_entersetup_intro">Enter your existing setup!</string>
+    <string name="label_entersetup_low_speed_clicks">Low speed clicks from closed</string>
+    <string name="label_entersetup_high_speed_clicks">High speed clicks from closed</string>
+    <string name="info_compression">Affects the stiffness when diving into the travel.</string>
+    <string name="info_rebound">Affects how quickly the suspension decompresses</string>
+
+    <string name="copy_new_bike_success">And we\'re done! You can add another bike if you want to.</string>
+    <string name="label_add_another_bike">Add another bike</string>
+
+</resources>

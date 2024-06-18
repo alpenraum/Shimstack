@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.features.newBike.screens
+package com.alpenraum.shimstack.newbike.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -22,40 +22,34 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alpenraum.shimstack.R
+import androidx.navigation.NavController
+import com.alpenraum.shimstack.model.bikesetup.DetailsInputData
+import com.alpenraum.shimstack.newbike.NewBikeContract
+import com.alpenraum.shimstack.newbike.NewBikeDestinations
+import com.alpenraum.shimstack.newbike.R
 import com.alpenraum.shimstack.ui.compose.ButtonText
 import com.alpenraum.shimstack.ui.compose.InfoText
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.TextInput
 import com.alpenraum.shimstack.ui.compose.number
-import com.alpenraum.shimstack.ui.features.destinations.NewBikeSuccessScreenDestination
-import com.alpenraum.shimstack.ui.features.newBike.DetailsInputData
-import com.alpenraum.shimstack.ui.features.newBike.NewBikeContract
-import com.alpenraum.shimstack.ui.features.newBike.NewBikeNavGraph
 import com.alpenraum.shimstack.ui.theme.AppTheme
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import com.alpenraum.shimstack.ui.R as CommonR
 
 @Composable
-@Destination
-@NewBikeNavGraph
 fun EnterSetupScreen(
     state: NewBikeContract.State,
     intent: (NewBikeContract.Intent) -> Unit,
     event: SharedFlow<NewBikeContract.Event>,
-    navigator: DestinationsNavigator?
+    navigator: NavController?
 ) {
     LaunchedEffect(key1 = Unit) {
         event.collectLatest {
             when (it) {
                 NewBikeContract.Event.NavigateToNextStep -> {
-                    navigator?.navigate(
-                        NewBikeSuccessScreenDestination,
-                        onlyIfResumed = true
-                    )
+                    navigator?.navigate(NewBikeDestinations.SUCCESS.route)
                 }
 
                 else -> {}
@@ -71,7 +65,7 @@ fun EnterSetupScreen(
         )
 
         Text(
-            text = stringResource(id = R.string.label_tire_pressure),
+            text = stringResource(id = CommonR.string.label_tire_pressure),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(top = 16.dp)
         )
@@ -81,14 +75,14 @@ fun EnterSetupScreen(
                 onValueChange = {
                     intent(NewBikeContract.Intent.FrontTirePressureInput(it))
                 },
-                suffix = stringResource(id = R.string.bar),
+                suffix = stringResource(id = CommonR.string.bar),
                 modifier =
-                    Modifier
-                        .weight(1.0f)
-                        .padding(top = 8.dp),
-                label = "${stringResource(id = R.string.front)} ${
+                Modifier
+                    .weight(1.0f)
+                    .padding(top = 8.dp),
+                label = "${stringResource(id = CommonR.string.front)} ${
                     stringResource(
-                        id = R.string.label_tire_pressure
+                        id = CommonR.string.label_tire_pressure
                     )
                 }",
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
@@ -98,14 +92,14 @@ fun EnterSetupScreen(
                 onValueChange = {
                     intent(NewBikeContract.Intent.RearTirePressureInput(it))
                 },
-                suffix = stringResource(id = R.string.bar),
+                suffix = stringResource(id = CommonR.string.bar),
                 modifier =
-                    Modifier
-                        .weight(1.0f)
-                        .padding(top = 8.dp),
-                label = "${stringResource(id = R.string.rear)} ${
+                Modifier
+                    .weight(1.0f)
+                    .padding(top = 8.dp),
+                label = "${stringResource(id = CommonR.string.rear)} ${
                     stringResource(
-                        id = R.string.label_tire_pressure
+                        id = CommonR.string.label_tire_pressure
                     )
                 }",
                 keyboardOptions = KeyboardOptions.number(ImeAction.Next)
@@ -116,7 +110,7 @@ fun EnterSetupScreen(
 
         if (state.hasFrontSuspension()) {
             SuspensionInput(
-                title = stringResource(id = R.string.label_front_suspension),
+                title = stringResource(id = CommonR.string.label_front_suspension),
                 pressureInput = state.setupInput.frontSuspensionPressure ?: "",
                 tokensInput = state.setupInput.frontSuspensionTokens ?: "",
                 lscInput = state.setupInput.frontSuspensionLSC ?: "",
@@ -136,7 +130,7 @@ fun EnterSetupScreen(
         Spacer(modifier = Modifier.height(16.dp))
         if (state.hasRearSuspension()) {
             SuspensionInput(
-                title = stringResource(id = R.string.label_rear_suspension),
+                title = stringResource(id = CommonR.string.label_rear_suspension),
                 pressureInput = state.setupInput.rearSuspensionPressure ?: "",
                 tokensInput = state.setupInput.rearSuspensionTokens ?: "",
                 lscInput = state.setupInput.rearSuspensionLSC ?: "",
@@ -164,7 +158,7 @@ fun EnterSetupScreen(
             },
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
-            ButtonText(R.string.label_next_step)
+            ButtonText(CommonR.string.label_next_step)
         }
     }
 }
@@ -196,21 +190,21 @@ private fun ColumnScope.SuspensionInput(
         TextInput(
             value = pressureInput,
             onValueChange = onPressureChanged,
-            suffix = stringResource(id = R.string.bar),
-            label = stringResource(id = R.string.pressure),
+            suffix = stringResource(id = CommonR.string.bar),
+            label = stringResource(id = CommonR.string.pressure),
             keyboardOptions = KeyboardOptions.number(ImeAction.Next),
             modifier = Modifier.weight(1.0f)
         )
         TextInput(
             value = tokensInput,
             onValueChange = onTokensChanged,
-            label = stringResource(id = R.string.tokens),
+            label = stringResource(id = CommonR.string.tokens),
             keyboardOptions = KeyboardOptions.number(ImeAction.Next),
             modifier = Modifier.weight(1.0f)
         )
     }
     Text(
-        text = stringResource(id = R.string.comp),
+        text = stringResource(id = CommonR.string.comp),
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(top = 16.dp)
     )
@@ -225,7 +219,7 @@ private fun ColumnScope.SuspensionInput(
         isLastInput = false
     )
     Text(
-        text = stringResource(id = R.string.rebound),
+        text = stringResource(id = CommonR.string.rebound),
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.padding(top = 16.dp)
     )
