@@ -7,6 +7,7 @@ import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.home.navigation.HomeNavigator
 import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.model.cardsetup.CardSetup
+import com.alpenraum.shimstack.newbike.navigation.NewBikeNavigator
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,9 +29,10 @@ class HomeScreenViewModel
     constructor(
         private val bikeRepository: LocalBikeRepository,
         private val homeNavigator: HomeNavigator,
+        private val newBikeNavigator: NewBikeNavigator,
         dispatchersProvider: DispatchersProvider
-    ) :
-    BaseViewModel(dispatchersProvider), HomeScreenContract {
+    ) : BaseViewModel(dispatchersProvider),
+        HomeScreenContract {
         private val mutableState =
             MutableStateFlow(
                 HomeScreenContract.State(
@@ -57,7 +59,7 @@ class HomeScreenViewModel
 
                 HomeScreenContract.Intent.OnAddNewBike -> {
                     viewModelScope.launch {
-                        // TODO: navigate to new bike feature
+                        newBikeNavigator.navigateToNewBike(navController)
                     }
                 }
 
@@ -90,8 +92,7 @@ class HomeScreenViewModel
         }
     }
 
-interface HomeScreenContract :
-    UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
+interface HomeScreenContract : UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
     @Immutable
     data class State(
         val bikes: ImmutableList<Bike?>,
@@ -117,14 +118,21 @@ interface HomeScreenContract :
 
         data object OnAddNewBike : Intent()
 
-        data class OnBikeDetailsClicked(val bike: Bike) : Intent()
+        data class OnBikeDetailsClicked(
+            val bike: Bike
+        ) : Intent()
 
         data object OnTechnicalError : Intent()
     }
 }
 
 sealed class UIDataLabel {
-    class Simple(val heading: String, val content: String) : UIDataLabel()
+    class Simple(
+        val heading: String,
+        val content: String
+    ) : UIDataLabel()
 
-    class Complex(val data: Map<String, String>) : UIDataLabel()
+    class Complex(
+        val data: Map<String, String>
+    ) : UIDataLabel()
 }

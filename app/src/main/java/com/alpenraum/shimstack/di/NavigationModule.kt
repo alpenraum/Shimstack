@@ -1,6 +1,7 @@
 package com.alpenraum.shimstack.di
 
 import com.alpenraum.shimstack.datastore.ShimstackDatastore
+import com.alpenraum.shimstack.home.navigation.HomeNavGraph
 import com.alpenraum.shimstack.navigation.StartDestinationRoute
 import com.alpenraum.shimstack.onboarding.navigation.OnboardingNavGraph
 import dagger.Module
@@ -18,7 +19,7 @@ object NavigationModule {
     fun startDestination(dataStore: ShimstackDatastore): String =
         runBlocking {
             return@runBlocking if (dataStore.isOnboardingCompleted.firstOrNull() == true) {
-                "x" // TODO
+                HomeNavGraph.route
             } else {
                 OnboardingNavGraph.route
             }

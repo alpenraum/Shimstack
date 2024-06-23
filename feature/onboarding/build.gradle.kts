@@ -49,6 +49,8 @@ dependencies {
 
     implementation(libs.androidx.material3.android)
     implementation(libs.ui.tooling.preview.android)
+    implementation(project(":feature:home"))
+    implementation(project(":feature:NewBike"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

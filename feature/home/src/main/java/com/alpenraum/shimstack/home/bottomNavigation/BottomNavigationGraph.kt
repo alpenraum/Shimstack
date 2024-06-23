@@ -19,10 +19,22 @@ fun BottomNavigationGraph(
         bottomNavController,
         startDestination = BottomNavigationItem.Home.route,
         modifier = modifier,
-        enterTransition = { com.alpenraum.shimstack.ui.compose.fadeIn() },
-        exitTransition = { com.alpenraum.shimstack.ui.compose.fadeOut() },
-        popExitTransition = { com.alpenraum.shimstack.ui.compose.fadeOut() },
-        popEnterTransition = { com.alpenraum.shimstack.ui.compose.fadeIn() }
+        enterTransition = {
+            com.alpenraum.shimstack.ui.compose
+                .fadeIn()
+        },
+        exitTransition = {
+            com.alpenraum.shimstack.ui.compose
+                .fadeOut()
+        },
+        popExitTransition = {
+            com.alpenraum.shimstack.ui.compose
+                .fadeOut()
+        },
+        popEnterTransition = {
+            com.alpenraum.shimstack.ui.compose
+                .fadeIn()
+        }
     ) {
         composable(BottomNavigationItem.Home.route) {
             HomeScreen(navController = featureNavController)

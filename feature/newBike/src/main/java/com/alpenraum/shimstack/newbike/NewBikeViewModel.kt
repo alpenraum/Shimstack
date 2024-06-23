@@ -16,6 +16,7 @@ import com.alpenraum.shimstack.model.pressure.Pressure
 import com.alpenraum.shimstack.model.suspension.Damping
 import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.model.tire.Tire
+import com.alpenraum.shimstack.newbike.navigation.NewBikeNavigator
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,6 +47,7 @@ class NewBikeViewModel
         private val bikeRepository: LocalBikeRepository,
         private val validateBikeUseCase: ValidateBikeUseCase,
         private val validateSetupUseCase: ValidateSetupUseCase,
+        private val newBikeNavigator: NewBikeNavigator,
         dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
     ) : BaseViewModel(dispatchersProvider),
         NewBikeContract {

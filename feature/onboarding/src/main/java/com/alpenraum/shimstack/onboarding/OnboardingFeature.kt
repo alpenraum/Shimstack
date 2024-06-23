@@ -23,8 +23,9 @@ fun OnboardingFeature(
     LaunchedEffect(key1 = Unit) {
         viewModel.event().collectLatest {
             when (it) {
-                OnboardingViewModel.Event.NavigateToHomeScreen -> {}
-                // TODO: Navigation
+                OnboardingViewModel.Event.NavigateToHomeScreen -> {
+                    viewModel.onHomeNavigationClicked(navigator)
+                }
             }
         }
     }
@@ -40,7 +41,7 @@ fun OnboardingFeature(
                     .padding(it)
                     .padding(16.dp)
         ) {
-            // TODO
+            viewModel.onAddBikeNavigationClicked(navigator)
         }
     }
 }

@@ -29,3 +29,12 @@ fun NavController.navigateWithArgs(
         navigate(route, navOptions, navigatorExtras)
     }
 }
+
+fun popUpToNavOptions(
+    destination: String,
+    inclusive: Boolean = true
+) = NavOptions
+    .Builder()
+    .apply {
+        setPopUpTo(destination, inclusive = inclusive)
+    }

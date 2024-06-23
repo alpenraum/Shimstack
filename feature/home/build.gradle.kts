@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:model"))
     implementation(project(":feature:bikeService"))
+    implementation(project(":feature:NewBike"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
 

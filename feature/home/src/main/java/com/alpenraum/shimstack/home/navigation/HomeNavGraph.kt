@@ -2,11 +2,9 @@ package com.alpenraum.shimstack.home.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.alpenraum.shimstack.home.MainScreenFeature
-import com.alpenraum.shimstack.home.overview.HomeScreen
+import com.alpenraum.shimstack.home.bikedetails.BikeDetailsScreen
 import com.alpenraum.shimstack.navigation.NavDestinationDefinition
 import com.alpenraum.shimstack.navigation.NavGraphDefinition
 
@@ -16,7 +14,8 @@ object HomeNavGraph : NavGraphDefinition {
 
     override val destinations: List<NavDestinationDefinition> =
         listOf(
-            Overview
+            Overview,
+            BikeDetails
         )
 
     object Overview : NavDestinationDefinition {
@@ -34,14 +33,14 @@ object HomeNavGraph : NavGraphDefinition {
 
     object BikeDetails : NavDestinationDefinition {
         const val ARGUMENT_ID = "id"
-        override val route = "details/{$ARGUMENT_ID}"
+        override val route = "details"
 
         override fun buildRoute(
             navGraphBuilder: NavGraphBuilder,
             navController: NavController
         ) {
-            navGraphBuilder.composable(route, arguments = listOf(navArgument(ARGUMENT_ID) { type = NavType.IntType })) { _ ->
-                HomeScreen(navController)
+            navGraphBuilder.composable(route) { _ ->
+                BikeDetailsScreen(navController)
             }
         }
     }

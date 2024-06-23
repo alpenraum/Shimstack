@@ -51,7 +51,9 @@ private fun Bike.getSuspensionUIData(
                 pressure.toFormattedString(context)
             )
         )
-        UIDataLabel.Simple(context.getString(R.string.tokens), tokens.toString())
+        uiData.add(
+            UIDataLabel.Simple(context.getString(R.string.tokens), tokens.toString())
+        )
 
         return uiData.toImmutableList()
     }

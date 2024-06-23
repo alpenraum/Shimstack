@@ -74,6 +74,7 @@ dependencies {
     implementation(project(":core:datastore"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:bikeService"))
+    implementation(project(":feature:home"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     implementation(libs.org.jetbrains.kotlinx.collections.immutable)

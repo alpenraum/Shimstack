@@ -50,7 +50,7 @@ class BikeDetailsViewModel
 
         override fun onStart() {
             super.onStart()
-            viewModelScope.launch {
+            iOScope.launch {
                 bikeRepository.getBike(selectedBikeId)?.let {
                     _state.emit(BikeDetailsContract.State(it))
                 }

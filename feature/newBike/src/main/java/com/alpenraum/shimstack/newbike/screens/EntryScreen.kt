@@ -136,7 +136,7 @@ private fun ListItem(
                 .padding(
                     vertical = 8.dp
                 ).padding(horizontal = 16.dp)
-            .semantics(true) {},
+                .semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

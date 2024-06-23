@@ -63,26 +63,27 @@ fun NewBikeFeature(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         // FIXME: INTEGRATE IN ACTUAL NAV GRAPH
+        val subNavController = rememberNavController()
         NavHost(
-            navController = rememberNavController(),
+            navController = subNavController,
             startDestination = NewBikeDestinations.ENTRY.route
         ) {
             composable(NewBikeDestinations.ENTRY.route) { _ ->
-                EntryScreen(navController, state = state, intent = intent, event = event)
+                EntryScreen(subNavController, state = state, intent = intent, event = event)
             }
 
             composable(NewBikeDestinations.ENTER_DETAILS.route) { _ ->
-                EnterDetailsScreen(navController, state = state, intent = intent, event = event)
+                EnterDetailsScreen(subNavController, state = state, intent = intent, event = event)
             }
 
             composable(NewBikeDestinations.SETUP_DECISION.route) { _ ->
-                SetupDecisionScreen(navController)
+                SetupDecisionScreen(subNavController)
             }
             composable(NewBikeDestinations.ENTER_SETUP.route) { _ ->
-                EnterSetupScreen(state, intent, event, navController)
+                EnterSetupScreen(state, intent, event, subNavController)
             }
             composable(NewBikeDestinations.SUCCESS.route) { _ ->
-                NewBikeSuccessScreen(navController, intent)
+                NewBikeSuccessScreen(subNavController, intent)
             }
         }
     }
