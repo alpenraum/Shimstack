@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,36 +55,45 @@ fun NewBikeFeature(
             }
         }
     }
-
-    Column(modifier = modifier.padding(16.dp)) {
-        Text(
-            text = stringResource(id = R.string.header_new_bike_entry),
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-        // FIXME: INTEGRATE IN ACTUAL NAV GRAPH
-        val subNavController = rememberNavController()
-        NavHost(
-            navController = subNavController,
-            startDestination = NewBikeDestinations.ENTRY.route
+    Scaffold {
+        Column(
+            modifier =
+                modifier
+                    .padding(16.dp)
+                    .padding(it)
         ) {
-            composable(NewBikeDestinations.ENTRY.route) { _ ->
-                EntryScreen(subNavController, state = state, intent = intent, event = event)
-            }
+            Text(
+                text = stringResource(id = R.string.header_new_bike_entry),
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center,
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 8.dp)
+            )
+            // FIXME: INTEGRATE IN ACTUAL NAV GRAPH
+            val subNavController = rememberNavController()
+            NavHost(
+                navController = subNavController,
+                startDestination = NewBikeDestinations.ENTRY.route
+            ) {
+                composable(NewBikeDestinations.ENTRY.route) { _ ->
+                    EntryScreen(subNavController, state = state, intent = intent, event = event)
+                }
 
-            composable(NewBikeDestinations.ENTER_DETAILS.route) { _ ->
-                EnterDetailsScreen(subNavController, state = state, intent = intent, event = event)
-            }
+                composable(NewBikeDestinations.ENTER_DETAILS.route) { _ ->
+                    EnterDetailsScreen(subNavController, state = state, intent = intent, event = event)
+                }
 
-            composable(NewBikeDestinations.SETUP_DECISION.route) { _ ->
-                SetupDecisionScreen(subNavController)
-            }
-            composable(NewBikeDestinations.ENTER_SETUP.route) { _ ->
-                EnterSetupScreen(state, intent, event, subNavController)
-            }
-            composable(NewBikeDestinations.SUCCESS.route) { _ ->
-                NewBikeSuccessScreen(subNavController, intent)
+                composable(NewBikeDestinations.SETUP_DECISION.route) { _ ->
+                    SetupDecisionScreen(subNavController)
+                }
+                composable(NewBikeDestinations.ENTER_SETUP.route) { _ ->
+                    EnterSetupScreen(state, intent, event, subNavController)
+                }
+                composable(NewBikeDestinations.SUCCESS.route) { _ ->
+                    NewBikeSuccessScreen(subNavController, intent)
+                }
             }
         }
     }

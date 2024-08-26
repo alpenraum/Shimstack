@@ -109,7 +109,9 @@ private fun HomeScreenContent(
 ) {
     val isLoading = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val pagerState = androidx.compose.foundation.pager.rememberPagerState(initialPage = 0) { state.bikes.size + 1 }
+    val pagerState =
+        androidx.compose.foundation.pager
+            .rememberPagerState(initialPage = 0) { state.bikes.size + 1 }
     val lastPagerPosition = remember { mutableIntStateOf(0) }
     val snackState = remember { SnackbarHostState() }
 
@@ -187,8 +189,7 @@ private fun EmptyDetailsEyeCandy() {
                 Modifier
                     .semantics {
                         invisibleToUser()
-                    }
-                    .fillMaxSize(0.6f)
+                    }.fillMaxSize(0.6f)
                     .padding(bottom = 8.dp)
         )
         Text(
@@ -237,7 +238,7 @@ private fun BikeDetails(
         )
 
         Button(
-            onClick = {} // TODO
+            onClick = {} // TODO: editable detail cards config
         ) {
             Text("Edit detail cards")
         }
@@ -297,8 +298,7 @@ private fun BikePager(
                                 this.scaleX = scale
                                 this.scaleY = scale
                             }
-                        }
-                        .clickable {
+                        }.clickable {
                             bike?.let {
                                 intents(
                                     HomeScreenContract.Intent.OnBikeDetailsClicked(it)
@@ -376,8 +376,7 @@ private fun AddNewBikeCardContent(
                 .fillMaxSize()
                 .clickable {
                     intents(HomeScreenContract.Intent.OnAddNewBike)
-                }
-                .semantics(mergeDescendants = true) {}
+                }.semantics(mergeDescendants = true) {}
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(

@@ -2,6 +2,7 @@ package com.alpenraum.shimstack.ui.features.main
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +41,8 @@ class MainActivity : BaseActivity<MainViewModel>() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
+
+        enableEdgeToEdge()
 
         initializeContent()
 

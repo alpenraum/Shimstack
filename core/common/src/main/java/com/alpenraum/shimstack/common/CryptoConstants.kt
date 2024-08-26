@@ -1,7 +1,7 @@
 package com.alpenraum.shimstack.common
 
+import android.hardware.biometrics.BiometricManager
 import android.os.Build
-import androidx.biometric.BiometricManager
 
 object CryptoConstants {
     val ALLOWED_BIOMETRIC_AUTHENTICATORS =

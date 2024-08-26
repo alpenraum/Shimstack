@@ -15,6 +15,7 @@
 
     <string name="settings">Settings</string>
     <string name="settings_dynamic_theme">Use Android colors</string>
+    <string name="settings_allow_analytics">Allow collection of anonymous analytics</string>
 
     <string name="copy_no_fork">This fork has no adjustable settings.</string>
     <string name="copy_no_shock">This shock has no adjustable settings.</string>

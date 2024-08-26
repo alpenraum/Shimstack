@@ -1,14 +1,13 @@
 package com.alpenraum.shimstack.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-
-// TODO: everything here
 
 @HiltViewModel
 class NavViewModel
@@ -21,13 +20,15 @@ class NavViewModel
 @Composable
 fun ShimstackNavHost(
     navController: NavHostController,
+    modifier: Modifier = Modifier,
     viewModel: NavViewModel = hiltViewModel()
 ) {
     val destinationBuilders = viewModel.destinationBuilders
 
     NavHost(
         navController = navController,
-        startDestination = viewModel.startDestinationRoute
+        startDestination = viewModel.startDestinationRoute,
+        modifier = modifier
     ) {
         destinationBuilders.forEach { navGraphDefinition ->
             navGraphDefinition.build(navGraphBuilder = this, navController)

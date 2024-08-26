@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 class ShimstackDatastore(private val dataStore: DataStore<Preferences>) {
     companion object {
         private val PREF_USE_DYNAMIC_THEME = booleanPreferencesKey("PREF_USE_DYNAMIC_THEME")
+        private val PREF_ALLOW_ANALYTICS = booleanPreferencesKey("PREF_ALLOW_ANALYTICS")
         private val PREF_IS_ONBOARDING_COMPLETED = booleanPreferencesKey("PREF_IS_ONBOARDING_COMPLETED")
     }
 
@@ -17,6 +18,12 @@ class ShimstackDatastore(private val dataStore: DataStore<Preferences>) {
 
     suspend fun setUseDynamicTheme(value: Boolean) {
         dataStore.edit { it[PREF_USE_DYNAMIC_THEME] = value }
+    }
+
+    val allowAnalytics: Flow<Boolean> = PREF_ALLOW_ANALYTICS.get(defaultValue = false)
+
+    suspend fun setAllowAnalytics(value: Boolean) {
+        dataStore.edit { it[PREF_ALLOW_ANALYTICS] = value }
     }
 
     val isOnboardingCompleted: Flow<Boolean> =

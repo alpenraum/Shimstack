@@ -45,6 +45,9 @@ datastore-core-android = "1.1.1"
 dependency-analysis = "1.31.0"
 annotation-jvm = "1.8.0"
 jetbrains-kotlin-jvm = "1.9.24"
+biometric-ktx = "1.1.0"
+ui-tooling = "1.6.8"
+timber = "5.0.1"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -99,6 +102,8 @@ androidx-navigation-common-ktx = { group = "androidx.navigation", name = "naviga
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation-runtime-ktx" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastore-core-android" }
 androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotation-jvm" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "ui-tooling" }
+com-jakewharton-timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }

@@ -142,7 +142,7 @@ fun OnboardingScreen(
 private fun Preview() {
     AppTheme {
         OnboardingScreen(
-            onSkipButtonClicked = { /*TODO*/ },
+            onSkipButtonClicked = { },
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
         }
@@ -154,7 +154,7 @@ private fun Preview() {
 private fun LargePreview() {
     AppTheme {
         OnboardingScreen(
-            onSkipButtonClicked = { /*TODO*/ },
+            onSkipButtonClicked = { },
             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
         }

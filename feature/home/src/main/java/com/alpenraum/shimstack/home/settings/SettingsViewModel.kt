@@ -53,7 +53,8 @@ class SettingsViewModel
                             Pair(
                                 SettingsContract.Settings.USE_DYNAMIC_THEME,
                                 datastore.useDynamicTheme
-                            )
+                            ),
+                            Pair(SettingsContract.Settings.ALLOW_ANALYTICS, datastore.allowAnalytics)
                         )
                     )
                 _state.emit(state)
@@ -69,6 +70,8 @@ class SettingsViewModel
                     datastore.setUseDynamicTheme(
                         newSetting
                     )
+
+                SettingsContract.Settings.ALLOW_ANALYTICS -> datastore.setAllowAnalytics(newSetting)
             }
         }
     }
@@ -86,6 +89,7 @@ interface SettingsContract :
     enum class Settings(
         @StringRes val label: Int
     ) {
-        USE_DYNAMIC_THEME(R.string.settings_dynamic_theme)
+        USE_DYNAMIC_THEME(R.string.settings_dynamic_theme),
+        ALLOW_ANALYTICS(R.string.settings_allow_analytics)
     }
 }

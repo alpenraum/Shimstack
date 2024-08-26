@@ -5,12 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -32,15 +34,11 @@ fun MainScreenFeature(navController: NavController) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
-    Row(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(visible = useNavRail) {
-            NavigationRail(
-                modifier = Modifier.fillMaxHeight(),
-                containerColor = MaterialTheme.colorScheme.inverseOnSurface
-            ) {
+    Scaffold(bottomBar = {
+        AnimatedVisibility(visible = !useNavRail) {
+            NavigationBar {
                 BottomNavigationItem.asList().forEach { destination ->
-                    NavigationRailItem(
+                    NavigationBarItem(
                         label = {
                             Text(
                                 stringResource(id = destination.title)
@@ -52,7 +50,7 @@ fun MainScreenFeature(navController: NavController) {
                                 contentDescription = null
                             )
                         },
-                        selected = currentRoute == destination.route,
+                        selected = destination.route == currentRoute,
                         onClick = {
                             bottomNavController.navigate(destination.route) {
                                 bottomNavController.graph.startDestinationRoute?.let { route ->
@@ -68,15 +66,20 @@ fun MainScreenFeature(navController: NavController) {
                 }
             }
         }
-        Column(
-            modifier = Modifier
+    }) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
         ) {
-            BottomNavigationGraph(bottomNavController, navController, Modifier.weight(1.0f))
-
-            AnimatedVisibility(visible = !useNavRail) {
-                NavigationBar {
+            AnimatedVisibility(visible = useNavRail) {
+                NavigationRail(
+                    modifier = Modifier.fillMaxHeight(),
+                    containerColor = MaterialTheme.colorScheme.inverseOnSurface
+                ) {
                     BottomNavigationItem.asList().forEach { destination ->
-                        NavigationBarItem(
+                        NavigationRailItem(
                             label = {
                                 Text(
                                     stringResource(id = destination.title)
@@ -88,7 +91,7 @@ fun MainScreenFeature(navController: NavController) {
                                     contentDescription = null
                                 )
                             },
-                            selected = destination.route == currentRoute,
+                            selected = currentRoute == destination.route,
                             onClick = {
                                 bottomNavController.navigate(destination.route) {
                                     bottomNavController.graph.startDestinationRoute?.let { route ->
@@ -103,6 +106,11 @@ fun MainScreenFeature(navController: NavController) {
                         )
                     }
                 }
+            }
+            Column(
+                modifier = Modifier
+            ) {
+                BottomNavigationGraph(bottomNavController, navController, Modifier.weight(1.0f))
             }
         }
     }

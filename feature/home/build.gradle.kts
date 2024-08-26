@@ -52,7 +52,7 @@ dependencies {
     implementation(libs.ui.tooling.preview.android)
     implementation(project(":core:data"))
     implementation(project(":core:model"))
-    implementation(project(":feature:bikeService"))
+    implementation(project(":domain:bikeDomain"))
     implementation(project(":feature:NewBike"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
@@ -60,6 +60,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.com.google.dagger.hilt.android)
+    debugImplementation(libs.androidx.ui.tooling)
     ksp(libs.com.google.dagger.hilt.compiler)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)

@@ -47,6 +47,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = GradleConstants.COMPOSE_COMPILER_VERSION
@@ -73,7 +74,7 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:datastore"))
     implementation(project(":feature:onboarding"))
-    implementation(project(":feature:bikeService"))
+    implementation(project(":domain:bikeDomain"))
     implementation(project(":feature:home"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
@@ -98,6 +99,7 @@ dependencies {
     implementation(libs.com.airbnb.android.lottie.compose)
 
     implementation(libs.ui.tooling.preview.android)
+    implementation(libs.com.jakewharton.timber)
 
     //  ktlintRuleset(libs.io.nlopez.compose.rules.ktlint)
     testImplementation(libs.konsist)

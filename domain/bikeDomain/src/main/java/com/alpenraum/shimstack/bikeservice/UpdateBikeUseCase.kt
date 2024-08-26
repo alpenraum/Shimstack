@@ -1,6 +1,6 @@
 package com.alpenraum.shimstack.bikeservice
 
-import android.util.Log
+import com.alpenraum.shimstack.common.logger.ShimstackLogger
 import com.alpenraum.shimstack.data.bike.BikeRepository
 import com.alpenraum.shimstack.model.bike.Bike
 import javax.inject.Inject
@@ -8,7 +8,8 @@ import javax.inject.Inject
 class UpdateBikeUseCase
     @Inject
     constructor(
-        private val bikeRepository: BikeRepository
+        private val bikeRepository: BikeRepository,
+        private val logger: ShimstackLogger
     ) {
         suspend operator fun invoke(bike: Bike): Boolean {
             return try {
@@ -28,7 +29,7 @@ class UpdateBikeUseCase
 
                 true
             } catch (e: Exception) {
-                Log.d("UpdateBikeUseCase", "invoke: $e")
+                logger.e("UpdateBikeUseCase", "invoke: $e")
                 false
             }
         }

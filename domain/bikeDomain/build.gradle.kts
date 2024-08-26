@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.alpenraum.bikeservice"
+    namespace = "com.alpenraum.shimstack.bikedomain"
     compileSdk = GradleConstants.TARGET_SDK
 
     defaultConfig {
@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.com.google.android.material)
     implementation(project(":core:data"))
     implementation(project(":core:model"))
+    implementation(project(":core:common"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)

@@ -15,6 +15,7 @@
 
     <string name="settings">Einstellungen</string>
     <string name="settings_dynamic_theme">Android Farben verwenden</string>
+    <string name="settings_allow_analytics">Sammlung von anonymen Daten erlauben</string>
 
     <string name="copy_no_fork">Die Gabel hat keine Einstellungenmöglichkeiten.</string>
     <string name="copy_no_shock">Der Dämpfer hat keine Einstellungenmöglichkeiten.</string>

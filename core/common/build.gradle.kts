@@ -34,8 +34,10 @@ android {
 dependencies {
 
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.biometric.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
+    implementation(libs.com.jakewharton.timber)
 
     implementation(libs.com.google.dagger.hilt.android)
     ksp(libs.com.google.dagger.hilt.compiler)
