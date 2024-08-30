@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_road_type">Rennrad</string>
+    <string name="label_gravel_type">Gravel</string>
+    <string name="label_dh_type">Downhill</string>
+    <string name="label_xc_type">Cross Country</string>
+    <string name="label_trail_type">Trail</string>
+    <string name="label_all_mtn_type">All Mountain</string>
+    <string name="label_enduro_type">Enduro</string>
+    <string name="label_unknown_type" />
+</resources>

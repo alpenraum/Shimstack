@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack
 
+import com.alpenraum.shimstack.base.BaseTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -8,7 +9,7 @@ import org.junit.Test
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class ExampleUnitTest : BaseTest() {
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)

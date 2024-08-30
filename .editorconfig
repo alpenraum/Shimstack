@@ -6,7 +6,7 @@ end_of_line = lf
 indent_size = 4
 indent_style = space
 insert_final_newline = false
-max_line_length = 100
+max_line_length = 140
 tab_width = 4
 ij_continuation_indent_size = 8
 ij_formatter_off_tag = @formatter:off
@@ -16,10 +16,10 @@ ij_smart_tabs = false
 ij_visual_guides = none
 ij_wrap_on_typing = false
 
-ktlint_function_naming_ignore_when_annotated_with = Composable
-ktlint_modifier_missing_check_ignore_when_annotated_with = Destination
-ktlint_standard_property-naming = disabled
-
+trim_trailing_whitespace = true
+ij_kotlin_imports_layout = *
+ij_kotlin_allow_trailing_comma_on_call_site = false
+ij_kotlin_allow_trailing_comma = true
 
 [*.java]
 ij_java_align_consecutive_assignments = false
@@ -375,6 +375,12 @@ ij_kotlin_while_on_new_line = false
 ij_kotlin_wrap_elvis_expressions = 1
 ij_kotlin_wrap_expression_body_functions = 1
 ij_kotlin_wrap_first_method_in_call_chain = false
+ktlint_function_naming_ignore_when_annotated_with = Composable
+ktlint_modifier_missing_check_ignore_when_annotated_with = Destination
+ktlint_standard_property-naming = disabled
+ktlint-standard_backing-property-naming = disabled
+
+
 
 [{*.markdown,*.md}]
 ij_markdown_force_one_space_after_blockquote_symbol = true

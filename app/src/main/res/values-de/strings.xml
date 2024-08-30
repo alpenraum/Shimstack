@@ -1,79 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_home">Home</string>
-
-    <string name="label_continue">Weiter</string>
-    <string name="label_next_step">Nächster Schritt</string>
-    <string name="label_yes">Ja</string>
-    <string name="label_no">Nein</string>
-    <string name="label_done">Fertig</string>
-    <string name="label_edit">Ändern</string>
-    <string name="label_delete">Löschen</string>
-    <string name="label_save">Speichern</string>
-
-    <string name="err_technical">Etwas ist schief gelaufen…uncool! (Entwickler ist schuld)</string>
-
-    <string name="tire">Reifen</string>
-    <string name="rear">Hinten</string>
-    <string name="front">Vorne</string>
-
-    <string name="fork">Gabel</string>
-    <string name="shock">Dämpfer</string>
-
-    <string name="pressure">Druck</string>
-    <string name="comp">Comp</string>
-    <string name="rebound">Rebound</string>
-    <string name="tokens">Tokens</string>
 
 
-    <string name="copy_no_fork">Die Gabel hat keine Einstellungenmöglichkeiten.</string>
-    <string name="copy_no_shock">Der Dämpfer hat keine Einstellungenmöglichkeiten.</string>
 
     <string name="settings">Einstellungen</string>
     <string name="settings_dynamic_theme">Android Farben verwenden</string>
     <string name="fab_add_bike">Neues Fahrrad hinzufügen</string>
 
     <string name="copy_add_new_bike">Füge dein erstes Fahrrrad hinzu!</string>
-
-    <string name="header_new_bike_entry">Fahrrad hinzufügen</string>
-    <string name="copy_new_bike_entry">Suche für dein Fahrrad mittels der Marke und Modell. Keine Sorge, falls es nicht in der Liste steht. Du wirst nur ein paar Dinge selber eingeben müssen.</string>
-    <string name="label_new_bike_search">Fahrrad suchen</string>
-    <string name="copy_new_bike_details">Gib die Daten deines Fahrrads ein oder ändere sie.</string>
-    <string name="copy_new_bike_internal_width_inf">Lass es leer wenn du dir unsicher bist.</string>
-    <string name="copy_new_bike_ebike">E-Bike?</string>
-    <string name="copy_new_bike_existing_setup">Hast du schon ein Fahrwerkssetup für dein Fahrrrad?</string>
-
-
-    <string name="label_road_type">Rennrad</string>
-    <string name="label_gravel_type">Gravel</string>
-    <string name="label_dh_type">Downhill</string>
-    <string name="label_xc_type">Cross Country</string>
-    <string name="label_trail_type">Trail</string>
-    <string name="label_all_mtn_type">All Mountain</string>
-    <string name="label_enduro_type">Enduro</string>
-    <string name="label_unknown_type" />
-
-    <string name="label_name">Name</string>
-    <string name="label_type">Typ</string>
-    <string name="label_travel">Federweg</string>
-    <string name="label_front_suspension">Vordere Federung</string>
-    <string name="label_rear_suspension">Hintere Federung</string>
-    <string name="label_rear_tire">Hinterer Reifen</string>
-    <string name="label_front_tire">Vorderer Reifen</string>
-    <string name="label_tire_width">Reifenbreite</string>
-    <string name="label_internal_rim_width">Interne Felgenbreite</string>
-    <string name="label_tire_pressure">Reifendruck</string>
-
-    <string name="copy_setup_outlier_hint">Einige Werte scheinen ungewöhnlich zu sein. Überprüfe noch einmal, ob alles richtig eingegeben wurde.</string>
-    <string name="label_entersetup_intro">Gib dein aktuelles Setup ein!</string>
-    <string name="label_entersetup_low_speed_clicks">Low-Speed Klicks von geschlossener Stellung</string>
-    <string name="label_entersetup_high_speed_clicks">High-Speed Klicks von geschlossener Stellung</string>
-    <string name="info_compression">Wie hart der Widerstand beim Einfedern ist.</string>
-    <string name="info_rebound">Wie schnell der Dämpfer wieder ausfedert.</string>
-
-    <string name="copy_new_bike_success">Fertig! Du kannst noch weitere Fahrräder hinzufügen.</string>
-    <string name="label_add_another_bike">Weiteres Fahrrad hinzufügen</string>
-    <string name="error_create_bike">Beim Erstellen das Fahrrads ist etwas schief gelaufen. Bitte versuche es später nochmal.</string>
 
 
 </resources>

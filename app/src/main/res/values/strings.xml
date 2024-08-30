@@ -1,18 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Shimstack</string>
-    <string name="title_home">Home</string>
-    <string name="label_continue">Continue</string>
-    <string name="label_next_step">Next Step</string>
-    <string name="label_yes">Yes</string>
-    <string name="label_no">No</string>
-    <string name="label_done">Done</string>
-    <string name="label_edit">Edit</string>
-    <string name="label_delete">Delete</string>
-    <string name="label_save">Save</string>
-
-    <string name="err_technical">Something went wrong…uncool! (Blame the dev)</string>
-
-
     <string name="tire">Tire</string>
     <string name="rear">Rear</string>
     <string name="front">Front</string>
@@ -35,35 +21,12 @@
     <string name="inch" translatable="false">"</string>
 
 
-    <string name="copy_no_fork">This fork has no adjustable settings.</string>
-    <string name="copy_no_shock">This shock has no adjustable settings.</string>
-
     <string name="settings">Settings</string>
     <string name="settings_dynamic_theme">Use Android colors</string>
     <string name="fab_add_bike">Add new bike</string>
 
     <string name="copy_add_new_bike">Add your first bike!</string>
 
-    <string name="header_new_bike_entry">Add your Bike</string>
-    <string name="copy_new_bike_entry">Search for your bike by make and model. Don\'t worry if it isn\'t in the list, you will just have to enter some things manually.</string>
-    <string name="placeholder_new_bike_entry" translatable="false">Santa Cruz Session</string>
-    <string name="label_new_bike_search">Search bike</string>
-    <string name="label_new_bike_travel" translatable="false">%1smm / %2smm</string>
-
-    <string name="copy_new_bike_details">Enter or modify the data of your bike.</string>
-    <string name="copy_new_bike_internal_width_inf">Leave it empty if you are unsure.</string>
-    <string name="copy_new_bike_ebike">E-Bike?</string>
-    <string name="copy_new_bike_existing_setup">Do you already have a suspension setup for your bike?</string>
-
-
-    <string name="label_road_type">Road bike</string>
-    <string name="label_gravel_type">Gravel</string>
-    <string name="label_dh_type">Downhill</string>
-    <string name="label_xc_type">Cross Country</string>
-    <string name="label_trail_type">Trail</string>
-    <string name="label_all_mtn_type">All Mountain</string>
-    <string name="label_enduro_type">Enduro</string>
-    <string name="label_unknown_type" />
 
     <string name="label_name">Name</string>
     <string name="label_type">Type</string>
@@ -75,16 +38,6 @@
     <string name="label_tire_width">Tire width</string>
     <string name="label_internal_rim_width">Internal rim width</string>
     <string name="label_tire_pressure">Tire Pressure</string>
-    <string name="copy_setup_outlier_hint">Some values seem out of the ordinary. Double check if you entered everything correctly.</string>
 
-    <string name="label_entersetup_intro">Enter your existing setup!</string>
-    <string name="label_entersetup_low_speed_clicks">Low speed clicks from closed</string>
-    <string name="label_entersetup_high_speed_clicks">High speed clicks from closed</string>
-    <string name="info_compression">Affects the stiffness when diving into the travel.</string>
-    <string name="info_rebound">Affects how quickly the suspension decompresses</string>
-
-    <string name="copy_new_bike_success">And we\'re done! You can add another bike if you want to.</string>
-    <string name="label_add_another_bike">Add another bike</string>
-    <string name="error_create_bike">Something went wrong while creating the bike. Please try again later.</string>
 
 </resources>
