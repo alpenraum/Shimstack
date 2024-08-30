@@ -14,8 +14,8 @@ android {
         applicationId = "com.alpenraum.shimstack"
         minSdk = GradleConstants.MIN_SDK
         targetSdk = GradleConstants.TARGET_SDK
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 3
+        versionName = "0.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
