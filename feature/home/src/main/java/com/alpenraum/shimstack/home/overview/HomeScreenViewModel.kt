@@ -14,12 +14,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,15 +41,23 @@ class HomeScreenViewModel
         dispatchersProvider: DispatchersProvider
     ) : BaseViewModel(dispatchersProvider),
         HomeScreenContract {
-        private val mutableState =
-            MutableStateFlow(
-                HomeScreenContract.State(
-                    persistentListOf(null),
-                    CardSetup.defaultConfig()
-                )
-            )
+        private val bikes = MutableStateFlow<ImmutableList<Bike>>(persistentListOf())
+        private val cardSetups = MutableStateFlow<ImmutableList<CardSetup>>(CardSetup.defaultConfig())
+
+        @OptIn(ExperimentalCoroutinesApi::class)
         override val state: StateFlow<HomeScreenContract.State> =
-            mutableState.asStateFlow()
+            combine(bikes, cardSetups) { bikeList, cardSetupList ->
+                bikeList to cardSetupList
+            }.flatMapLatest(::createState)
+                .catch {
+                    eventFlow.emit(HomeScreenContract.Event.Error)
+                    emit(HomeScreenContract.State(persistentListOf(), CardSetup.defaultConfig()))
+                }
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(),
+                    initialValue = HomeScreenContract.State(persistentListOf(), CardSetup.defaultConfig())
+                )
 
         private val eventFlow = MutableSharedFlow<HomeScreenContract.Event>()
         override val event: SharedFlow<HomeScreenContract.Event> =
@@ -80,7 +96,7 @@ class HomeScreenViewModel
             iOScope.launch {
                 eventFlow.emit(HomeScreenContract.Event.Loading)
 
-                mutableState.emit(state.value.copy(bikes = fetchBikes().toImmutableList()))
+                bikes.update { fetchBikes().toImmutableList() }
                 eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
             }
         }
@@ -89,6 +105,10 @@ class HomeScreenViewModel
 
         private fun onViewPagerSelectionChanged() {
             viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }
+        }
+
+        private fun createState(state: Pair<ImmutableList<Bike>, ImmutableList<CardSetup>>): Flow<HomeScreenContract.State> {
+            return flowOf(HomeScreenContract.State(state.first, state.second))
         }
     }
 
