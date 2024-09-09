@@ -9,16 +9,21 @@ import com.alpenraum.shimstack.data.bike.BikeRepository
 import com.alpenraum.shimstack.home.navigation.HomeNavGraph
 import com.alpenraum.shimstack.home.usecases.ValidateBikeUseCase
 import com.alpenraum.shimstack.model.bike.Bike
+import com.alpenraum.shimstack.model.pressure.Pressure
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,12 +42,16 @@ class BikeDetailsViewModel
         BikeDetailsContract {
         private val selectedBikeId: Int = savedStateHandle[HomeNavGraph.BikeDetails.ARGUMENT_ID] ?: -1
 
-        private val _state: MutableStateFlow<BikeDetailsContract.State> =
-            MutableStateFlow(
-                BikeDetailsContract.State(Bike.empty())
-            )
-        override val state: StateFlow<BikeDetailsContract.State>
-            get() = _state.asStateFlow()
+        private val bikeFlow: MutableStateFlow<Bike> =
+            MutableStateFlow(Bike.empty())
+        private val editModeFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+        @OptIn(ExperimentalCoroutinesApi::class)
+        override val state: StateFlow<BikeDetailsContract.State> =
+            combine(bikeFlow, editModeFlow) { bike, editMode ->
+                bike to editMode
+            }.flatMapLatest { emitNewState(it.first, it.second) }
+                .inViewModelScope(BikeDetailsContract.State(Bike.empty()))
 
         private val _event: MutableSharedFlow<BikeDetailsContract.Event> = MutableSharedFlow()
         override val event: SharedFlow<BikeDetailsContract.Event>
@@ -51,8 +60,8 @@ class BikeDetailsViewModel
         override fun onStart() {
             super.onStart()
             iOScope.launch {
-                bikeRepository.getBike(selectedBikeId)?.let {
-                    _state.emit(BikeDetailsContract.State(it))
+                bikeRepository.getBike(selectedBikeId)?.let { newBike ->
+                    bikeFlow.update { newBike }
                 }
             }
         }
@@ -67,9 +76,7 @@ class BikeDetailsViewModel
                         navController.popBackStack()
 
                     BikeDetailsContract.Intent.OnEditClicked ->
-                        _state.emit(
-                            _state.value.copy(editMode = true)
-                        )
+                        editModeFlow.update { true }
 
                     is BikeDetailsContract.Intent.Input -> handleInput(intent)
                     BikeDetailsContract.Intent.OnSaveClicked -> saveBike()
@@ -79,8 +86,8 @@ class BikeDetailsViewModel
 
         private suspend fun saveBike() =
             withContext(Dispatchers.IO) {
-                if (updateBikeUseCase(_state.value.bike)) {
-                    _state.emit(_state.value.copy(editMode = false))
+                if (updateBikeUseCase(bikeFlow.value)) {
+                    editModeFlow.update { false }
                 } else {
                     _event.emit(BikeDetailsContract.Event.ShowSnackbar(CommonR.string.err_technical))
                 }
@@ -89,181 +96,169 @@ class BikeDetailsViewModel
         private suspend fun handleInput(input: BikeDetailsContract.Intent.Input) {
             when (input) {
                 is BikeDetailsContract.Intent.Input.BikeName -> {
-                    val newBike = _state.value.bike.copy(name = input.name)
-                    emitNewState(newBike)
+                    bikeFlow.update { it.copy(name = input.name) }
                 }
 
                 is BikeDetailsContract.Intent.Input.BikeType -> {
-                    val newBike = _state.value.bike.copy(type = input.type)
-                    emitNewState(newBike)
+                    bikeFlow.update { it.copy(type = input.type) }
                 }
 
                 is BikeDetailsContract.Intent.Input.FrontTireInternalRimWidth -> {
                     val width = input.width.toDoubleOrNull() ?: 0.0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             frontTire =
-                                _state.value.bike.frontTire.copy(
+                                it.frontTire.copy(
                                     internalRimWidthInMM = width
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.FrontTirePressure -> {
                     val pressure = input.pressure.toDoubleOrNull() ?: 0.0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             frontTire =
-                                _state.value.bike.frontTire.copy(
-                                    pressure =
-                                        com.alpenraum.shimstack.model.pressure
-                                            .Pressure(pressure)
+                                it.frontTire.copy(
+                                    pressure = Pressure(pressure)
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.FrontTireWidth -> {
                     val width = input.width.toDoubleOrNull() ?: 0.0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             frontTire =
-                                _state.value.bike.frontTire.copy(
+                                it.frontTire.copy(
                                     widthInMM = width
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.RearTireInternalRimWidth -> {
                     val width = input.width.toDoubleOrNull() ?: 0.0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             rearTire =
-                                _state.value.bike.rearTire.copy(
+                                it.rearTire.copy(
                                     internalRimWidthInMM = width
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.RearTirePressure -> {
                     val pressure = input.pressure.toDoubleOrNull() ?: 0.0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             rearTire =
-                                _state.value.bike.rearTire.copy(
-                                    pressure =
-                                        com.alpenraum.shimstack.model.pressure
-                                            .Pressure(pressure)
+                                it.rearTire.copy(
+                                    pressure = Pressure(pressure)
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.RearTireWidth -> {
                     val width = input.width.toDoubleOrNull() ?: 0.0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             rearTire =
-                                _state.value.bike.rearTire.copy(
+                                it.rearTire.copy(
                                     widthInMM = width
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.FrontSuspensionPressure -> {
                     val pressure = input.pressure.toDoubleOrNull() ?: 0.0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             frontSuspension =
-                                _state.value.bike.frontSuspension?.copy(
-                                    pressure =
-                                        com.alpenraum.shimstack.model.pressure
-                                            .Pressure(pressure)
+                                it.frontSuspension?.copy(
+                                    pressure = Pressure(pressure)
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.FrontSuspensionTokens -> {
                     val tokens = input.tokens.toIntOrNull() ?: 0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             frontSuspension =
-                                _state.value.bike.frontSuspension?.copy(
+                                it.frontSuspension?.copy(
                                     tokens = tokens
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.FrontSuspensionTravel -> {
                     val travel = input.travel.toIntOrNull() ?: 0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             frontSuspension =
-                                _state.value.bike.frontSuspension?.copy(
+                                it.frontSuspension?.copy(
                                     travel = travel
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.RearSuspensionPressure -> {
                     val pressure = input.pressure.toDoubleOrNull() ?: 0.0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             rearSuspension =
-                                _state.value.bike.rearSuspension?.copy(
-                                    pressure =
-                                        com.alpenraum.shimstack.model.pressure
-                                            .Pressure(pressure)
+                                it.rearSuspension?.copy(
+                                    pressure = Pressure(pressure)
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.RearSuspensionTokens -> {
                     val tokens = input.tokens.toIntOrNull() ?: 0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             rearSuspension =
-                                _state.value.bike.rearSuspension?.copy(
+                                it.rearSuspension?.copy(
                                     tokens = tokens
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
 
                 is BikeDetailsContract.Intent.Input.RearSuspensionTravel -> {
                     val travel = input.travel.toIntOrNull() ?: 0
-                    val newBike =
-                        _state.value.bike.copy(
+                    bikeFlow.update {
+                        it.copy(
                             rearSuspension =
-                                _state.value.bike.rearSuspension?.copy(
+                                it.rearSuspension?.copy(
                                     travel = travel
                                 )
                         )
-                    emitNewState(newBike)
+                    }
                 }
             }
         }
 
-        private suspend fun emitNewState(
+        private fun emitNewState(
             bike: Bike,
             editMode: Boolean = true
-        ) {
-            _state.emit(
-                BikeDetailsContract.State(
-                    bike,
-                    editMode,
-                    validationFailure = validateBikeUseCase(bike).getOrNull()
-                )
+        ) = flowOf(
+            BikeDetailsContract.State(
+                bike,
+                editMode,
+                validationFailure = validateBikeUseCase(bike).getOrNull()
             )
-        }
+        )
     }
 
 interface BikeDetailsContract :
