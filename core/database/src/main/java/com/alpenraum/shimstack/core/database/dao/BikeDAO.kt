@@ -6,11 +6,12 @@ import androidx.room.Query
 import androidx.room.Update
 import com.alpenraum.shimstack.core.database.db.AppDatabase
 import com.alpenraum.shimstack.core.database.models.BikeDTO
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BikeDAO {
     @Query("SELECT * FROM ${AppDatabase.TABLE_BIKE}")
-    fun getAllBikes(): List<BikeDTO>
+    fun getAllBikes(): Flow<List<BikeDTO>>
 
     @Insert
     fun insertBike(bikeDTO: BikeDTO)

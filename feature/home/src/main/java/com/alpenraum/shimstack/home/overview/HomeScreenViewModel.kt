@@ -26,6 +26,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -52,8 +55,7 @@ class HomeScreenViewModel
                 .catch {
                     eventFlow.emit(HomeScreenContract.Event.Error)
                     emit(HomeScreenContract.State(persistentListOf(), CardSetup.defaultConfig()))
-                }
-                .stateIn(
+                }.stateIn(
                     scope = viewModelScope,
                     started = SharingStarted.WhileSubscribed(),
                     initialValue = HomeScreenContract.State(persistentListOf(), CardSetup.defaultConfig())
@@ -91,25 +93,28 @@ class HomeScreenViewModel
             }
         }
 
+        init {
+            fetchBikes().map { it.toImmutableList() }.onEach { bikes.update { it } }.launchIn(iOScope)
+        }
+
         override fun onStart() {
             super.onStart()
             iOScope.launch {
-                eventFlow.emit(HomeScreenContract.Event.Loading)
+                eventFlow
+                    .emit(HomeScreenContract.Event.Loading)
 
-                bikes.update { fetchBikes().toImmutableList() }
                 eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
             }
         }
 
-        private suspend fun fetchBikes() = bikeRepository.getAllBikes()
+        private fun fetchBikes() = bikeRepository.getAllBikes()
 
         private fun onViewPagerSelectionChanged() {
             viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }
         }
 
-        private fun createState(state: Pair<ImmutableList<Bike>, ImmutableList<CardSetup>>): Flow<HomeScreenContract.State> {
-            return flowOf(HomeScreenContract.State(state.first, state.second))
-        }
+        private fun createState(state: Pair<ImmutableList<Bike>, ImmutableList<CardSetup>>): Flow<HomeScreenContract.State> =
+            flowOf(HomeScreenContract.State(state.first, state.second))
     }
 
 interface HomeScreenContract : UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
