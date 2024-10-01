@@ -91,6 +91,9 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.initVm()
+    }
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, event) = use(viewModel = viewModel, navController)
     HomeScreenContent(

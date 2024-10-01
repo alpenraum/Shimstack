@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -93,19 +94,14 @@ class HomeScreenViewModel
             }
         }
 
-        init {
-            fetchBikes().map { it.toImmutableList() }.onEach { bikes.update { it } }.launchIn(iOScope)
-        }
-
-        override fun onStart() {
-            super.onStart()
-            iOScope.launch {
-                eventFlow
-                    .emit(HomeScreenContract.Event.Loading)
-
-                eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
-            }
-        }
+        fun initVm() =
+            fetchBikes()
+                .onStart { HomeScreenContract.Event.Loading }
+                .map { it.toImmutableList() }
+                .onEach {
+                    bikes.update { it }
+                    eventFlow.emit(HomeScreenContract.Event.FinishedLoading)
+                }.launchIn(iOScope)
 
         private fun fetchBikes() = bikeRepository.getAllBikes()
 
