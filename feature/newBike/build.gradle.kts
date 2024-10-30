@@ -33,11 +33,9 @@ android {
         jvmTarget = GradleConstants.JVM_TARGET
     }
 
-
     buildFeatures {
         compose = true
     }
-
 }
 
 dependencies {

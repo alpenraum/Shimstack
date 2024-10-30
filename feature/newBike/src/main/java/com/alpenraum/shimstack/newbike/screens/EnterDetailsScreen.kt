@@ -319,9 +319,9 @@ private fun ColumnScope.TireInput(
             },
             suffix = stringResource(id = CommonR.string.mm),
             modifier =
-            Modifier
-                .weight(1.0f)
-                .padding(end = 16.dp),
+                Modifier
+                    .weight(1.0f)
+                    .padding(end = 16.dp),
             label = stringResource(id = CommonR.string.label_tire_width),
             isError = isError,
             keyboardOptions = KeyboardOptions.number(ImeAction.Next)

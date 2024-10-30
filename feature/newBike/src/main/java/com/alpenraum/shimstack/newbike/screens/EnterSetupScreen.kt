@@ -77,9 +77,9 @@ fun EnterSetupScreen(
                 },
                 suffix = stringResource(id = CommonR.string.bar),
                 modifier =
-                Modifier
-                    .weight(1.0f)
-                    .padding(top = 8.dp),
+                    Modifier
+                        .weight(1.0f)
+                        .padding(top = 8.dp),
                 label = "${stringResource(id = CommonR.string.front)} ${
                     stringResource(
                         id = CommonR.string.label_tire_pressure
@@ -94,9 +94,9 @@ fun EnterSetupScreen(
                 },
                 suffix = stringResource(id = CommonR.string.bar),
                 modifier =
-                Modifier
-                    .weight(1.0f)
-                    .padding(top = 8.dp),
+                    Modifier
+                        .weight(1.0f)
+                        .padding(top = 8.dp),
                 label = "${stringResource(id = CommonR.string.rear)} ${
                     stringResource(
                         id = CommonR.string.label_tire_pressure

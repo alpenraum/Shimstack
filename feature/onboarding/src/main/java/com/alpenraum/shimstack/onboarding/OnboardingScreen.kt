@@ -1,10 +1,6 @@
 package com.alpenraum.shimstack.onboarding
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -19,9 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -29,15 +23,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.invisibleToUser
@@ -49,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.theme.AppTheme
-import kotlin.random.Random
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -77,20 +65,20 @@ fun OnboardingScreen(
         Card(
             shape = RoundedCornerShape(8.dp, 8.dp, 0.dp, 0.dp),
             modifier =
-            Modifier
-                .weight(1.0f)
-                .fillMaxWidth(),
+                Modifier
+                    .weight(1.0f)
+                    .fillMaxWidth(),
             elevation = CardDefaults.elevatedCardElevation(),
             colors =
-            CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.background
-            )
+                CardDefaults.elevatedCardColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
         ) {
             Column(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -99,10 +87,10 @@ fun OnboardingScreen(
                     LargeButton(
                         onClick = onAddBikeClicked,
                         colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
                     ) {
                         Text(
                             "Add my first bike",
@@ -113,10 +101,10 @@ fun OnboardingScreen(
                     LargeButton(
                         onClick = onSkipButtonClicked,
                         colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
                     ) {
                         Text(
                             "Take me to the app",
@@ -129,37 +117,39 @@ fun OnboardingScreen(
                 val infiniteTransition = rememberInfiniteTransition()
 
                 val offsetX by
-                infiniteTransition.animateFloat(
-                    initialValue = 0f,
-                    targetValue = 50f,
-                    animationSpec =
-                    infiniteRepeatable(
-                        // Infinitely repeating a 1000ms tween animation using default easing curve.
-                        animation = keyframes {
-                            durationMillis = 10_000
-                            25.0f at 5000 using FastOutSlowInEasing
-                            50.0f at 10_000 using FastOutSlowInEasing
-                        },
-                        repeatMode = RepeatMode.Reverse
-                    ), label = ""
-                )
+                    infiniteTransition.animateFloat(
+                        initialValue = 0f,
+                        targetValue = 50f,
+                        animationSpec =
+                            infiniteRepeatable(
+                                // Infinitely repeating a 1000ms tween animation using default easing curve.
+                                animation =
+                                    keyframes {
+                                        durationMillis = 10_000
+                                        25.0f at 5000 using FastOutSlowInEasing
+                                        50.0f at 10_000 using FastOutSlowInEasing
+                                    },
+                                repeatMode = RepeatMode.Reverse
+                            ),
+                        label = ""
+                    )
 
                 val offsetY by
-                infiniteTransition.animateFloat(
-                    initialValue = 0f,
-                    targetValue = 50f,
-                    animationSpec =
-                    infiniteRepeatable(
-
-                        animation = keyframes {
-                            durationMillis = 8_000
-                            50.0f at 8_000 using FastOutSlowInEasing
-                            25.0f at 4_000 using FastOutSlowInEasing
-                        },
-                        repeatMode = RepeatMode.Reverse
-                    ), label = ""
-                )
-
+                    infiniteTransition.animateFloat(
+                        initialValue = 0f,
+                        targetValue = 50f,
+                        animationSpec =
+                            infiniteRepeatable(
+                                animation =
+                                    keyframes {
+                                        durationMillis = 8_000
+                                        50.0f at 8_000 using FastOutSlowInEasing
+                                        25.0f at 4_000 using FastOutSlowInEasing
+                                    },
+                                repeatMode = RepeatMode.Reverse
+                            ),
+                        label = ""
+                    )
 
                 Box(
                     modifier = Modifier.fillMaxWidth(),
@@ -169,18 +159,16 @@ fun OnboardingScreen(
                         painter = painterResource(id = R.drawable.ic_onboarding_background),
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .semantics { invisibleToUser() }
-
+                            Modifier
+                                .semantics { invisibleToUser() }
                     )
                     Image(
                         painter = painterResource(id = R.drawable.ic_onboarding_foreground),
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .semantics { invisibleToUser() }
-                            .graphicsLayer(translationX = offsetX, translationY = offsetY)
-
+                            Modifier
+                                .semantics { invisibleToUser() }
+                                .graphicsLayer(translationX = offsetX, translationY = offsetY)
                     )
                 }
             }
