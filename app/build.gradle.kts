@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.google.dagger.hilt)
     alias(libs.plugins.google.ksp)
     id("kotlin-parcelize")
+    alias(libs.plugins.kotlin.compose.compiler)
 }
 
 android {
@@ -49,9 +50,7 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = GradleConstants.COMPOSE_COMPILER_VERSION
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

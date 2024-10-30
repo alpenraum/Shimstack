@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.google.dagger.hilt)
     id("kotlin-parcelize")
     alias(libs.plugins.google.ksp)
+    alias(libs.plugins.kotlin.compose.compiler)
 }
 
 android {
@@ -36,9 +37,6 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = GradleConstants.COMPOSE_COMPILER_VERSION
-    }
 }
 
 dependencies {
