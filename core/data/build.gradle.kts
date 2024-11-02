@@ -37,6 +37,8 @@ dependencies {
 
     implementation(project(":core:model"))
     implementation(project(":core:database"))
+    implementation(project(":domain:usersettingsdomain"))
+    implementation(project(":core:datastore"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
 

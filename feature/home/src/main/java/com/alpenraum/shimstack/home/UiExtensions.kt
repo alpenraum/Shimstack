@@ -15,11 +15,11 @@ fun Bike.getTireUIData(context: Context) =
     Pair(
         UIDataLabel.Simple(
             context.getString(R.string.front),
-            frontTire.getFormattedPressure(context)
+            this.frontTire.getFormattedPressure(context)
         ),
         UIDataLabel.Simple(
             context.getString(R.string.rear),
-            rearTire.getFormattedPressure(context)
+            this.rearTire.getFormattedPressure(context)
         )
     )
 

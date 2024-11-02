@@ -36,10 +36,10 @@ import com.alpenraum.shimstack.model.biketemplate.BikeTemplate
 import com.alpenraum.shimstack.newbike.NewBikeContract
 import com.alpenraum.shimstack.newbike.NewBikeDestinations
 import com.alpenraum.shimstack.newbike.R
-import com.alpenraum.shimstack.ui.compose.ButtonText
-import com.alpenraum.shimstack.ui.compose.InfoText
-import com.alpenraum.shimstack.ui.compose.LargeButton
-import com.alpenraum.shimstack.ui.compose.TextInput
+import com.alpenraum.shimstack.ui.compose.components.ButtonText
+import com.alpenraum.shimstack.ui.compose.components.InfoText
+import com.alpenraum.shimstack.ui.compose.components.LargeButton
+import com.alpenraum.shimstack.ui.compose.components.TextInput
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -80,9 +80,9 @@ fun EntryScreen(
                 intent(NewBikeContract.Intent.Filter(it))
             },
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
             label = stringResource(id = R.string.label_new_bike_search)
         )
         AnimatedContent(
@@ -91,18 +91,18 @@ fun EntryScreen(
             label = "",
             transitionSpec = {
                 slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Down) togetherWith fadeOut() +
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Up
-                    )
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up
+                        )
             }
         ) {
             if (it) {
                 Card(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .weight(1.0f, fill = false)
-                            .padding(vertical = 16.dp)
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1.0f, fill = false)
+                        .padding(vertical = 16.dp)
                 ) {
                     LazyColumn(
                         contentPadding = PaddingValues(vertical = 8.dp)
@@ -131,12 +131,13 @@ private fun ListItem(
 ) {
     Row(
         modifier =
-            Modifier
-                .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
-                .padding(
-                    vertical = 8.dp
-                ).padding(horizontal = 16.dp)
-                .semantics(true) {},
+        Modifier
+            .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
+            .padding(
+                vertical = 8.dp
+            )
+            .padding(horizontal = 16.dp)
+            .semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -150,11 +151,11 @@ private fun ListItem(
         Column {
             Text(
                 text =
-                    stringResource(
-                        id = R.string.label_new_bike_travel,
-                        bike.frontSuspensionTravelInMM,
-                        bike.rearSuspensionTravelInMM
-                    ),
+                stringResource(
+                    id = R.string.label_new_bike_travel,
+                    bike.frontSuspensionTravelInMM,
+                    bike.rearSuspensionTravelInMM
+                ),
                 style = MaterialTheme.typography.bodyMedium
             )
         }

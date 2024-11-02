@@ -4,6 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.alpenraum.shimstack.model.measurementunit.MeasurementUnitType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -12,6 +14,7 @@ class ShimstackDatastore(private val dataStore: DataStore<Preferences>) {
         private val PREF_USE_DYNAMIC_THEME = booleanPreferencesKey("PREF_USE_DYNAMIC_THEME")
         private val PREF_ALLOW_ANALYTICS = booleanPreferencesKey("PREF_ALLOW_ANALYTICS")
         private val PREF_IS_ONBOARDING_COMPLETED = booleanPreferencesKey("PREF_IS_ONBOARDING_COMPLETED")
+        private val PREF_MEASUREMENT_UNITS_TYPE = stringPreferencesKey("PREF_MEASUREMENT_UNIT")
     }
 
     val useDynamicTheme: Flow<Boolean> = PREF_USE_DYNAMIC_THEME.get(defaultValue = false)
@@ -30,6 +33,12 @@ class ShimstackDatastore(private val dataStore: DataStore<Preferences>) {
         PREF_IS_ONBOARDING_COMPLETED.get(defaultValue = false)
 
     suspend fun setIsOnboardingCompleted(value: Boolean) = PREF_IS_ONBOARDING_COMPLETED.set(value)
+
+
+    val measurementUnitType: Flow<String> =
+        PREF_MEASUREMENT_UNITS_TYPE.get(defaultValue = MeasurementUnitType.METRIC.name)
+
+    suspend fun setMeasurementUnit(measurementUnitType: String) = PREF_MEASUREMENT_UNITS_TYPE.set(measurementUnitType)
 
     private fun <T> Preferences.Key<T>.get(defaultValue: T) = dataStore.data.map { it[this] ?: defaultValue }
 

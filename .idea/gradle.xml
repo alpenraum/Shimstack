@@ -33,6 +33,7 @@
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/bikeDomain" />
+            <option value="$PROJECT_DIR$/domain/usersettingsdomain" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/NewBike" />
             <option value="$PROJECT_DIR$/feature/home" />

@@ -39,12 +39,12 @@ import com.alpenraum.shimstack.model.bike.BikeType
 import com.alpenraum.shimstack.newbike.NewBikeContract
 import com.alpenraum.shimstack.newbike.NewBikeDestinations
 import com.alpenraum.shimstack.newbike.R
-import com.alpenraum.shimstack.ui.compose.ButtonText
-import com.alpenraum.shimstack.ui.compose.InfoText
-import com.alpenraum.shimstack.ui.compose.LargeButton
 import com.alpenraum.shimstack.ui.compose.PhonePreview
 import com.alpenraum.shimstack.ui.compose.TabletPreview
-import com.alpenraum.shimstack.ui.compose.TextInput
+import com.alpenraum.shimstack.ui.compose.components.ButtonText
+import com.alpenraum.shimstack.ui.compose.components.InfoText
+import com.alpenraum.shimstack.ui.compose.components.LargeButton
+import com.alpenraum.shimstack.ui.compose.components.TextInput
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
 import com.alpenraum.shimstack.ui.compose.number
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -86,15 +86,15 @@ fun EnterDetailsScreen(
                 intent(NewBikeContract.Intent.BikeNameInput(it))
             },
             modifier =
-                if (!isCompactScreen) {
-                    Modifier.padding(
-                        top = 16.dp
-                    )
-                } else {
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp)
-                },
+            if (!isCompactScreen) {
+                Modifier.padding(
+                    top = 16.dp
+                )
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            },
             label = stringResource(id = CommonR.string.label_name),
             isError = state.detailsValidationErrors?.name == false,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
@@ -111,13 +111,13 @@ fun EnterDetailsScreen(
                     expanded = !expanded
                 },
                 modifier =
-                    if (isCompactScreen) {
-                        Modifier.weight(1.0f)
-                    } else {
-                        Modifier.padding(
-                            end = 32.dp
-                        )
-                    }
+                if (isCompactScreen) {
+                    Modifier.weight(1.0f)
+                } else {
+                    Modifier.padding(
+                        end = 32.dp
+                    )
+                }
             ) {
                 TextInput(
                     readOnly = true,
@@ -319,9 +319,9 @@ private fun ColumnScope.TireInput(
             },
             suffix = stringResource(id = CommonR.string.mm),
             modifier =
-                Modifier
-                    .weight(1.0f)
-                    .padding(end = 16.dp),
+            Modifier
+                .weight(1.0f)
+                .padding(end = 16.dp),
             label = stringResource(id = CommonR.string.label_tire_width),
             isError = isError,
             keyboardOptions = KeyboardOptions.number(ImeAction.Next)
@@ -339,10 +339,10 @@ private fun ColumnScope.TireInput(
                 label = stringResource(id = CommonR.string.label_internal_rim_width),
                 isError = isError,
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Decimal,
-                        imeAction = lastInputImeAction
-                    )
+                KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = lastInputImeAction
+                )
             )
             InfoText(R.string.copy_new_bike_internal_width_inf)
         }
@@ -379,17 +379,17 @@ private fun Error() {
     PhonePreview {
         EnterDetailsScreen(
             state =
-                NewBikeContract.State(
-                    detailsValidationErrors =
-                        com.alpenraum.shimstack.home.usecases.ValidateBikeUseCase.DetailsFailure(
-                            name = false,
-                            type = false,
-                            frontTire = false,
-                            rearTire = false,
-                            frontSuspension = false,
-                            rearSuspension = false
-                        )
-                ),
+            NewBikeContract.State(
+                detailsValidationErrors =
+                com.alpenraum.shimstack.home.usecases.ValidateBikeUseCase.DetailsFailure(
+                    name = false,
+                    type = false,
+                    frontTire = false,
+                    rearTire = false,
+                    frontSuspension = false,
+                    rearSuspension = false
+                )
+            ),
             intent = {},
             event = MutableSharedFlow()
         )

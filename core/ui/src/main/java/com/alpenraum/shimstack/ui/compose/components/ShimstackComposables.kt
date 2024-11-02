@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.compose
+package com.alpenraum.shimstack.ui.compose.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -77,17 +77,17 @@ fun CardWithPlaceholder(
     placeholderColor: Color,
     modifier: Modifier = Modifier,
     content:
-        @Composable()
-        ColumnScope.() -> Unit
+    @Composable()
+    ColumnScope.() -> Unit
 ) {
     Card(
         modifier =
-            modifier.placeholder(
-                visible = showPlaceholder,
-                highlight = PlaceholderHighlight.fade(),
-                color = placeholderColor,
-                shape = RoundedCornerShape(8.dp)
-            ),
+        modifier.placeholder(
+            visible = showPlaceholder,
+            highlight = PlaceholderHighlight.fade(),
+            color = placeholderColor,
+            shape = RoundedCornerShape(8.dp)
+        ),
         content = content
     )
 }
@@ -166,9 +166,9 @@ fun TextInput(
     suffix = suffix?.let { { Text(text = it) } },
     modifier = modifier,
     label =
-        label?.let {
-            { Text(text = it) }
-        },
+    label?.let {
+        { Text(text = it) }
+    },
     isError = isError,
     keyboardOptions = keyboardOptions,
     keyboardActions = keyboardActions,

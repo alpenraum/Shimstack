@@ -33,7 +33,6 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.com.google.android.material)
     implementation(project(":core:data"))
     implementation(project(":core:model"))
     implementation(project(":core:common"))

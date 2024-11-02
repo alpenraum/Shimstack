@@ -1,15 +1,14 @@
 package com.alpenraum.shimstack.model.tire
 
-import com.alpenraum.shimstack.model.pressure.Pressure
+import com.alpenraum.shimstack.model.measurementunit.Distance
+import com.alpenraum.shimstack.model.measurementunit.Pressure
 import java.math.BigDecimal
 
 data class Tire(
     val pressure: Pressure,
-    val widthInMM: Double,
-    val internalRimWidthInMM: Double?
+    val width: Distance,
+    val internalRimWidthInMM: Distance?
 ) {
-    val widthInInches: Double
-        get() = widthInMM / 2.54
 
-    constructor() : this(Pressure(BigDecimal.ZERO), 0.0, 0.0)
+    constructor() : this(Pressure(BigDecimal.ZERO), Distance(BigDecimal.ZERO), Distance(BigDecimal.ZERO))
 }

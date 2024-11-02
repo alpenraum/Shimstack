@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
+import com.alpenraum.shimstack.ui.compose.components.AttachToLifeCycle
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -37,9 +37,9 @@ fun OnboardingFeature(
         OnboardingScreen(
             onSkipButtonClicked = viewModel::onSkipClicked,
             modifier =
-                Modifier
-                    .padding(it)
-                    .padding(16.dp)
+            Modifier
+                .padding(it)
+                .padding(16.dp)
         ) {
             viewModel.onAddBikeNavigationClicked(navigator)
         }

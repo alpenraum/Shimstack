@@ -1,7 +1,7 @@
 package com.alpenraum.shimstack.ui.compose
 
 import android.content.Context
-import com.alpenraum.shimstack.model.pressure.Pressure
+import com.alpenraum.shimstack.model.measurementunit.Pressure
 import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.model.tire.Tire
 import com.alpenraum.shimstack.ui.R
@@ -12,9 +12,9 @@ fun Tire.getFormattedPressure(context: Context) = pressure.toFormattedString(con
 
 fun Tire.getFormattedTireWidth(context: Context) =
     if (true) { // TODO
-        "$widthInMM ${context.getString(R.string.mm)}"
+        "${width.asMetric()} ${context.getString(R.string.mm)}"
     } else {
-        "$widthInInches${context.getString(R.string.inch)}"
+        "${width.asImperial()}{context.getString(R.string.inch)}"
     }
 
 fun Tire.getFormattedInternalRimWidth(context: Context) = "$internalRimWidthInMM ${context.getString(R.string.mm)}"
@@ -41,7 +41,11 @@ fun Suspension.getFormattedRebound(context: Context) =
 
 fun Suspension.getFormattedPressure(context: Context) = pressure.toFormattedString(context)
 
-fun Suspension.getFormattedTravel(context: Context) = "$travel ${context.getString(R.string.mm)}"
+fun Suspension.getFormattedTravel(context: Context) = if (true) { // TODO
+    "$travel ${context.getString(R.string.mm)}"
+} else {
+    "$travel ${context.getString(R.string.mm)}"
+}
 
 // endRegion
 
@@ -49,9 +53,9 @@ fun Suspension.getFormattedTravel(context: Context) = "$travel ${context.getStri
 
 fun Pressure.toFormattedString(context: Context): String =
     if (true) { // TODO
-        "$pressureInBar ${context.getString(R.string.bar)}"
+        "${asMetric()} ${context.getString(R.string.bar)}"
     } else {
-        "$pressureInPSI ${context.getString(R.string.psi)}"
+        "${asImperial()} ${context.getString(R.string.psi)}"
     }
 
 // endRegion

@@ -45,24 +45,20 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:datastore"))
 
-    implementation(libs.androidx.material3.android)
-    implementation(libs.ui.tooling.preview.android)
     implementation(project(":core:data"))
     implementation(project(":core:model"))
     implementation(project(":domain:bikeDomain"))
     implementation(project(":feature:NewBike"))
+    implementation(project(":domain:usersettingsdomain"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
 
-    implementation(platform(libs.androidx.compose.bom))
-
+    implementation(libs.com.google.accompanist.pager.indicators)
     implementation(libs.com.google.dagger.hilt.android)
     debugImplementation(libs.androidx.ui.tooling)
     ksp(libs.com.google.dagger.hilt.compiler)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.org.jetbrains.kotlinx.collections.immutable)
-    implementation(libs.com.google.accompanist.pager.indicators)
-    implementation(libs.com.google.accompanist.placeholder.material)
-    implementation(libs.androidx.compose.material3.window.size)
+
 }

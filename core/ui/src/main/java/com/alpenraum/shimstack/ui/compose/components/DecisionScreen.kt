@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.compose
+package com.alpenraum.shimstack.ui.compose.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.alpenraum.shimstack.ui.R
 import com.alpenraum.shimstack.ui.theme.AppTheme
 
 class DecisionButtonConfig(
@@ -79,13 +80,13 @@ fun DecisionScreen(
 private fun DecisionScreenPreview() {
     AppTheme {
         DecisionScreen(
-            imageRes = com.google.android.material.R.drawable.abc_btn_check_to_on_mtrl_000,
-            contentRes = androidx.appcompat.R.string.abc_action_bar_home_description,
+            imageRes = R.drawable.ic_save,
+            contentRes = R.string.tokens,
             listOf(
-                DecisionButtonConfig(androidx.appcompat.R.string.abc_action_bar_home_description, true) {},
-                DecisionButtonConfig(androidx.appcompat.R.string.abc_action_bar_home_description, false) {},
-                DecisionButtonConfig(androidx.appcompat.R.string.abc_action_bar_home_description, false) {},
-                DecisionButtonConfig(androidx.appcompat.R.string.abc_action_bar_home_description, true) {}
+                DecisionButtonConfig(R.string.tokens, true) {},
+                DecisionButtonConfig(R.string.tokens, false) {},
+                DecisionButtonConfig(R.string.tokens, false) {},
+                DecisionButtonConfig(R.string.tokens, true) {}
             )
         )
     }
