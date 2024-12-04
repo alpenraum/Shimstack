@@ -198,6 +198,7 @@ fun EnterDetailsScreen(
             tireWidth = state.detailsInput.frontTireWidth,
             internalRimWidth = state.detailsInput.frontInternalRimWidth,
             isError = state.detailsValidationErrors?.frontTire == false,
+            isMetric = state.measurementUnitType.isMetric(),
             lastInputImeAction = ImeAction.Next,
             {
                 intent(NewBikeContract.Intent.FrontTireWidthInput(it))
@@ -211,6 +212,7 @@ fun EnterDetailsScreen(
             tireWidth = state.detailsInput.rearTireWidth,
             internalRimWidth = state.detailsInput.rearInternalRimWidth,
             isError = state.detailsValidationErrors?.rearTire == false,
+            isMetric = state.measurementUnitType.isMetric(),
             lastInputImeAction = ImeAction.Done,
             {
                 intent(NewBikeContract.Intent.RearTireWidthInput(it))
@@ -302,6 +304,7 @@ private fun ColumnScope.TireInput(
     tireWidth: String?,
     internalRimWidth: String?,
     isError: Boolean,
+    isMetric: Boolean,
     lastInputImeAction: ImeAction,
     onTireWidthChanged: (String) -> Unit,
     onRimWidthChanged: (String?) -> Unit
@@ -317,7 +320,7 @@ private fun ColumnScope.TireInput(
             onValueChange = { value ->
                 onTireWidthChanged(value)
             },
-            suffix = stringResource(id = CommonR.string.mm),
+            suffix = stringResource(id = if (isMetric) CommonR.string.mm else CommonR.string.inch),
             modifier =
                 Modifier
                     .weight(1.0f)

@@ -78,7 +78,8 @@ constructor(
                     bikeTemplateRepository
                         .getBikeTemplatesFilteredByName(
                             ""
-                        ).toImmutableList()
+                        ).toImmutableList(),
+                    measurementUnitType = measurementUnitType
                 )
             )
         }
@@ -432,7 +433,8 @@ interface NewBikeContract : UnidirectionalViewModel<NewBikeContract.State, NewBi
         val hasHSCFork: Boolean = false,
         val hasHSRFork: Boolean = false,
         val hasHSCShock: Boolean = false,
-        val hasHSRShock: Boolean = false
+        val hasHSRShock: Boolean = false,
+        val measurementUnitType: MeasurementUnitType = MeasurementUnitType.METRIC,
     ) {
         fun hasFrontSuspension() = detailsInput.frontTravel?.isNotEmpty() == true
 

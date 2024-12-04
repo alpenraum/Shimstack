@@ -5,6 +5,7 @@ import com.alpenraum.shimstack.common.DispatchersProvider
 import com.alpenraum.shimstack.data.bikeTemplates.LocalBikeTemplateRepository
 import com.alpenraum.shimstack.datastore.ShimstackDatastore
 import com.alpenraum.shimstack.ui.base.BaseViewModel
+import com.alpenraum.shimstack.usersettingsdomain.DecideUserMeasurementUnitUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,6 +16,7 @@ class MainViewModel
     constructor(
         private val bikeTemplateRepository: LocalBikeTemplateRepository,
         private val datastore: ShimstackDatastore,
+        private val decideUserMeasurementUnitUseCase: DecideUserMeasurementUnitUseCase,
         dispatchersProvider: DispatchersProvider
     ) : BaseViewModel(dispatchersProvider) {
         fun onBound(context: Context) {
@@ -22,6 +24,7 @@ class MainViewModel
                 datastore.isOnboardingCompleted.collect {
                     if (!it) {
                         bikeTemplateRepository.prepopulateData(context)
+                        decideUserMeasurementUnitUseCase(context)
                     }
                 }
             }
