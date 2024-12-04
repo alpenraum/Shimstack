@@ -58,18 +58,18 @@ fun NewBikeFeature(
     Scaffold {
         Column(
             modifier =
-            modifier
-                .padding(16.dp)
-                .padding(it)
+                modifier
+                    .padding(16.dp)
+                    .padding(it)
         ) {
             Text(
                 text = stringResource(id = R.string.header_new_bike_entry),
                 style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center,
                 modifier =
-                Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 8.dp)
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 8.dp)
             )
             // FIXME: INTEGRATE IN ACTUAL NAV GRAPH
             val subNavController = rememberNavController()

@@ -24,7 +24,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -52,19 +51,25 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.alpenraum.shimstack.home.R
+import com.alpenraum.shimstack.home.bikedetails.BikeDetailsContract.State.Edit
+import com.alpenraum.shimstack.home.getDistanceLabel
+import com.alpenraum.shimstack.home.getPressureLabel
 import com.alpenraum.shimstack.home.overview.BikeCard
 import com.alpenraum.shimstack.home.overview.BikeCardContent
 import com.alpenraum.shimstack.home.usecases.ValidateBikeUseCase
 import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.model.bike.BikeType
 import com.alpenraum.shimstack.model.measurementunit.Distance
+import com.alpenraum.shimstack.model.measurementunit.MeasurementUnitType
 import com.alpenraum.shimstack.model.measurementunit.Pressure
 import com.alpenraum.shimstack.model.suspension.Damping
 import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.ui.base.use
+import com.alpenraum.shimstack.ui.compose.ClassKeyedCrossfade
 import com.alpenraum.shimstack.ui.compose.components.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.components.ButtonText
 import com.alpenraum.shimstack.ui.compose.components.InfoText
+import com.alpenraum.shimstack.ui.compose.components.ShimstackCard
 import com.alpenraum.shimstack.ui.compose.components.TextInput
 import com.alpenraum.shimstack.ui.compose.getFormattedCompression
 import com.alpenraum.shimstack.ui.compose.getFormattedInternalRimWidth
@@ -73,7 +78,6 @@ import com.alpenraum.shimstack.ui.compose.getFormattedRebound
 import com.alpenraum.shimstack.ui.compose.getFormattedTireWidth
 import com.alpenraum.shimstack.ui.compose.getFormattedTravel
 import com.alpenraum.shimstack.ui.compose.number
-import com.alpenraum.shimstack.ui.compose.toFormattedString
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import kotlinx.coroutines.flow.collectLatest
 import com.alpenraum.shimstack.ui.R as BaseR
@@ -121,10 +125,10 @@ private fun Content(
         }
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp),
+                Modifier
+                    .fillMaxSize()
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BikeCard(showPlaceholder = false, modifier = Modifier.size(200.dp)) {
@@ -135,21 +139,21 @@ private fun Content(
             BikeInfo(state = state, intents, Modifier)
         }
         AnimatedVisibility(
-            visible = state.editMode,
+            visible = state is Edit,
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             ExtendedFloatingActionButton(
                 onClick = {
-                    if (state.validationFailure == null) {
+                    if ((state as? Edit)?.validationFailure == null) {
                         intents(BikeDetailsContract.Intent.OnSaveClicked)
                     }
                 },
                 containerColor =
-                if (state.validationFailure == null) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.surfaceVariant
-                },
+                    if ((state as? Edit)?.validationFailure == null) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    },
                 icon = {
                     Icon(
                         painter = painterResource(id = BaseR.drawable.ic_save),
@@ -174,28 +178,26 @@ fun BikeInfo(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
         modifier =
-        modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
     ) {
-        AnimatedContent(targetState = state.editMode, label = "") {
-            if (it) {
-                EditBikeHeading(state = state, intents = intents)
+        ClassKeyedCrossfade(targetState = state, label = "") {
+            if (it is Edit) {
+                EditBikeHeading(state = state as Edit, intents = intents)
             } else {
-                BikeHeading(state, intents)
+                BikeHeading(state.bike.name, state.bike.type, intents)
             }
         }
 
         Column(
-            modifier =
-            Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             FrontTireBlock(state = state, intents = intents, context = context)
             RearTireBlock(state = state, intents = intents, context = context)
             FrontSuspensionBlock(state = state, context = context, intents)
             RearSuspensionBlock(state = state, context, intents)
-            if (state.editMode) {
+            if (state is Edit) {
                 Spacer(Modifier.height(64.dp))
             }
         }
@@ -204,7 +206,8 @@ fun BikeInfo(
 
 @Composable
 private fun BikeHeading(
-    state: BikeDetailsContract.State,
+    bikeName: String,
+    bikeType: BikeType,
     intents: (BikeDetailsContract.Intent) -> Unit
 ) {
     Column {
@@ -213,7 +216,7 @@ private fun BikeHeading(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                state.bike.name,
+                bikeName,
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.weight(1.0f)
             )
@@ -224,14 +227,14 @@ private fun BikeHeading(
                 )
             }
         }
-        InfoText(state.bike.type.labelRes)
+        InfoText(bikeType.labelRes)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditBikeHeading(
-    state: BikeDetailsContract.State,
+    state: Edit,
     intents: (BikeDetailsContract.Intent) -> Unit
 ) {
     Column {
@@ -239,7 +242,7 @@ private fun EditBikeHeading(
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextInput(
-                value = state.bike.name,
+                value = state.bikeName,
                 onValueChange = {
                     intents(
                         BikeDetailsContract.Intent.Input.BikeName(it)
@@ -261,7 +264,7 @@ private fun EditBikeHeading(
         ) {
             TextInput(
                 readOnly = true,
-                value = stringResource(state.bike.type.labelRes),
+                value = stringResource(state.bikeType.labelRes),
                 onValueChange = {},
                 label = stringResource(id = BaseR.string.label_type),
                 trailingIcon = {
@@ -298,13 +301,14 @@ private fun FrontTireBlock(
     context: Context
 ) {
     TireBlock(
-        tire = state.bike.frontTire,
+        state = state,
         label = BaseR.string.label_front_tire,
         intents = intents,
         context = context,
-        editMode = state.editMode,
+        editMode = state is Edit,
         isFront = true,
-        showError = state.validationFailure?.frontTire == false
+        showError = (state as? Edit)?.validationFailure?.frontTire == false,
+        measurementUnitType = state.measurementUnitType
     )
 }
 
@@ -315,29 +319,32 @@ private fun RearTireBlock(
     context: Context
 ) {
     TireBlock(
-        tire = state.bike.rearTire,
+        state = state,
         label = BaseR.string.label_rear_tire,
         intents = intents,
         context = context,
-        editMode = state.editMode,
+        editMode = state is Edit,
         isFront = false,
-        showError = state.validationFailure?.rearTire == false
+        showError = (state as? Edit)?.validationFailure?.rearTire == false,
+        measurementUnitType = state.measurementUnitType
     )
 }
 
 @Composable
 private fun TireBlock(
-    tire: com.alpenraum.shimstack.model.tire.Tire,
+    state: BikeDetailsContract.State,
     @StringRes label: Int,
     intents: (BikeDetailsContract.Intent) -> Unit,
     context: Context,
     editMode: Boolean,
     isFront: Boolean,
-    showError: Boolean
+    showError: Boolean,
+    measurementUnitType: MeasurementUnitType
 ) {
     AnimatedContent(targetState = editMode, label = "") { edit ->
         val content: @Composable () -> Unit =
             if (edit) {
+                val editState = state as Edit
                 {
                     Column(Modifier.padding(8.dp)) {
                         InfoText(label)
@@ -347,7 +354,7 @@ private fun TireBlock(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             TextInput(
-                                value = tire.pressure.toFormattedString(context),
+                                value = if (isFront) editState.frontTirePressure else editState.rearTirePressure,
                                 onValueChange = {
                                     intents(
                                         if (isFront) {
@@ -360,17 +367,17 @@ private fun TireBlock(
                                     )
                                 },
                                 label =
-                                stringResource(
-                                    id = BaseR.string.label_tire_pressure
-                                ),
-                                suffix = stringResource(id = BaseR.string.bar),
+                                    stringResource(
+                                        id = BaseR.string.label_tire_pressure
+                                    ),
+                                suffix = measurementUnitType.getPressureLabel(),
                                 modifier = Modifier.weight(1.0f),
                                 keyboardOptions = KeyboardOptions.number(ImeAction.Next),
                                 isError = showError
                             )
 
                             TextInput(
-                                value = tire.width.toString(),
+                                value = if (isFront) editState.frontTireWidth else editState.rearTireWidth,
                                 onValueChange = {
                                     intents(
                                         if (isFront) {
@@ -383,17 +390,17 @@ private fun TireBlock(
                                     )
                                 },
                                 label =
-                                stringResource(
-                                    id = BaseR.string.label_tire_width
-                                ),
-                                suffix = stringResource(id = BaseR.string.mm),
+                                    stringResource(
+                                        id = BaseR.string.label_tire_width
+                                    ),
+                                suffix = measurementUnitType.getDistanceLabel(),
                                 modifier = Modifier.weight(1.0f),
                                 keyboardOptions = KeyboardOptions.number(ImeAction.Next),
                                 isError = showError
                             )
 
                             TextInput(
-                                value = tire.internalRimWidthInMM.toString(),
+                                value = (if (isFront) editState.frontInternalRimWidth else editState.rearInternalRimWidth) ?: "",
                                 onValueChange = {
                                     intents(
                                         if (isFront) {
@@ -408,9 +415,9 @@ private fun TireBlock(
                                     )
                                 },
                                 label =
-                                stringResource(
-                                    id = BaseR.string.label_internal_rim_width
-                                ),
+                                    stringResource(
+                                        id = BaseR.string.label_internal_rim_width
+                                    ),
                                 suffix = stringResource(id = BaseR.string.mm),
                                 modifier = Modifier.weight(1.0f),
                                 keyboardOptions = KeyboardOptions.number(ImeAction.Done),
@@ -420,6 +427,7 @@ private fun TireBlock(
                     }
                 }
             } else {
+                val tire = if (isFront) state.bike.frontTire else state.bike.rearTire
                 {
                     Column(Modifier.padding(8.dp)) {
                         InfoText(label)
@@ -428,12 +436,12 @@ private fun TireBlock(
                             // rear tire
                             TextPair(
                                 BaseR.string.label_tire_pressure,
-                                tire.getFormattedPressure(context),
+                                tire.getFormattedPressure(context, measurementUnitType.isMetric()),
                                 modifier = Modifier.weight(1.0f)
                             )
                             TextPair(
                                 BaseR.string.label_tire_width,
-                                tire.getFormattedTireWidth(context),
+                                tire.getFormattedTireWidth(context, measurementUnitType.isMetric()),
                                 modifier = Modifier.weight(1.0f)
                             )
                             TextPair(
@@ -446,7 +454,7 @@ private fun TireBlock(
                 }
             }
 
-        Card(
+        ShimstackCard(
             Modifier
                 .height(IntrinsicSize.Min)
                 .padding(top = 16.dp)
@@ -463,7 +471,7 @@ private fun FrontSuspensionBlock(
     intents: (BikeDetailsContract.Intent) -> Unit
 ) {
     state.bike.frontSuspension?.let { suspension ->
-        Card(
+        ShimstackCard(
             Modifier
                 .height(IntrinsicSize.Min)
                 .padding(top = 16.dp)
@@ -472,11 +480,12 @@ private fun FrontSuspensionBlock(
                 SuspensionBlock(
                     label = BaseR.string.label_front_suspension,
                     context = context,
-                    suspension = suspension,
-                    editMode = state.editMode,
+                    state = state,
+                    editMode = state is Edit,
                     intents = intents,
                     isFront = true,
-                    showError = state.validationFailure?.frontSuspension == false
+                    measurementUnitType = state.measurementUnitType,
+                    showError = (state as? Edit)?.validationFailure?.frontSuspension == false
                 )
             }
         }
@@ -490,7 +499,7 @@ private fun RearSuspensionBlock(
     intents: (BikeDetailsContract.Intent) -> Unit
 ) {
     state.bike.rearSuspension?.let { suspension ->
-        Card(
+        ShimstackCard(
             Modifier
                 .height(IntrinsicSize.Min)
                 .padding(top = 16.dp)
@@ -499,11 +508,12 @@ private fun RearSuspensionBlock(
                 SuspensionBlock(
                     label = BaseR.string.label_rear_suspension,
                     context = context,
-                    suspension = suspension,
-                    editMode = state.editMode,
+                    state = state,
+                    editMode = state is Edit,
                     intents = intents,
                     isFront = false,
-                    showError = state.validationFailure?.rearSuspension == false
+                    measurementUnitType = state.measurementUnitType,
+                    showError = (state as? Edit)?.validationFailure?.rearSuspension == false
                 )
             }
         }
@@ -526,10 +536,11 @@ private fun TextPair(
 private fun SuspensionBlock(
     @StringRes label: Int,
     context: Context,
-    suspension: Suspension,
+    state: BikeDetailsContract.State,
     editMode: Boolean,
     isFront: Boolean,
     showError: Boolean,
+    measurementUnitType: MeasurementUnitType,
     modifier: Modifier = Modifier,
     intents: (BikeDetailsContract.Intent) -> Unit
 ) {
@@ -538,12 +549,13 @@ private fun SuspensionBlock(
             InfoText(label)
             Spacer(modifier = Modifier.height(4.dp))
             if (it) {
+                val editState = state as Edit
                 Row(
                     modifier = Modifier.weight(1.0f),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TextInput(
-                        value = suspension.travel.toString(),
+                        value = (if (isFront) editState.frontSuspensionTravel else editState.rearSuspensionTravel) ?: "",
                         onValueChange = {
                             intents(
                                 if (isFront) {
@@ -556,17 +568,17 @@ private fun SuspensionBlock(
                             )
                         },
                         label =
-                        stringResource(
-                            id = BaseR.string.label_travel
-                        ),
-                        suffix = stringResource(id = BaseR.string.mm),
+                            stringResource(
+                                id = BaseR.string.label_travel
+                            ),
+                        suffix = measurementUnitType.getDistanceLabel(),
                         modifier = Modifier.weight(1.0f),
                         keyboardOptions = KeyboardOptions.number(ImeAction.Next),
                         isError = showError
                     )
 
                     TextInput(
-                        value = suspension.pressure.toFormattedString(context),
+                        value = (if (isFront) editState.frontSuspensionPressure else editState.rearSuspensionPressure) ?: "",
                         onValueChange = {
                             intents(
                                 if (isFront) {
@@ -579,17 +591,17 @@ private fun SuspensionBlock(
                             )
                         },
                         label =
-                        stringResource(
-                            id = BaseR.string.pressure
-                        ),
-                        suffix = stringResource(id = BaseR.string.bar),
+                            stringResource(
+                                id = BaseR.string.pressure
+                            ),
+                        suffix = measurementUnitType.getPressureLabel(),
                         modifier = Modifier.weight(1.0f),
                         keyboardOptions = KeyboardOptions.number(ImeAction.Next),
                         isError = showError
                     )
 
                     TextInput(
-                        value = suspension.tokens.toString(),
+                        value = (if (isFront) editState.frontSuspensionTokens else editState.rearSuspensionTokens) ?: "",
                         onValueChange = {
                             intents(
                                 if (isFront) {
@@ -604,24 +616,25 @@ private fun SuspensionBlock(
                             )
                         },
                         label =
-                        stringResource(
-                            id = BaseR.string.tokens
-                        ),
+                            stringResource(
+                                id = BaseR.string.tokens
+                            ),
                         modifier = Modifier.weight(1.0f),
                         keyboardOptions = KeyboardOptions.number(ImeAction.Done),
                         isError = showError
                     )
                 }
             } else {
+                val suspension = (if (isFront) state.bike.frontSuspension else state.bike.rearSuspension)!!
                 Row(modifier = Modifier.weight(1.0f)) {
                     TextPair(
                         label = BaseR.string.label_travel,
-                        text = suspension.getFormattedTravel(context),
+                        text = suspension.getFormattedTravel(context, measurementUnitType.isMetric()),
                         modifier = Modifier.weight(1.0f)
                     )
                     TextPair(
                         label = BaseR.string.pressure,
-                        text = suspension.getFormattedPressure(context),
+                        text = suspension.getFormattedPressure(context, measurementUnitType.isMetric()),
                         modifier = Modifier.weight(1.0f)
                     )
                     TextPair(
@@ -655,22 +668,21 @@ private fun Preview() {
     AppTheme {
         Content(
             state =
-            BikeDetailsContract.State(
-                Bike.empty()
-                    .copy(
+                BikeDetailsContract.State.Details(
+                    Bike.empty().copy(
                         name = "Specialized Stumpjumper",
                         type = BikeType.ALL_MTN,
                         frontSuspension =
-                        Suspension(
-                            pressure = Pressure(10.0),
-                            compression = Damping(0, 1),
-                            rebound = Damping(2, 3),
-                            travel = Distance(150.0),
-                            tokens = 5
-                        ),
+                            Suspension(
+                                pressure = Pressure(10.0),
+                                compression = Damping(0, 1),
+                                rebound = Damping(2, 3),
+                                travel = Distance(150.0),
+                                tokens = 5
+                            ),
                         rearSuspension = Suspension(150)
                     )
-            ),
+                ),
             intents = {}
         )
     }
@@ -682,32 +694,30 @@ private fun EditPreview() {
     AppTheme {
         Content(
             state =
-            BikeDetailsContract.State(
-                Bike.empty()
-                    .copy(
+                Edit(
+                    Bike.empty().copy(
                         name = "Specialized Stumpjumper",
                         type = BikeType.ALL_MTN,
                         frontSuspension =
-                        Suspension(
-                            pressure = Pressure(10.0),
-                            compression = Damping(0, 1),
-                            rebound = Damping(2, 3),
-                            travel = Distance(150.0),
-                            tokens = 5
-                        ),
+                            Suspension(
+                                pressure = Pressure(10.0),
+                                compression = Damping(0, 1),
+                                rebound = Damping(2, 3),
+                                travel = Distance(150.0),
+                                tokens = 5
+                            ),
                         rearSuspension = Suspension(150)
                     ),
-                validationFailure =
-                ValidateBikeUseCase.DetailsFailure(
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false
+                    validationFailure =
+                        ValidateBikeUseCase.DetailsFailure(
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false
+                        )
                 ),
-                editMode = true
-            ),
             intents = {}
         )
     }

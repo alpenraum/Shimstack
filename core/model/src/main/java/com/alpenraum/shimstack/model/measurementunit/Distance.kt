@@ -21,5 +21,7 @@ data class Distance(private val distanceInMM: BigDecimal) : MeasurementUnit {
 
     companion object {
         val MM_TO_INCH_CONVERSION = BigDecimal(3.0 / 64.0)
+
+        fun fromImperial(distance: Double) = Distance(BigDecimal(distance) / MM_TO_INCH_CONVERSION)
     }
 }

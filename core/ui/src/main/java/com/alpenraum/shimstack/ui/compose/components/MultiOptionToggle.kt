@@ -43,7 +43,7 @@ fun MultiOptionToggle(
     @StringRes options: List<Int>,
     selectedIndex: Int,
     modifier: Modifier = Modifier,
-    onOptionSelect: (Int) -> Unit,
+    onOptionSelect: (Int) -> Unit
 ) {
     Surface(
         modifier = modifier,
@@ -53,39 +53,39 @@ fun MultiOptionToggle(
         val animatedSelectedIndex = animateFloatAsState(selectedIndex.toFloat())
         Layout(
             modifier =
-            Modifier
-                .background(
-                    MaterialTheme.colorScheme.surfaceContainerHighest,
-                    CircleShape
-                )
-                .clip(CircleShape),
+                Modifier
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerHighest,
+                        CircleShape
+                    )
+                    .clip(CircleShape),
             content = {
-
                 Box(
                     modifier =
-                    Modifier
-                        .fillMaxHeight()
-                        .background(
-                            MaterialTheme.colorScheme.primary,
-                            CircleShape
-                        )
-                        .clip(CircleShape)
-                        .layoutId("SELECTOR")
+                        Modifier
+                            .fillMaxHeight()
+                            .background(
+                                MaterialTheme.colorScheme.primary,
+                                CircleShape
+                            )
+                            .clip(CircleShape)
+                            .layoutId("SELECTOR")
                 )
                 options.forEachIndexed { index, option ->
                     val isSelected = index == selectedIndex
                     Box(
                         modifier =
-                        Modifier
-                            .clip(CircleShape)
-                            .clickable {
-                                onOptionSelect(index)
-                            },
+                            Modifier
+                                .clip(CircleShape)
+                                .clickable {
+                                    onOptionSelect(index)
+                                },
                         contentAlignment = Alignment.Center
                     ) {
-                        val textColor = animateColorAsState(
-                            targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-                        )
+                        val textColor =
+                            animateColorAsState(
+                                targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                            )
                         Text(
                             text = stringResource(option),
                             style = MaterialTheme.typography.bodyMedium,
@@ -95,9 +95,11 @@ fun MultiOptionToggle(
                         )
                     }
                 }
-            }, measurePolicy = { measurables, constraints ->
+            },
+            measurePolicy = { measurables, constraints ->
                 measurePolicy(measurables, constraints, options.size, animatedSelectedIndex.value)
-            })
+            }
+        )
     }
 }
 
@@ -108,15 +110,15 @@ private fun MeasureScope.measurePolicy(
     selectedIndex: Float
 ): MeasureResult {
     val elementWidth = constraints.maxWidth / optionsCount
-    val elements = measurables.fastFilter { it.layoutId != "SELECTOR" }.fastMap {
-        it.measure(constraints.copy(minWidth = elementWidth, maxWidth = elementWidth))
-    }
+    val elements =
+        measurables.fastFilter { it.layoutId != "SELECTOR" }.fastMap {
+            it.measure(constraints.copy(minWidth = elementWidth, maxWidth = elementWidth))
+        }
 
     val layoutHeight = elements.maxOfOrNull { it.height } ?: 0
     val selector =
         measurables.fastFirst { it.layoutId == "SELECTOR" }
             .measure(constraints.copy(minWidth = elementWidth, maxWidth = elementWidth, minHeight = layoutHeight))
-
 
     return layout(constraints.maxWidth, layoutHeight) {
         placeContent(selector, elements, layoutHeight, constraints.maxWidth, optionsCount, selectedIndex)
@@ -135,12 +137,13 @@ private fun Placeable.PlacementScope.placeContent(
     options.fastForEachIndexed { index, option ->
         option.placeRelative(x = (layoutWidth / optionsCount) * index, y = (layoutHeight - option.height) / 2)
     }
-
 }
 
 @Preview
 @Composable
-private fun Preview(@PreviewParameter(PreviewProvider::class) data: List<Int>) = AppTheme {
+private fun Preview(
+    @PreviewParameter(PreviewProvider::class) data: List<Int>
+) = AppTheme {
     val selected = remember { mutableIntStateOf(0) }
     MultiOptionToggle(
         data,
@@ -151,11 +154,11 @@ private fun Preview(@PreviewParameter(PreviewProvider::class) data: List<Int>) =
 }
 
 private class PreviewProvider : PreviewParameterProvider<List<Int>> {
-    override val values: Sequence<List<Int>> = sequenceOf(
-        listOf(R.string.label_all_mtn_type),
-        listOf(R.string.label_all_mtn_type, R.string.label_dh_type),
-        listOf(R.string.label_all_mtn_type, R.string.label_dh_type, R.string.label_xc_type),
-        listOf(R.string.label_all_mtn_type, R.string.label_dh_type, R.string.label_xc_type, R.string.label_enduro_type),
-    )
+    override val values: Sequence<List<Int>> =
+        sequenceOf(
+            listOf(R.string.label_all_mtn_type),
+            listOf(R.string.label_all_mtn_type, R.string.label_dh_type),
+            listOf(R.string.label_all_mtn_type, R.string.label_dh_type, R.string.label_xc_type),
+            listOf(R.string.label_all_mtn_type, R.string.label_dh_type, R.string.label_xc_type, R.string.label_enduro_type)
+        )
 }
-

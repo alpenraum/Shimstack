@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:model"))
     implementation(project(":domain:bikeDomain"))
+    implementation(project(":domain:usersettingsdomain"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
 

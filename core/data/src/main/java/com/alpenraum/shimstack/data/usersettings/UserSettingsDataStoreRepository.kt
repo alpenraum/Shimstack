@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
-class UserSettingsDataStoreRepository @Inject constructor(private val dataStore: ShimstackDatastore) : UserSettingsRepository {
+class UserSettingsDataStoreRepository
+@Inject
+constructor(private val dataStore: ShimstackDatastore) : UserSettingsRepository {
     override fun getUserSettings(): Flow<UserSettings> {
         return combine(
             dataStore.allowAnalytics,
@@ -16,11 +18,12 @@ class UserSettingsDataStoreRepository @Inject constructor(private val dataStore:
             dataStore.measurementUnitType,
             dataStore.isOnboardingCompleted
         ) { x1, x2, x3, x4 ->
-            val measurementUnitType = try {
-                MeasurementUnitType.valueOf(x3)
-            } catch (e: IllegalArgumentException) {
-                MeasurementUnitType.METRIC
-            }
+            val measurementUnitType =
+                try {
+                    MeasurementUnitType.valueOf(x3)
+                } catch (e: IllegalArgumentException) {
+                    MeasurementUnitType.METRIC
+                }
             UserSettings(
                 isDynamicColorEnabled = x2,
                 isAnalyticsEnabled = x1,

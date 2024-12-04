@@ -34,30 +34,33 @@ fun SettingsScreen(
 
     Column(
         modifier =
-        modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
-            .verticalScroll(rememberScrollState())
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+                .verticalScroll(rememberScrollState())
     ) {
         AnimatedContent(state.settings) {
             it.forEach { setting ->
                 when (setting) {
-                    is SettingsContract.Settings.DynamicTheme -> SettingsToggleRow(setting.label, setting.setting) {
-                        intents(
-                            SettingsContract.Intent.OnUseDynamicThemeChange(it)
-                        )
-                    }
+                    is SettingsContract.Settings.DynamicTheme ->
+                        SettingsToggleRow(setting.label, setting.setting) {
+                            intents(
+                                SettingsContract.Intent.OnUseDynamicThemeChange(it)
+                            )
+                        }
 
-                    is SettingsContract.Settings.AllowAnalytics -> SettingsToggleRow(setting.label, setting.setting) {
-                        intents(
-                            SettingsContract.Intent.OnAllowAnalyticsChange(it)
-                        )
-                    }
+                    is SettingsContract.Settings.AllowAnalytics ->
+                        SettingsToggleRow(setting.label, setting.setting) {
+                            intents(
+                                SettingsContract.Intent.OnAllowAnalyticsChange(it)
+                            )
+                        }
 
-                    is SettingsContract.Settings.MeasurementUnit -> SettingsMultiSwitch(
-                        setting.options,
-                        setting.selectedIndex
-                    ) { TODO() } // TODO()
+                    is SettingsContract.Settings.MeasurementUnit ->
+                        SettingsMultiSwitch(
+                            setting.options,
+                            setting.selectedIndex
+                        ) { TODO() } // TODO()
                 }
             }
         }
@@ -68,21 +71,22 @@ fun SettingsScreen(
 private fun SettingsToggleRow(
     label: Int,
     setting: Boolean,
-    modifier: Modifier = Modifier, onDataChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    onDataChange: (Boolean) -> Unit
 ) {
     Row(
         modifier =
-        modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+            modifier
+                .fillMaxWidth()
+                .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = stringResource(id = label),
             style =
-            MaterialTheme.typography.bodyLarge.copy(
-                color = MaterialTheme.colorScheme.onSurface
-            ),
+                MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
             modifier = Modifier.weight(1.0f)
         )
         Switch(
@@ -93,21 +97,25 @@ private fun SettingsToggleRow(
 }
 
 @Composable
-private fun SettingsMultiSwitch(options: List<Int>, selectedIndex: Int, onOptionSelect: (Int) -> Unit) {
+private fun SettingsMultiSwitch(
+    options: List<Int>,
+    selectedIndex: Int,
+    onOptionSelect: (Int) -> Unit
+) {
     MultiOptionToggle(options, selectedIndex, onOptionSelect = onOptionSelect)
-
 }
-
 
 @Preview
 @Composable
 private fun SettingPreview() {
     AppTheme {
         SettingsToggleRow(
-            SettingsContract.Settings.DynamicTheme(false).label, false
+            SettingsContract.Settings.DynamicTheme(false).label,
+            false
         ) {}
     }
     SettingsToggleRow(
-        SettingsContract.Settings.DynamicTheme(false).label, true
+        SettingsContract.Settings.DynamicTheme(false).label,
+        true
     ) {}
 }

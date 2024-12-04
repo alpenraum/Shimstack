@@ -42,36 +42,36 @@ data class BikeTemplate(
             name = name,
             type = type,
             frontSuspension =
-            if (frontSuspensionTravelInMM == 0) {
-                null
-            } else {
-                Suspension(
-                    Pressure(0.0),
-                    Damping(0, 0),
-                    Damping(0, 0),
-                    0,
-                    Distance(BigDecimal(frontSuspensionTravelInMM))
-                )
-            },
+                if (frontSuspensionTravelInMM == 0) {
+                    null
+                } else {
+                    Suspension(
+                        Pressure(0.0),
+                        Damping(0, 0),
+                        Damping(0, 0),
+                        0,
+                        Distance(BigDecimal(frontSuspensionTravelInMM))
+                    )
+                },
             rearSuspension =
-            if (rearSuspensionTravelInMM == 0) {
-                null
-            } else {
-                Suspension(
-                    Pressure(0.0),
-                    Damping(0, 0),
-                    Damping(0, 0),
-                    0,
-                    Distance(BigDecimal(rearSuspensionTravelInMM))
-                )
-            },
+                if (rearSuspensionTravelInMM == 0) {
+                    null
+                } else {
+                    Suspension(
+                        Pressure(0.0),
+                        Damping(0, 0),
+                        Damping(0, 0),
+                        0,
+                        Distance(BigDecimal(rearSuspensionTravelInMM))
+                    )
+                },
             frontTire = Tire(Pressure(0.0), Distance(BigDecimal(frontTireWidthInMM)), Distance(BigDecimal(frontRimWidthInMM))),
             rearTire =
-            Tire(
-                Pressure(0.0),
-                Distance(BigDecimal(rearTireWidthInMM)),
-                Distance(BigDecimal(rearRimWidthInMM))
-            ),
+                Tire(
+                    Pressure(0.0),
+                    Distance(BigDecimal(rearTireWidthInMM)),
+                    Distance(BigDecimal(rearRimWidthInMM))
+                ),
             isEBike = isEBike,
             id = 0
         )

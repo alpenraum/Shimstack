@@ -13,10 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 
-
 enum class BottomSheetAppearance {
     FULL_SCREEN,
-    COMPACT,
+    COMPACT
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,12 +26,12 @@ fun ShimstackBottomSheet(
     modifier: Modifier = Modifier,
     sheetGesturesEnabled: Boolean = true,
     appearance: BottomSheetAppearance = BottomSheetAppearance.COMPACT,
-    sheetContent: @Composable ColumnScope.() -> Unit,
+    sheetContent: @Composable ColumnScope.() -> Unit
 ) {
     ModalBottomSheet(
         modifier =
-        modifier
-            .animateContentSize(),
+            modifier
+                .animateContentSize(),
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         sheetGesturesEnabled = sheetGesturesEnabled,
@@ -47,6 +46,6 @@ fun ShimstackBottomSheet(
 
                 BottomSheetAppearance.COMPACT -> sheetContent()
             }
-        },
+        }
     )
 }

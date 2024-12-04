@@ -19,7 +19,7 @@ fun animateAlignmentAsState(
         spring(
             dampingRatio = Spring.DampingRatioNoBouncy,
             stiffness = Spring.StiffnessMediumLow
-        ),
+        )
 ): State<Alignment> {
     val biased = targetAlignment as BiasAlignment
     val horizontal by animateFloatAsState(biased.horizontalBias, animationSpec = animationSpec, label = "")

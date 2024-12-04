@@ -13,6 +13,7 @@ import com.alpenraum.shimstack.model.bikesetup.DetailsInputData
 import com.alpenraum.shimstack.model.bikesetup.SetupInputData
 import com.alpenraum.shimstack.model.biketemplate.BikeTemplate
 import com.alpenraum.shimstack.model.measurementunit.Distance
+import com.alpenraum.shimstack.model.measurementunit.MeasurementUnitType
 import com.alpenraum.shimstack.model.measurementunit.Pressure
 import com.alpenraum.shimstack.model.suspension.Damping
 import com.alpenraum.shimstack.model.suspension.Suspension
@@ -20,6 +21,7 @@ import com.alpenraum.shimstack.model.tire.Tire
 import com.alpenraum.shimstack.newbike.navigation.NewBikeNavigator
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
+import com.alpenraum.shimstack.usersettingsdomain.GetUserSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -48,6 +50,7 @@ constructor(
     private val bikeRepository: LocalBikeRepository,
     private val validateBikeUseCase: ValidateBikeUseCase,
     private val validateSetupUseCase: ValidateSetupUseCase,
+    userSettingsUseCase: GetUserSettingsUseCase,
     private val newBikeNavigator: NewBikeNavigator,
     dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
 ) : BaseViewModel(dispatchersProvider),
@@ -63,7 +66,12 @@ constructor(
     override val event: SharedFlow<NewBikeContract.Event>
         get() = _event.asSharedFlow()
 
+    private var measurementUnitType = MeasurementUnitType.METRIC
+
     init {
+        iOScope.launch {
+            userSettingsUseCase().collectLatest { measurementUnitType = it.measurementUnitType }
+        }
         iOScope.launch {
             _state.emit(
                 NewBikeContract.State(
@@ -205,9 +213,9 @@ constructor(
                 is NewBikeContract.Intent.FrontSuspensionPressure ->
                     validateAndUpdateInput(
                         setupInputData =
-                        SetupInputData(
-                            frontSuspensionPressure = intent.pressure
-                        )
+                            SetupInputData(
+                                frontSuspensionPressure = intent.pressure
+                            )
                     )
 
                 is NewBikeContract.Intent.FrontSuspensionTokens ->
@@ -218,9 +226,9 @@ constructor(
                 is NewBikeContract.Intent.RearSuspensionPressure ->
                     validateAndUpdateInput(
                         setupInputData =
-                        SetupInputData(
-                            rearSuspensionPressure = intent.pressure
-                        )
+                            SetupInputData(
+                                rearSuspensionPressure = intent.pressure
+                            )
                     )
 
                 is NewBikeContract.Intent.RearSuspensionTokens ->
@@ -272,7 +280,7 @@ constructor(
     }
 
     private suspend fun saveBike() {
-        bikeRepository.createBike(_state.value.toBike())
+        bikeRepository.createBike(_state.value.toBike(measurementUnitType))
     }
 
     private suspend fun validateAndUpdateInput(
@@ -307,13 +315,13 @@ constructor(
                     hasHSCShock = hasHSCShock ?: state.value.hasHSCShock,
                     hasHSRShock = hasHSRShock ?: state.value.hasHSRShock,
                     detailsValidationErrors =
-                    detailsValidationResult?.getOrNull(),
+                        detailsValidationResult?.getOrNull(),
                     setupValidationErrors =
-                    if (setupValidationResult?.isSuccess()?.not() == true) {
-                        setupValidationResult as ValidateSetupUseCase.SetupFailure
-                    } else {
-                        null
-                    },
+                        if (setupValidationResult?.isSuccess()?.not() == true) {
+                            setupValidationResult as ValidateSetupUseCase.SetupFailure
+                        } else {
+                            null
+                        },
                     showSetupOutlierHint = setupValidationResult is ValidateSetupUseCase.SetupOutlier
                 )
             )
@@ -361,50 +369,50 @@ constructor(
             setupInput.frontTirePressure ?: state.value.setupInput.frontTirePressure,
             setupInput.rearTirePressure ?: state.value.setupInput.rearTirePressure,
             frontSuspensionPressure =
-            setupInput.frontSuspensionPressure
-                ?: state.value.setupInput.frontSuspensionPressure,
+                setupInput.frontSuspensionPressure
+                    ?: state.value.setupInput.frontSuspensionPressure,
             rearSuspensionPressure =
-            setupInput.rearSuspensionPressure
-                ?: state.value.setupInput.rearSuspensionPressure,
+                setupInput.rearSuspensionPressure
+                    ?: state.value.setupInput.rearSuspensionPressure,
             frontSuspensionTokens =
-            setupInput.frontSuspensionTokens
-                ?: state.value.setupInput.frontSuspensionTokens,
+                setupInput.frontSuspensionTokens
+                    ?: state.value.setupInput.frontSuspensionTokens,
             rearSuspensionTokens =
-            setupInput.rearSuspensionTokens
-                ?: state.value.setupInput.rearSuspensionTokens,
+                setupInput.rearSuspensionTokens
+                    ?: state.value.setupInput.rearSuspensionTokens,
             frontSuspensionLSC =
-            setupInput.frontSuspensionLSC
-                ?: state.value.setupInput.frontSuspensionLSC,
+                setupInput.frontSuspensionLSC
+                    ?: state.value.setupInput.frontSuspensionLSC,
             frontSuspensionLSR =
-            setupInput.frontSuspensionLSR
-                ?: state.value.setupInput.frontSuspensionLSR,
+                setupInput.frontSuspensionLSR
+                    ?: state.value.setupInput.frontSuspensionLSR,
             frontSuspensionHSC =
-            setupInput.frontSuspensionHSC
-                ?: state.value.setupInput.frontSuspensionHSC,
+                setupInput.frontSuspensionHSC
+                    ?: state.value.setupInput.frontSuspensionHSC,
             frontSuspensionHSR =
-            setupInput.frontSuspensionHSR
-                ?: state.value.setupInput.frontSuspensionHSR,
+                setupInput.frontSuspensionHSR
+                    ?: state.value.setupInput.frontSuspensionHSR,
             rearSuspensionLSC =
-            setupInput.rearSuspensionLSC
-                ?: state.value.setupInput.rearSuspensionLSC,
+                setupInput.rearSuspensionLSC
+                    ?: state.value.setupInput.rearSuspensionLSC,
             rearSuspensionLSR =
-            setupInput.rearSuspensionLSR
-                ?: state.value.setupInput.rearSuspensionLSR,
+                setupInput.rearSuspensionLSR
+                    ?: state.value.setupInput.rearSuspensionLSR,
             rearSuspensionHSC =
-            setupInput.rearSuspensionHSC
-                ?: state.value.setupInput.rearSuspensionHSC,
+                setupInput.rearSuspensionHSC
+                    ?: state.value.setupInput.rearSuspensionHSC,
             rearSuspensionHSR =
-            setupInput.rearSuspensionHSR
-                ?: state.value.setupInput.rearSuspensionHSR
+                setupInput.rearSuspensionHSR
+                    ?: state.value.setupInput.rearSuspensionHSR
         )
 
     private fun mapFromBike(bike: Bike) =
         DetailsInputData(
             bike.name,
-            bike.frontSuspension?.travel?.toString(),
-            bike.frontSuspension?.travel?.toString(),
-            bike.frontTire.width.toString(),
-            bike.rearTire.width.toString(),
+            bike.frontSuspension?.travel?.getAsUnit(measurementUnitType)?.toString(),
+            bike.frontSuspension?.travel?.getAsUnit(measurementUnitType)?.toString(),
+            bike.frontTire.width.getAsUnit(measurementUnitType).toString(),
+            bike.rearTire.width.getAsUnit(measurementUnitType).toString(),
             bike.frontTire.internalRimWidthInMM?.toString(),
             bike.rearTire.internalRimWidthInMM?.toString()
         )
@@ -430,11 +438,13 @@ interface NewBikeContract : UnidirectionalViewModel<NewBikeContract.State, NewBi
 
         fun hasRearSuspension() = detailsInput.rearTravel?.isNotEmpty() == true
 
-        fun toBike(): Bike {
+        fun toBike(measurementUnitType: MeasurementUnitType): Bike {
             val frontSuspension =
                 if (hasFrontSuspension()) {
                     Suspension(
-                        Pressure(setupInput.frontSuspensionPressure?.toDouble() ?: 0.0),
+                        with(
+                            setupInput.frontSuspensionPressure?.toDouble() ?: 0.0
+                        ) { if (measurementUnitType.isMetric()) Pressure(this) else Pressure.fromImperial(this) },
                         Damping(
                             setupInput.frontSuspensionLSC?.toInt() ?: 0,
                             if (hasHSCFork) setupInput.frontSuspensionHSC?.toInt() ?: 0 else null
@@ -444,7 +454,9 @@ interface NewBikeContract : UnidirectionalViewModel<NewBikeContract.State, NewBi
                             if (hasHSRFork) setupInput.frontSuspensionHSR?.toInt() ?: 0 else null
                         ),
                         setupInput.frontSuspensionTokens?.toInt() ?: 0,
-                        Distance(detailsInput.frontTravel?.toDouble() ?: 0.0),
+                        with(
+                            detailsInput.frontTravel?.toDouble() ?: 0.0
+                        ) { if (measurementUnitType.isMetric()) Distance(this) else Distance.fromImperial(this) }
                     )
                 } else {
                     null
@@ -452,7 +464,9 @@ interface NewBikeContract : UnidirectionalViewModel<NewBikeContract.State, NewBi
             val rearSuspension =
                 if (hasRearSuspension()) {
                     Suspension(
-                        Pressure(setupInput.rearSuspensionPressure?.toDouble() ?: 0.0),
+                        with(
+                            setupInput.rearSuspensionPressure?.toDouble() ?: 0.0
+                        ) { if (measurementUnitType.isMetric()) Pressure(this) else Pressure.fromImperial(this) },
                         Damping(
                             setupInput.rearSuspensionLSC?.toInt() ?: 0,
                             if (hasHSCShock) setupInput.rearSuspensionHSC?.toInt() ?: 0 else null
@@ -462,21 +476,31 @@ interface NewBikeContract : UnidirectionalViewModel<NewBikeContract.State, NewBi
                             if (hasHSRShock) setupInput.rearSuspensionHSR?.toInt() ?: 0 else null
                         ),
                         setupInput.rearSuspensionTokens?.toInt() ?: 0,
-                        Distance(detailsInput.rearTravel?.toDouble() ?: 0.0),
+                        with(
+                            detailsInput.rearTravel?.toDouble() ?: 0.0
+                        ) { if (measurementUnitType.isMetric()) Distance(this) else Distance.fromImperial(this) }
                     )
                 } else {
                     null
                 }
             val frontTire =
                 Tire(
-                    Pressure(setupInput.frontTirePressure?.toDouble() ?: 0.0),
-                    Distance(detailsInput.frontTireWidth?.toDouble() ?: 0.0),
+                    with(
+                        setupInput.frontTirePressure?.toDouble() ?: 0.0
+                    ) { if (measurementUnitType.isMetric()) Pressure(this) else Pressure.fromImperial(this) },
+                    with(
+                        detailsInput.frontTireWidth?.toDouble() ?: 0.0
+                    ) { if (measurementUnitType.isMetric()) Distance(this) else Distance.fromImperial(this) },
                     detailsInput.frontInternalRimWidth?.toDoubleOrNull()?.let { Distance(it) }
                 )
             val rearTire =
                 Tire(
-                    Pressure(setupInput.rearTirePressure?.toDouble() ?: 0.0),
-                    Distance(detailsInput.rearTireWidth?.toDouble() ?: 0.0),
+                    with(
+                        setupInput.rearTirePressure?.toDouble() ?: 0.0
+                    ) { if (measurementUnitType.isMetric()) Pressure(this) else Pressure.fromImperial(this) },
+                    with(
+                        detailsInput.rearTireWidth?.toDouble() ?: 0.0
+                    ) { if (measurementUnitType.isMetric()) Distance(this) else Distance.fromImperial(this) },
                     detailsInput.rearInternalRimWidth?.toDoubleOrNull()?.let { Distance(it) }
                 )
 

@@ -35,16 +35,16 @@ fun NewBikeSuccessScreen(
         contentRes = R.string.copy_new_bike_success,
         modifier = Modifier,
         buttons =
-        listOf(
-            DecisionButtonConfig(CommonR.string.label_done, true) {
-                intent(NewBikeContract.Intent.OnFlowFinished)
-            },
-            DecisionButtonConfig(R.string.label_add_another_bike, false) {
-                navigator?.navigate(NewBikeDestinations.ENTRY.route) {
-                    popUpTo(NewBikeDestinations.ENTRY.route)
+            listOf(
+                DecisionButtonConfig(CommonR.string.label_done, true) {
+                    intent(NewBikeContract.Intent.OnFlowFinished)
+                },
+                DecisionButtonConfig(R.string.label_add_another_bike, false) {
+                    navigator?.navigate(NewBikeDestinations.ENTRY.route) {
+                        popUpTo(NewBikeDestinations.ENTRY.route)
+                    }
                 }
-            }
-        )
+            )
     )
 }
 

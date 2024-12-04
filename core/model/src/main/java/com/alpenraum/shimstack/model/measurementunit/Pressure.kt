@@ -8,6 +8,8 @@ data class Pressure(private val pressureInBar: BigDecimal) : MeasurementUnit {
 
     companion object {
         private val BAR_TO_PSI_CONVERSION = BigDecimal(14.503773773)
+
+        fun fromImperial(pressure: Double) = Pressure(BigDecimal(pressure) / BAR_TO_PSI_CONVERSION)
     }
 
     fun isEmpty() = pressureInBar != BigDecimal.ZERO

@@ -37,9 +37,9 @@ fun OnboardingFeature(
         OnboardingScreen(
             onSkipButtonClicked = viewModel::onSkipClicked,
             modifier =
-            Modifier
-                .padding(it)
-                .padding(16.dp)
+                Modifier
+                    .padding(it)
+                    .padding(16.dp)
         ) {
             viewModel.onAddBikeNavigationClicked(navigator)
         }

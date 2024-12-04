@@ -80,9 +80,9 @@ fun EntryScreen(
                 intent(NewBikeContract.Intent.Filter(it))
             },
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
             label = stringResource(id = R.string.label_new_bike_search)
         )
         AnimatedContent(
@@ -99,10 +99,10 @@ fun EntryScreen(
             if (it) {
                 Card(
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(1.0f, fill = false)
-                        .padding(vertical = 16.dp)
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1.0f, fill = false)
+                            .padding(vertical = 16.dp)
                 ) {
                     LazyColumn(
                         contentPadding = PaddingValues(vertical = 8.dp)
@@ -131,13 +131,13 @@ private fun ListItem(
 ) {
     Row(
         modifier =
-        Modifier
-            .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
-            .padding(
-                vertical = 8.dp
-            )
-            .padding(horizontal = 16.dp)
-            .semantics(true) {},
+            Modifier
+                .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
+                .padding(
+                    vertical = 8.dp
+                )
+                .padding(horizontal = 16.dp)
+                .semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -151,11 +151,11 @@ private fun ListItem(
         Column {
             Text(
                 text =
-                stringResource(
-                    id = R.string.label_new_bike_travel,
-                    bike.frontSuspensionTravelInMM,
-                    bike.rearSuspensionTravelInMM
-                ),
+                    stringResource(
+                        id = R.string.label_new_bike_travel,
+                        bike.frontSuspensionTravelInMM,
+                        bike.rearSuspensionTravelInMM
+                    ),
                 style = MaterialTheme.typography.bodyMedium
             )
         }

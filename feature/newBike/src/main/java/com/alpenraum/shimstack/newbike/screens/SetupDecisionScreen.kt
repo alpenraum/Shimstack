@@ -21,14 +21,14 @@ fun SetupDecisionScreen(navController: NavController? = null) {
         contentRes = R.string.copy_new_bike_existing_setup,
         modifier = Modifier,
         buttons =
-        listOf(
-            DecisionButtonConfig(CommonR.string.label_yes, true) {
-                navController?.navigate(NewBikeDestinations.ENTER_SETUP.route)
-            },
-            DecisionButtonConfig(CommonR.string.label_no, false) {
-                Toast.makeText(context, "TODO: Insert Setup Wizard here", Toast.LENGTH_LONG).show()
-            }
-        )
+            listOf(
+                DecisionButtonConfig(CommonR.string.label_yes, true) {
+                    navController?.navigate(NewBikeDestinations.ENTER_SETUP.route)
+                },
+                DecisionButtonConfig(CommonR.string.label_no, false) {
+                    Toast.makeText(context, "TODO: Insert Setup Wizard here", Toast.LENGTH_LONG).show()
+                }
+            )
     )
 }
 

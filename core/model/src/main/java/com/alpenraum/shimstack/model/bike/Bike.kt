@@ -29,6 +29,4 @@ data class Bike(
                 id = 0
             )
     }
-
-
 }

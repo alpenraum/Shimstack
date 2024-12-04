@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,6 +36,7 @@ import com.alpenraum.shimstack.model.tire.Tire
 import com.alpenraum.shimstack.ui.compose.AdaptiveSizeText
 import com.alpenraum.shimstack.ui.compose.components.CARD_DIMENSION
 import com.alpenraum.shimstack.ui.compose.components.CARD_MARGIN
+import com.alpenraum.shimstack.ui.compose.components.ShimstackCard
 import com.alpenraum.shimstack.ui.compose.components.VerticalDivider
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -46,18 +46,19 @@ import com.alpenraum.shimstack.ui.R as BaseR
 fun TireDetails(
     bigCard: Boolean,
     bike: Bike,
+    isMetric: Boolean,
     modifier: Modifier = Modifier
 ) {
     DetailsCard(title = BaseR.string.tire, bigCard, modifier = modifier) {
         Row(
             modifier =
-            Modifier
-                .padding(horizontal = 8.dp)
-                .padding(top = 16.dp)
-                .weight(1.0f),
+                Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 16.dp)
+                    .weight(1.0f),
             horizontalArrangement = Arrangement.Center
         ) {
-            val data = bike.getTireUIData(LocalContext.current)
+            val data = bike.getTireUIData(LocalContext.current, isMetric)
             SimpleTextPair(
                 heading = stringResource(BaseR.string.front),
                 content = data.first.content,
@@ -83,9 +84,9 @@ private fun SimpleTextPair(
     AdaptiveSizeText(
         text = heading,
         style =
-        MaterialTheme.typography.bodyMedium.copy(
-            color = MaterialTheme.colorScheme.outline
-        ),
+            MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.outline
+            ),
         modifier = Modifier.padding(bottom = 4.dp),
         textAlign = TextAlign.Center
     )
@@ -107,11 +108,12 @@ private fun SimpleTextPair(
 @Composable
 fun ForkDetails(
     bigCard: Boolean,
-    bike: Bike
+    bike: Bike,
+    isMetric: Boolean
 ) {
     SuspensionDetails(
         bigCard = bigCard,
-        suspensionData = bike.getFrontSuspensionUIData(LocalContext.current),
+        suspensionData = bike.getFrontSuspensionUIData(LocalContext.current, isMetric),
         titleRes = BaseR.string.fork,
         errorTextRes = R.string.copy_no_fork
     )
@@ -120,11 +122,12 @@ fun ForkDetails(
 @Composable
 fun ShockDetails(
     bigCard: Boolean,
-    bike: Bike
+    bike: Bike,
+    isMetric: Boolean
 ) {
     SuspensionDetails(
         bigCard = bigCard,
-        suspensionData = bike.getRearSuspensionUIData(LocalContext.current),
+        suspensionData = bike.getRearSuspensionUIData(LocalContext.current, isMetric),
         titleRes = BaseR.string.shock,
         errorTextRes = R.string.copy_no_shock
     )
@@ -141,20 +144,20 @@ private fun SuspensionDetails(
         suspensionData?.let {
             Column(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(top = 16.dp)
-                    .weight(1.0f),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = 16.dp)
+                        .weight(1.0f),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                        .weight(1.0f)
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                            .weight(1.0f)
                 ) {
                     SuspensionQuarter(data = it[0]) // ,modifier = Modifier.weight(1.0f)
                     // modifier = Modifier.weight(1.0f,fill = false)
@@ -164,10 +167,10 @@ private fun SuspensionDetails(
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
-                        .weight(1.0f)
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
+                            .weight(1.0f)
                 ) {
                     SuspensionQuarter(data = it[2])
                     SuspensionQuarter(data = it[3])
@@ -176,10 +179,10 @@ private fun SuspensionDetails(
         } ?: run {
             Box(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-                    .weight(1.0f),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                        .weight(1.0f),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -214,9 +217,9 @@ private fun SuspensionQuarter(
                         Text(
                             text = it.key,
                             style =
-                            MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.outline
-                            ),
+                                MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.outline
+                                ),
                             modifier = Modifier.padding(end = 8.dp),
                             textAlign = TextAlign.Center
                         )
@@ -239,12 +242,12 @@ private fun DetailsCard(
     modifier: Modifier = Modifier,
     content: @Composable (ColumnScope.() -> Unit)
 ) {
-    Card(
+    ShimstackCard(
         modifier =
-        modifier
-            .height(CARD_DIMENSION)
-            .width(if (bigCard) CARD_DIMENSION * 2.0f + CARD_MARGIN else CARD_DIMENSION * 1.0f)
-            .padding(vertical = CARD_MARGIN / 2.0f)
+            modifier
+                .height(CARD_DIMENSION)
+                .width(if (bigCard) CARD_DIMENSION * 2.0f + CARD_MARGIN else CARD_DIMENSION * 1.0f)
+                .padding(vertical = CARD_MARGIN / 2.0f)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -265,7 +268,7 @@ private fun DetailsCard(
 @Composable
 private fun PreviewTireData() {
     AppTheme {
-        TireDetails(bigCard = false, Bike.empty())
+        TireDetails(bigCard = false, Bike.empty(), false)
     }
 }
 
@@ -273,7 +276,7 @@ private fun PreviewTireData() {
 @Composable
 private fun PreviewTireDataBig() {
     AppTheme {
-        TireDetails(bigCard = true, Bike.empty())
+        TireDetails(bigCard = true, Bike.empty(), true)
     }
 }
 
@@ -282,19 +285,19 @@ private val testBike =
         name = "1",
         type = BikeType.UNKNOWN,
         frontSuspension =
-        Suspension(
-            Pressure(60.0),
-            Damping(1),
-            Damping(1),
-            3,
-            Distance(140.0)
-        ),
+            Suspension(
+                Pressure(60.0),
+                Damping(1),
+                Damping(1),
+                3,
+                Distance(140.0)
+            ),
         frontTire =
-        Tire(
-            Pressure(20.0),
-            Distance(0.0),
-            Distance(0.0)
-        ),
+            Tire(
+                Pressure(20.0),
+                Distance(0.0),
+                Distance(0.0)
+            ),
         rearTire = Tire(Pressure(20.0), Distance(0.0), Distance(0.0)),
         isEBike = false,
         id = 0
@@ -304,19 +307,19 @@ private val testBikeMax =
         name = "1",
         type = BikeType.UNKNOWN,
         frontSuspension =
-        Suspension(
-            Pressure(60.0),
-            Damping(1, 2),
-            Damping(3, 4),
-            5,
-            Distance(140.0)
-        ),
+            Suspension(
+                Pressure(60.0),
+                Damping(1, 2),
+                Damping(3, 4),
+                5,
+                Distance(140.0)
+            ),
         frontTire =
-        Tire(
-            Pressure(20.0),
-            Distance(0.0),
-            Distance(0.0)
-        ),
+            Tire(
+                Pressure(20.0),
+                Distance(0.0),
+                Distance(0.0)
+            ),
         rearTire = Tire(Pressure(20.0), Distance(0.0), Distance(0.0)),
         isEBike = false,
         id = 0
@@ -324,16 +327,16 @@ private val testBikeMax =
 
 @Preview
 @Composable
-private fun PreviewForkData() = ForkDetails(bigCard = false, bike = testBike)
+private fun PreviewForkData() = ForkDetails(bigCard = false, bike = testBike, true)
 
 @Preview
 @Composable
-private fun PreviewForkDataBig() = ForkDetails(bigCard = true, bike = testBike)
+private fun PreviewForkDataBig() = ForkDetails(bigCard = true, bike = testBike, false)
 
 @Preview
 @Composable
-private fun PreviewForkDataMax() = ForkDetails(bigCard = false, bike = testBikeMax)
+private fun PreviewForkDataMax() = ForkDetails(bigCard = false, bike = testBikeMax, true)
 
 @Preview
 @Composable
-private fun PreviewForkDataMaxBig() = ForkDetails(bigCard = true, bike = testBikeMax)
+private fun PreviewForkDataMaxBig() = ForkDetails(bigCard = true, bike = testBikeMax, false)

@@ -34,7 +34,6 @@ class ShimstackDatastore(private val dataStore: DataStore<Preferences>) {
 
     suspend fun setIsOnboardingCompleted(value: Boolean) = PREF_IS_ONBOARDING_COMPLETED.set(value)
 
-
     val measurementUnitType: Flow<String> =
         PREF_MEASUREMENT_UNITS_TYPE.get(defaultValue = MeasurementUnitType.METRIC.name)
 

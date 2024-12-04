@@ -8,14 +8,19 @@ import com.alpenraum.shimstack.ui.R
 
 // TOOD: EXTRACT TO USE CASES
 // region Tire
-fun Tire.getFormattedPressure(context: Context) = pressure.toFormattedString(context)
+fun Tire.getFormattedPressure(
+    context: Context,
+    isMetric: Boolean
+) = pressure.toFormattedString(context, isMetric)
 
-fun Tire.getFormattedTireWidth(context: Context) =
-    if (true) { // TODO
-        "${width.asMetric()} ${context.getString(R.string.mm)}"
-    } else {
-        "${width.asImperial()}{context.getString(R.string.inch)}"
-    }
+fun Tire.getFormattedTireWidth(
+    context: Context,
+    isMetric: Boolean
+) = if (isMetric) {
+    "${width.asMetric()} ${context.getString(R.string.mm)}"
+} else {
+    "${width.asImperial()}${context.getString(R.string.inch)}"
+}
 
 fun Tire.getFormattedInternalRimWidth(context: Context) = "$internalRimWidthInMM ${context.getString(R.string.mm)}"
 
@@ -39,9 +44,15 @@ fun Suspension.getFormattedRebound(context: Context) =
         } ?: ""
     }"
 
-fun Suspension.getFormattedPressure(context: Context) = pressure.toFormattedString(context)
+fun Suspension.getFormattedPressure(
+    context: Context,
+    isMetric: Boolean
+) = pressure.toFormattedString(context, isMetric)
 
-fun Suspension.getFormattedTravel(context: Context) = if (true) { // TODO
+fun Suspension.getFormattedTravel(
+    context: Context,
+    isMetric: Boolean
+) = if (isMetric) {
     "$travel ${context.getString(R.string.mm)}"
 } else {
     "$travel ${context.getString(R.string.mm)}"
@@ -51,8 +62,11 @@ fun Suspension.getFormattedTravel(context: Context) = if (true) { // TODO
 
 // Region Pressure
 
-fun Pressure.toFormattedString(context: Context): String =
-    if (true) { // TODO
+fun Pressure.toFormattedString(
+    context: Context,
+    isMetric: Boolean
+): String =
+    if (isMetric) {
         "${asMetric()} ${context.getString(R.string.bar)}"
     } else {
         "${asImperial()} ${context.getString(R.string.psi)}"

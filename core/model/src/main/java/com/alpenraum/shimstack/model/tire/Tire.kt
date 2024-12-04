@@ -9,6 +9,5 @@ data class Tire(
     val width: Distance,
     val internalRimWidthInMM: Distance?
 ) {
-
     constructor() : this(Pressure(BigDecimal.ZERO), Distance(BigDecimal.ZERO), Distance(BigDecimal.ZERO))
 }
