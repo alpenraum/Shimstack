@@ -34,4 +34,6 @@
     <string name="comp">Comp</string>
     <string name="rebound">Rebound</string>
     <string name="tokens">Tokens</string>
+    <string name="metric">Metrisch</string>
+    <string name="imperial">Imperial</string>
 </resources>

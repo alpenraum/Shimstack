@@ -25,7 +25,7 @@ import com.alpenraum.shimstack.newbike.screens.EntryScreen
 import com.alpenraum.shimstack.newbike.screens.NewBikeSuccessScreen
 import com.alpenraum.shimstack.newbike.screens.SetupDecisionScreen
 import com.alpenraum.shimstack.ui.base.use
-import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
+import com.alpenraum.shimstack.ui.compose.components.AttachToLifeCycle
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

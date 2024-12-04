@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.ui.tooling.preview.android)
     implementation(project(":feature:home"))
     implementation(project(":feature:NewBike"))
+    implementation(project(":domain:usersettingsdomain"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

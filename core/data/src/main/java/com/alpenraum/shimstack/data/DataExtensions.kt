@@ -8,10 +8,12 @@ import com.alpenraum.shimstack.core.database.models.TireDTO
 import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.model.bike.BikeType
 import com.alpenraum.shimstack.model.biketemplate.BikeTemplate
-import com.alpenraum.shimstack.model.pressure.Pressure
+import com.alpenraum.shimstack.model.measurementunit.Distance
+import com.alpenraum.shimstack.model.measurementunit.Pressure
 import com.alpenraum.shimstack.model.suspension.Damping
 import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.model.tire.Tire
+import java.math.BigDecimal
 
 fun BikeTemplateDTO.toDomain() =
     BikeTemplate(
@@ -46,21 +48,22 @@ fun SuspensionDTO.toDomain() =
         compression.toDomain(),
         rebound.toDomain(),
         tokens,
-        travel
+        Distance(BigDecimal(travel))
     )
 
-fun Suspension.toDTO() = SuspensionDTO(pressure.pressureInBar, compression.toDTO(), rebound.toDTO(), tokens, travel)
+fun Suspension.toDTO() = SuspensionDTO(pressure.asMetric(), compression.toDTO(), rebound.toDTO(), tokens, travel.asMetric().toInt())
 
 fun DampingDTO.toDomain() = Damping(lowSpeedFromClosed, highSpeedFromClosed)
 
 fun Damping.toDTO() = DampingDTO(lowSpeedFromClosed, highSpeedFromClosed)
 
-fun TireDTO.toDomain() = Tire(Pressure(pressure), widthInMM, internalRimWidthInMM)
+fun TireDTO.toDomain() = Tire(Pressure(pressure), Distance(widthInMM), internalRimWidthInMM?.let { Distance(it) })
 
-fun Tire.toDTO() = TireDTO(pressure.pressureInBar, widthInMM, internalRimWidthInMM)
+// TODO HAVE DB STORE BIG DECIMALS
+fun Tire.toDTO() = TireDTO(pressure.asMetric(), width.asMetric().toDouble(), internalRimWidthInMM?.asMetric()?.toDouble())
 
 fun Bike.toDTO() =
-    BikeDTO(id, name, type.id, frontSuspension?.toDTO(), rearSuspension?.toDTO(), frontTire.toDTO(), rearTire.toDTO(), isEBike)
+    BikeDTO(id, name, type.id, frontSuspension?.toDTO(), rearSuspension?.toDTO(), this.frontTire.toDTO(), this.rearTire.toDTO(), isEBike)
 
 fun BikeDTO.toDomain() =
     Bike(

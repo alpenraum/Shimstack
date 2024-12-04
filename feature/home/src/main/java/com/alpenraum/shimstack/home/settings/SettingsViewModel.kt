@@ -2,94 +2,101 @@ package com.alpenraum.shimstack.home.settings
 
 import androidx.annotation.StringRes
 import androidx.navigation.NavController
-import com.alpenraum.shimstack.datastore.ShimstackDatastore
 import com.alpenraum.shimstack.home.R
+import com.alpenraum.shimstack.model.measurementunit.MeasurementUnitType
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
+import com.alpenraum.shimstack.usersettingsdomain.GetUserSettingsUseCase
+import com.alpenraum.shimstack.usersettingsdomain.UserSettings
+import com.alpenraum.shimstack.usersettingsdomain.UserSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel
-    @Inject
-    constructor(
-        private val datastore: ShimstackDatastore,
-        dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
-    ) : BaseViewModel(dispatchersProvider), SettingsContract {
-        private val _state = MutableStateFlow(SettingsContract.State())
-        private val _event = MutableSharedFlow<SettingsContract.Event>()
-        override val state: StateFlow<SettingsContract.State>
-            get() = _state.asStateFlow()
-        override val event: SharedFlow<SettingsContract.Event>
-            get() = _event.asSharedFlow()
+@Inject
+constructor(
+    private val getUserSettingsUseCase: GetUserSettingsUseCase,
+    private val userSettingsRepository: UserSettingsRepository,
+    dispatchersProvider: com.alpenraum.shimstack.common.DispatchersProvider
+) : BaseViewModel(dispatchersProvider), SettingsContract {
+    private val _event = MutableSharedFlow<SettingsContract.Event>()
+    override val state: StateFlow<SettingsContract.State> =
+        getUserSettingsUseCase().map(::mapUserSettings).map(::createState)
+            .stateIn(viewModelScope, started = SharingStarted.WhileSubscribed(), initialValue = SettingsContract.State())
+    override val event: SharedFlow<SettingsContract.Event>
+        get() = _event.asSharedFlow()
 
-        override fun intent(
-            intent: SettingsContract.Intent,
-            navController: NavController
-        ) {
-            when (intent) {
-                is SettingsContract.Intent.OnSettingsChanged ->
-                    toggleSetting(
-                        intent.settings,
+    override fun intent(
+        intent: SettingsContract.Intent,
+        navController: NavController
+    ) {
+        when (intent) {
+            is SettingsContract.Intent.OnAllowAnalyticsChange ->
+                iOScope.launch {
+                    userSettingsRepository.updateIsAnalyticsEnabled(
                         intent.newSetting
                     )
-            }
-        }
+                }
 
-        override fun onStart() {
-            super.onStart()
-            viewModelScope.launch {
-                val state =
-                    SettingsContract.State(
-                        listOf(
-                            Pair(
-                                SettingsContract.Settings.USE_DYNAMIC_THEME,
-                                datastore.useDynamicTheme
-                            ),
-                            Pair(SettingsContract.Settings.ALLOW_ANALYTICS, datastore.allowAnalytics)
-                        )
+            is SettingsContract.Intent.OnMeasurementUnitTypeChange ->
+                iOScope.launch {
+                    userSettingsRepository.updateMeasurementUnitType(
+                        MeasurementUnitType.entries[intent.newSettingIndex]
                     )
-                _state.emit(state)
-            }
-        }
+                }
 
-        private fun toggleSetting(
-            settings: SettingsContract.Settings,
-            newSetting: Boolean
-        ) = iOScope.launch {
-            when (settings) {
-                SettingsContract.Settings.USE_DYNAMIC_THEME ->
-                    datastore.setUseDynamicTheme(
-                        newSetting
+            is SettingsContract.Intent.OnUseDynamicThemeChange ->
+                iOScope.launch {
+                    userSettingsRepository.updateIsDynamicColorEnabled(
+                        intent.newSetting
                     )
-
-                SettingsContract.Settings.ALLOW_ANALYTICS -> datastore.setAllowAnalytics(newSetting)
-            }
+                }
         }
     }
 
-interface SettingsContract :
-    UnidirectionalViewModel<SettingsContract.State, SettingsContract.Intent, SettingsContract.Event> {
-    data class State(val settings: List<Pair<Settings, Flow<Boolean>?>> = emptyList())
+    private fun mapUserSettings(userSetting: UserSettings): List<SettingsContract.Settings> =
+        listOf(
+            SettingsContract.Settings.DynamicTheme(userSetting.isDynamicColorEnabled),
+            SettingsContract.Settings.AllowAnalytics(userSetting.isAnalyticsEnabled),
+            SettingsContract.Settings.MeasurementUnit(
+                listOf(com.alpenraum.shimstack.ui.R.string.metric, com.alpenraum.shimstack.ui.R.string.imperial),
+                MeasurementUnitType.entries.indexOf(userSetting.measurementUnitType)
+            )
+        )
+
+    private fun createState(list: List<SettingsContract.Settings>): SettingsContract.State = SettingsContract.State(list)
+}
+
+interface SettingsContract : UnidirectionalViewModel<SettingsContract.State, SettingsContract.Intent, SettingsContract.Event> {
+    data class State(val settings: List<Settings> = emptyList())
 
     sealed class Event
 
-    sealed class Intent(val newSetting: Boolean) {
-        class OnSettingsChanged(val settings: Settings, newSetting: Boolean) : Intent(newSetting)
+    sealed class Intent {
+        class OnUseDynamicThemeChange(val newSetting: Boolean) : Intent()
+
+        class OnAllowAnalyticsChange(val newSetting: Boolean) : Intent()
+
+        class OnMeasurementUnitTypeChange(val newSettingIndex: Int) : Intent()
     }
 
-    enum class Settings(
+    sealed class Settings(
         @StringRes val label: Int
     ) {
-        USE_DYNAMIC_THEME(R.string.settings_dynamic_theme),
-        ALLOW_ANALYTICS(R.string.settings_allow_analytics)
+        class DynamicTheme(val setting: Boolean) : Settings(R.string.settings_dynamic_theme)
+
+        class AllowAnalytics(val setting: Boolean) : Settings(R.string.settings_allow_analytics)
+
+        class MeasurementUnit(@StringRes val options: List<Int>, val selectedIndex: Int) :
+            Settings(R.string.settings_measurement_unit_type)
     }
 }

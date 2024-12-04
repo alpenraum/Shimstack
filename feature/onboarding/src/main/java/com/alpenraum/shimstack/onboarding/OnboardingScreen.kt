@@ -36,7 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.alpenraum.shimstack.ui.compose.LargeButton
+import com.alpenraum.shimstack.ui.compose.components.LargeButton
 import com.alpenraum.shimstack.ui.theme.AppTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -117,39 +117,39 @@ fun OnboardingScreen(
                 val infiniteTransition = rememberInfiniteTransition()
 
                 val offsetX by
-                    infiniteTransition.animateFloat(
-                        initialValue = 0f,
-                        targetValue = 50f,
-                        animationSpec =
-                            infiniteRepeatable(
-                                // Infinitely repeating a 1000ms tween animation using default easing curve.
-                                animation =
-                                    keyframes {
-                                        durationMillis = 10_000
-                                        25.0f at 5000 using FastOutSlowInEasing
-                                        50.0f at 10_000 using FastOutSlowInEasing
-                                    },
-                                repeatMode = RepeatMode.Reverse
-                            ),
-                        label = ""
-                    )
+                infiniteTransition.animateFloat(
+                    initialValue = 0f,
+                    targetValue = 50f,
+                    animationSpec =
+                        infiniteRepeatable(
+                            // Infinitely repeating a 1000ms tween animation using default easing curve.
+                            animation =
+                                keyframes {
+                                    durationMillis = 10_000
+                                    25.0f at 5000 using FastOutSlowInEasing
+                                    50.0f at 10_000 using FastOutSlowInEasing
+                                },
+                            repeatMode = RepeatMode.Reverse
+                        ),
+                    label = ""
+                )
 
                 val offsetY by
-                    infiniteTransition.animateFloat(
-                        initialValue = 0f,
-                        targetValue = 50f,
-                        animationSpec =
-                            infiniteRepeatable(
-                                animation =
-                                    keyframes {
-                                        durationMillis = 8_000
-                                        50.0f at 8_000 using FastOutSlowInEasing
-                                        25.0f at 4_000 using FastOutSlowInEasing
-                                    },
-                                repeatMode = RepeatMode.Reverse
-                            ),
-                        label = ""
-                    )
+                infiniteTransition.animateFloat(
+                    initialValue = 0f,
+                    targetValue = 50f,
+                    animationSpec =
+                        infiniteRepeatable(
+                            animation =
+                                keyframes {
+                                    durationMillis = 8_000
+                                    50.0f at 8_000 using FastOutSlowInEasing
+                                    25.0f at 4_000 using FastOutSlowInEasing
+                                },
+                            repeatMode = RepeatMode.Reverse
+                        ),
+                    label = ""
+                )
 
                 Box(
                     modifier = Modifier.fillMaxWidth(),

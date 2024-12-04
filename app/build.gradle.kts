@@ -74,6 +74,7 @@ dependencies {
     implementation(project(":core:datastore"))
     implementation(project(":feature:onboarding"))
     implementation(project(":domain:bikeDomain"))
+    implementation(project(":domain:usersettingsdomain"))
     implementation(project(":feature:home"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

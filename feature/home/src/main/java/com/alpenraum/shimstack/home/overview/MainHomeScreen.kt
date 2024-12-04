@@ -67,10 +67,10 @@ import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.model.cardsetup.CardSetup
 import com.alpenraum.shimstack.model.cardsetup.CardType
 import com.alpenraum.shimstack.ui.base.use
-import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
-import com.alpenraum.shimstack.ui.compose.CARD_MARGIN
+import com.alpenraum.shimstack.ui.compose.components.AttachToLifeCycle
+import com.alpenraum.shimstack.ui.compose.components.CARD_MARGIN
+import com.alpenraum.shimstack.ui.compose.components.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.compose.compositionlocal.LocalWindowSizeClass
-import com.alpenraum.shimstack.ui.compose.shimstackRoundedCornerShape
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -128,7 +128,7 @@ private fun HomeScreenContent(
             }
         }
     }
-    val windowSizeClass = LocalWindowSizeClass.current
+    LocalWindowSizeClass.current
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Top,
@@ -168,8 +168,9 @@ private fun HomeScreenContent(
                 Spacer(modifier = Modifier.height(16.dp))
                 BikeDetails(
                     bike = bike1,
+                    isMetric = state.isMetric,
                     cardSetup = state.detailCardsSetup,
-                    intents
+                    intents = intents
                 )
             } ?: EmptyDetailsEyeCandy()
         }
@@ -192,7 +193,8 @@ private fun EmptyDetailsEyeCandy() {
                 Modifier
                     .semantics {
                         invisibleToUser()
-                    }.fillMaxSize(0.6f)
+                    }
+                    .fillMaxSize(0.6f)
                     .padding(bottom = 8.dp)
         )
         Text(
@@ -209,6 +211,7 @@ private fun EmptyDetailsEyeCandy() {
 private fun BikeDetails(
     bike: Bike,
     cardSetup: ImmutableList<CardSetup>,
+    isMetric: Boolean,
     intents: (HomeScreenContract.Intent) -> Unit
 ) {
     Column(
@@ -226,9 +229,9 @@ private fun BikeDetails(
         ) {
             cardSetup.forEach {
                 when (it.type) {
-                    CardType.TIRES -> TireDetails(bigCard = it.bigCard, bike = bike)
-                    CardType.FORK -> ForkDetails(bigCard = it.bigCard, bike = bike)
-                    CardType.SHOCK -> ShockDetails(bigCard = it.bigCard, bike = bike)
+                    CardType.TIRES -> TireDetails(bigCard = it.bigCard, bike = bike, isMetric)
+                    CardType.FORK -> ForkDetails(bigCard = it.bigCard, bike = bike, isMetric)
+                    CardType.SHOCK -> ShockDetails(bigCard = it.bigCard, bike = bike, isMetric)
                 }
             }
         }
@@ -265,8 +268,7 @@ private fun BikePager(
             intents(HomeScreenContract.Intent.OnViewPagerSelectionChanged)
         }
     }
-    val isLandscapeScreen =
-        LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Column(modifier = modifier) {
         HorizontalPager(
             pagerState,
@@ -301,7 +303,8 @@ private fun BikePager(
                                 this.scaleX = scale
                                 this.scaleY = scale
                             }
-                        }.clickable {
+                        }
+                        .clickable {
                             bike?.let {
                                 intents(
                                     HomeScreenContract.Intent.OnBikeDetailsClicked(it)
@@ -359,6 +362,7 @@ fun BikeCardContent(
     bike: Bike?,
     modifier: Modifier = Modifier
 ) {
+    // TODO
     Text(
         bike?.name ?: "",
         style = MaterialTheme.typography.bodyMedium,
@@ -379,7 +383,8 @@ private fun AddNewBikeCardContent(
                 .fillMaxSize()
                 .clickable {
                     intents(HomeScreenContract.Intent.OnAddNewBike)
-                }.semantics(mergeDescendants = true) {}
+                }
+                .semantics(mergeDescendants = true) {}
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(

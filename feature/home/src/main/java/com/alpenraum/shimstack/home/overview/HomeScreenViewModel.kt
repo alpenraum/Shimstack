@@ -7,15 +7,16 @@ import com.alpenraum.shimstack.data.bike.LocalBikeRepository
 import com.alpenraum.shimstack.home.navigation.HomeNavigator
 import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.model.cardsetup.CardSetup
+import com.alpenraum.shimstack.model.measurementunit.MeasurementUnitType
 import com.alpenraum.shimstack.newbike.navigation.NewBikeNavigator
 import com.alpenraum.shimstack.ui.base.BaseViewModel
 import com.alpenraum.shimstack.ui.base.UnidirectionalViewModel
+import com.alpenraum.shimstack.usersettingsdomain.GetUserSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,10 +25,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -42,6 +42,7 @@ class HomeScreenViewModel
         private val bikeRepository: LocalBikeRepository,
         private val homeNavigator: HomeNavigator,
         private val newBikeNavigator: NewBikeNavigator,
+        userSettingsUseCase: GetUserSettingsUseCase,
         dispatchersProvider: DispatchersProvider
     ) : BaseViewModel(dispatchersProvider),
         HomeScreenContract {
@@ -50,9 +51,9 @@ class HomeScreenViewModel
 
         @OptIn(ExperimentalCoroutinesApi::class)
         override val state: StateFlow<HomeScreenContract.State> =
-            combine(bikes, cardSetups) { bikeList, cardSetupList ->
-                bikeList to cardSetupList
-            }.flatMapLatest(::createState)
+            combine(bikes, cardSetups, userSettingsUseCase()) { bikeList, cardSetupList, userSettings ->
+                Triple(bikeList, cardSetupList, userSettings.measurementUnitType)
+            }.mapLatest(::createState)
                 .catch {
                     eventFlow.emit(HomeScreenContract.Event.Error)
                     emit(HomeScreenContract.State(persistentListOf(), CardSetup.defaultConfig()))
@@ -109,15 +110,17 @@ class HomeScreenViewModel
             viewModelScope.launch { eventFlow.emit(HomeScreenContract.Event.NewPageSelected) }
         }
 
-        private fun createState(state: Pair<ImmutableList<Bike>, ImmutableList<CardSetup>>): Flow<HomeScreenContract.State> =
-            flowOf(HomeScreenContract.State(state.first, state.second))
+    private fun createState(
+        state: Triple<ImmutableList<Bike>, ImmutableList<CardSetup>, MeasurementUnitType>
+    ): HomeScreenContract.State = HomeScreenContract.State(state.first, state.second, state.third == MeasurementUnitType.METRIC)
     }
 
 interface HomeScreenContract : UnidirectionalViewModel<HomeScreenContract.State, HomeScreenContract.Intent, HomeScreenContract.Event> {
     @Immutable
     data class State(
         val bikes: ImmutableList<Bike?>,
-        val detailCardsSetup: ImmutableList<CardSetup>
+        val detailCardsSetup: ImmutableList<CardSetup>,
+        val isMetric: Boolean = true
     ) {
         fun getBike(page: Int) = bikes.getOrNull(page)
     }

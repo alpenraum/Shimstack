@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,14 +28,16 @@ import com.alpenraum.shimstack.home.getRearSuspensionUIData
 import com.alpenraum.shimstack.home.getTireUIData
 import com.alpenraum.shimstack.model.bike.Bike
 import com.alpenraum.shimstack.model.bike.BikeType
-import com.alpenraum.shimstack.model.pressure.Pressure
+import com.alpenraum.shimstack.model.measurementunit.Distance
+import com.alpenraum.shimstack.model.measurementunit.Pressure
 import com.alpenraum.shimstack.model.suspension.Damping
 import com.alpenraum.shimstack.model.suspension.Suspension
 import com.alpenraum.shimstack.model.tire.Tire
 import com.alpenraum.shimstack.ui.compose.AdaptiveSizeText
-import com.alpenraum.shimstack.ui.compose.CARD_DIMENSION
-import com.alpenraum.shimstack.ui.compose.CARD_MARGIN
-import com.alpenraum.shimstack.ui.compose.VerticalDivider
+import com.alpenraum.shimstack.ui.compose.components.CARD_DIMENSION
+import com.alpenraum.shimstack.ui.compose.components.CARD_MARGIN
+import com.alpenraum.shimstack.ui.compose.components.ShimstackCard
+import com.alpenraum.shimstack.ui.compose.components.VerticalDivider
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import kotlinx.collections.immutable.ImmutableList
 import com.alpenraum.shimstack.ui.R as BaseR
@@ -45,6 +46,7 @@ import com.alpenraum.shimstack.ui.R as BaseR
 fun TireDetails(
     bigCard: Boolean,
     bike: Bike,
+    isMetric: Boolean,
     modifier: Modifier = Modifier
 ) {
     DetailsCard(title = BaseR.string.tire, bigCard, modifier = modifier) {
@@ -56,7 +58,7 @@ fun TireDetails(
                     .weight(1.0f),
             horizontalArrangement = Arrangement.Center
         ) {
-            val data = bike.getTireUIData(LocalContext.current)
+            val data = bike.getTireUIData(LocalContext.current, isMetric)
             SimpleTextPair(
                 heading = stringResource(BaseR.string.front),
                 content = data.first.content,
@@ -106,11 +108,12 @@ private fun SimpleTextPair(
 @Composable
 fun ForkDetails(
     bigCard: Boolean,
-    bike: Bike
+    bike: Bike,
+    isMetric: Boolean
 ) {
     SuspensionDetails(
         bigCard = bigCard,
-        suspensionData = bike.getFrontSuspensionUIData(LocalContext.current),
+        suspensionData = bike.getFrontSuspensionUIData(LocalContext.current, isMetric),
         titleRes = BaseR.string.fork,
         errorTextRes = R.string.copy_no_fork
     )
@@ -119,11 +122,12 @@ fun ForkDetails(
 @Composable
 fun ShockDetails(
     bigCard: Boolean,
-    bike: Bike
+    bike: Bike,
+    isMetric: Boolean
 ) {
     SuspensionDetails(
         bigCard = bigCard,
-        suspensionData = bike.getRearSuspensionUIData(LocalContext.current),
+        suspensionData = bike.getRearSuspensionUIData(LocalContext.current, isMetric),
         titleRes = BaseR.string.shock,
         errorTextRes = R.string.copy_no_shock
     )
@@ -238,7 +242,7 @@ private fun DetailsCard(
     modifier: Modifier = Modifier,
     content: @Composable (ColumnScope.() -> Unit)
 ) {
-    Card(
+    ShimstackCard(
         modifier =
             modifier
                 .height(CARD_DIMENSION)
@@ -264,7 +268,7 @@ private fun DetailsCard(
 @Composable
 private fun PreviewTireData() {
     AppTheme {
-        TireDetails(bigCard = false, Bike.empty())
+        TireDetails(bigCard = false, Bike.empty(), false)
     }
 }
 
@@ -272,7 +276,7 @@ private fun PreviewTireData() {
 @Composable
 private fun PreviewTireDataBig() {
     AppTheme {
-        TireDetails(bigCard = true, Bike.empty())
+        TireDetails(bigCard = true, Bike.empty(), true)
     }
 }
 
@@ -286,15 +290,15 @@ private val testBike =
                 Damping(1),
                 Damping(1),
                 3,
-                140
+                Distance(140.0)
             ),
         frontTire =
             Tire(
                 Pressure(20.0),
-                0.0,
-                0.0
+                Distance(0.0),
+                Distance(0.0)
             ),
-        rearTire = Tire(Pressure(20.0), 0.0, 0.0),
+        rearTire = Tire(Pressure(20.0), Distance(0.0), Distance(0.0)),
         isEBike = false,
         id = 0
     )
@@ -308,31 +312,31 @@ private val testBikeMax =
                 Damping(1, 2),
                 Damping(3, 4),
                 5,
-                420
+                Distance(140.0)
             ),
         frontTire =
             Tire(
                 Pressure(20.0),
-                0.0,
-                0.0
+                Distance(0.0),
+                Distance(0.0)
             ),
-        rearTire = Tire(Pressure(20.0), 0.0, 0.0),
+        rearTire = Tire(Pressure(20.0), Distance(0.0), Distance(0.0)),
         isEBike = false,
         id = 0
     )
 
 @Preview
 @Composable
-private fun PreviewForkData() = ForkDetails(bigCard = false, bike = testBike)
+private fun PreviewForkData() = ForkDetails(bigCard = false, bike = testBike, true)
 
 @Preview
 @Composable
-private fun PreviewForkDataBig() = ForkDetails(bigCard = true, bike = testBike)
+private fun PreviewForkDataBig() = ForkDetails(bigCard = true, bike = testBike, false)
 
 @Preview
 @Composable
-private fun PreviewForkDataMax() = ForkDetails(bigCard = false, bike = testBikeMax)
+private fun PreviewForkDataMax() = ForkDetails(bigCard = false, bike = testBikeMax, true)
 
 @Preview
 @Composable
-private fun PreviewForkDataMaxBig() = ForkDetails(bigCard = true, bike = testBikeMax)
+private fun PreviewForkDataMaxBig() = ForkDetails(bigCard = true, bike = testBikeMax, false)

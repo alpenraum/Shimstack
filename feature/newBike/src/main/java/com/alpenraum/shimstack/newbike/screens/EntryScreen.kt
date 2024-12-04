@@ -36,10 +36,10 @@ import com.alpenraum.shimstack.model.biketemplate.BikeTemplate
 import com.alpenraum.shimstack.newbike.NewBikeContract
 import com.alpenraum.shimstack.newbike.NewBikeDestinations
 import com.alpenraum.shimstack.newbike.R
-import com.alpenraum.shimstack.ui.compose.ButtonText
-import com.alpenraum.shimstack.ui.compose.InfoText
-import com.alpenraum.shimstack.ui.compose.LargeButton
-import com.alpenraum.shimstack.ui.compose.TextInput
+import com.alpenraum.shimstack.ui.compose.components.ButtonText
+import com.alpenraum.shimstack.ui.compose.components.InfoText
+import com.alpenraum.shimstack.ui.compose.components.LargeButton
+import com.alpenraum.shimstack.ui.compose.components.TextInput
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -91,9 +91,9 @@ fun EntryScreen(
             label = "",
             transitionSpec = {
                 slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Down) togetherWith fadeOut() +
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Up
-                    )
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Up
+                        )
             }
         ) {
             if (it) {
@@ -135,7 +135,8 @@ private fun ListItem(
                 .clickable { intent(NewBikeContract.Intent.BikeTemplateSelected(bike)) }
                 .padding(
                     vertical = 8.dp
-                ).padding(horizontal = 16.dp)
+                )
+                .padding(horizontal = 16.dp)
                 .semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start

@@ -1,4 +1,4 @@
-package com.alpenraum.shimstack.ui.compose
+package com.alpenraum.shimstack.ui.compose.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -77,8 +77,8 @@ fun CardWithPlaceholder(
     placeholderColor: Color,
     modifier: Modifier = Modifier,
     content:
-        @Composable()
-        ColumnScope.() -> Unit
+    @Composable()
+    ColumnScope.() -> Unit
 ) {
     Card(
         modifier =
@@ -88,6 +88,24 @@ fun CardWithPlaceholder(
                 color = placeholderColor,
                 shape = RoundedCornerShape(8.dp)
             ),
+        content = content
+    )
+}
+
+@Composable
+fun ShimstackCard(
+    modifier: Modifier = Modifier,
+    content:
+    @Composable()
+    ColumnScope.() -> Unit
+) {
+    Card(
+        modifier =
+            modifier,
+//        colors = CardDefaults.cardColors(
+//            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+//            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+//        ),
         content = content
     )
 }
@@ -177,6 +195,43 @@ fun TextInput(
     colors = colors,
     textStyle = textStyle
 )
+
+/*
+TODO : MIGRATE TO TEXTFIELDSTATE
+@Composable
+fun TextInput(
+    state: TextFieldState,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    isError: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onKeyboardAction: KeyboardActionHandler? = null,
+    shape: Shape = shimstackRoundedCornerShape(),
+    singleLine: Boolean = true,
+    suffix: String? = null,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+    textStyle: TextStyle = LocalTextStyle.current
+) = OutlinedTextField(
+    shape = shape,
+    lineLimits = if(singleLine) TextFieldLineLimits.SingleLine else  TextFieldLineLimits.Default,
+    state = state,
+    suffix = suffix?.let { { Text(text = it) } },
+    modifier = modifier,
+    label =
+    label?.let {
+        { Text(text = it) }
+    },
+    isError = isError,
+    keyboardOptions = keyboardOptions,
+    onKeyboardAction = onKeyboardAction,
+    readOnly = readOnly,
+    trailingIcon = trailingIcon,
+    colors = colors,
+    textStyle = textStyle
+)
+ */
 
 @Composable
 fun ButtonText(

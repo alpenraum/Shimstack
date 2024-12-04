@@ -11,8 +11,8 @@ import androidx.navigation.NavController
 import com.alpenraum.shimstack.newbike.NewBikeContract
 import com.alpenraum.shimstack.newbike.NewBikeDestinations
 import com.alpenraum.shimstack.newbike.R
-import com.alpenraum.shimstack.ui.compose.DecisionButtonConfig
-import com.alpenraum.shimstack.ui.compose.DecisionScreen
+import com.alpenraum.shimstack.ui.compose.components.DecisionButtonConfig
+import com.alpenraum.shimstack.ui.compose.components.DecisionScreen
 import com.alpenraum.shimstack.ui.theme.AppTheme
 import com.alpenraum.shimstack.ui.R as CommonR
 

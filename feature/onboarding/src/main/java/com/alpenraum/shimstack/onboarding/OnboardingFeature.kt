@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.alpenraum.shimstack.ui.compose.AttachToLifeCycle
+import com.alpenraum.shimstack.ui.compose.components.AttachToLifeCycle
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
