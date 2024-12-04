@@ -34,6 +34,8 @@
     <string name="comp">Comp</string>
     <string name="rebound">Rebound</string>
     <string name="tokens">Tokens</string>
+    <string name="metric">Metric</string>
+    <string name="imperial">Imperial</string>
     <string name="lsc" translatable="false">LSC</string>
     <string name="hsc" translatable="false">HSC</string>
     <string name="lsr" translatable="false">LSR</string>

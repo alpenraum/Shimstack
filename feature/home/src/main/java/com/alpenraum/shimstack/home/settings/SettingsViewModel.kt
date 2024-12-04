@@ -50,7 +50,7 @@ constructor(
             is SettingsContract.Intent.OnMeasurementUnitTypeChange ->
                 iOScope.launch {
                     userSettingsRepository.updateMeasurementUnitType(
-                        intent.newSetting
+                        MeasurementUnitType.entries[intent.newSettingIndex]
                     )
                 }
 
@@ -66,8 +66,11 @@ constructor(
     private fun mapUserSettings(userSetting: UserSettings): List<SettingsContract.Settings> =
         listOf(
             SettingsContract.Settings.DynamicTheme(userSetting.isDynamicColorEnabled),
-            SettingsContract.Settings.AllowAnalytics(userSetting.isAnalyticsEnabled)
-            // SettingsContract.Settings.MeasurementUnit(userSetting.measurementUnitType,1 ), TODO
+            SettingsContract.Settings.AllowAnalytics(userSetting.isAnalyticsEnabled),
+            SettingsContract.Settings.MeasurementUnit(
+                listOf(com.alpenraum.shimstack.ui.R.string.metric, com.alpenraum.shimstack.ui.R.string.imperial),
+                MeasurementUnitType.entries.indexOf(userSetting.measurementUnitType)
+            )
         )
 
     private fun createState(list: List<SettingsContract.Settings>): SettingsContract.State = SettingsContract.State(list)
@@ -83,7 +86,7 @@ interface SettingsContract : UnidirectionalViewModel<SettingsContract.State, Set
 
         class OnAllowAnalyticsChange(val newSetting: Boolean) : Intent()
 
-        class OnMeasurementUnitTypeChange(val newSetting: MeasurementUnitType) : Intent()
+        class OnMeasurementUnitTypeChange(val newSettingIndex: Int) : Intent()
     }
 
     sealed class Settings(
@@ -93,6 +96,7 @@ interface SettingsContract : UnidirectionalViewModel<SettingsContract.State, Set
 
         class AllowAnalytics(val setting: Boolean) : Settings(R.string.settings_allow_analytics)
 
-        class MeasurementUnit(val options: List<Int>, val selectedIndex: Int) : Settings(R.string.settings_measurement_unit_type)
+        class MeasurementUnit(@StringRes val options: List<Int>, val selectedIndex: Int) :
+            Settings(R.string.settings_measurement_unit_type)
     }
 }

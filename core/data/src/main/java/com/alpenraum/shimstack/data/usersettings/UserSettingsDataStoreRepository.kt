@@ -1,5 +1,6 @@
 package com.alpenraum.shimstack.data.usersettings
 
+import android.util.Log
 import com.alpenraum.shimstack.datastore.ShimstackDatastore
 import com.alpenraum.shimstack.model.measurementunit.MeasurementUnitType
 import com.alpenraum.shimstack.usersettingsdomain.UserSettings
@@ -38,6 +39,7 @@ constructor(private val dataStore: ShimstackDatastore) : UserSettingsRepository 
     }
 
     override suspend fun updateMeasurementUnitType(type: MeasurementUnitType) {
+        Log.d("TAG", "updateMeasurementUnitType: $type")
         dataStore.setMeasurementUnit(type.name)
     }
 

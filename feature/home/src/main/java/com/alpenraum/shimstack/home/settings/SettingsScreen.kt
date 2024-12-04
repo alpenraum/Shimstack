@@ -1,6 +1,5 @@
 package com.alpenraum.shimstack.home.settings
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.alpenraum.shimstack.home.R
 import com.alpenraum.shimstack.ui.base.use
 import com.alpenraum.shimstack.ui.compose.components.AttachToLifeCycle
 import com.alpenraum.shimstack.ui.compose.components.MultiOptionToggle
 import com.alpenraum.shimstack.ui.theme.AppTheme
+import com.alpenraum.shimstack.ui.R as BaseR
 
 @Composable
 fun SettingsScreen(
@@ -31,7 +32,6 @@ fun SettingsScreen(
 ) {
     AttachToLifeCycle(viewModel = viewModel)
     val (state, intents, _) = use(viewModel = viewModel, navController)
-
     Column(
         modifier =
             modifier
@@ -39,8 +39,7 @@ fun SettingsScreen(
                 .padding(horizontal = 8.dp)
                 .verticalScroll(rememberScrollState())
     ) {
-        AnimatedContent(state.settings) {
-            it.forEach { setting ->
+        state.settings.forEach { setting ->
                 when (setting) {
                     is SettingsContract.Settings.DynamicTheme ->
                         SettingsToggleRow(setting.label, setting.setting) {
@@ -60,9 +59,8 @@ fun SettingsScreen(
                         SettingsMultiSwitch(
                             setting.options,
                             setting.selectedIndex
-                        ) { TODO() } // TODO()
+                        ) { intents(SettingsContract.Intent.OnMeasurementUnitTypeChange(it)) }
                 }
-            }
         }
     }
 }
@@ -100,12 +98,16 @@ private fun SettingsToggleRow(
 private fun SettingsMultiSwitch(
     options: List<Int>,
     selectedIndex: Int,
+    modifier: Modifier = Modifier,
     onOptionSelect: (Int) -> Unit
 ) {
-    MultiOptionToggle(options, selectedIndex, onOptionSelect = onOptionSelect)
+    Column(modifier.padding(8.dp)) {
+        Text(stringResource(R.string.settings_measurement_unit_type), modifier = Modifier.padding(bottom = 4.dp))
+        MultiOptionToggle(options, selectedIndex, onOptionSelect = onOptionSelect)
+    }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun SettingPreview() {
     AppTheme {
@@ -114,8 +116,15 @@ private fun SettingPreview() {
             false
         ) {}
     }
-    SettingsToggleRow(
-        SettingsContract.Settings.DynamicTheme(false).label,
-        true
-    ) {}
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MultiSettingPreview() {
+    AppTheme {
+        MultiOptionToggle(
+            listOf(BaseR.string.metric, BaseR.string.imperial),
+            selectedIndex = 0
+        ) { }
+    }
 }
